@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Nutrition Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+    <h1>🍏 NutriTrack <span class="badge">Core Prototype</span></h1>
+</header>
+
+<main class="app-container">
+    <!-- Left Side: Single Input & Active Diet List -->
+    <section class="left-panel">
+        <div class="card">
+            <h2>Add Food</h2>
+            <p class="subtitle">Type and press Enter (e.g., "500g chicken")</p>
+            <div class="input-group">
+                <input type="text" id="food-input" placeholder="e.g., 500g chicken">
+                <button id="add-btn">Add</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>My Diet</h2>
+            <p class="subtitle">Click an item to lock view, hover to preview</p>
+            <ul id="diet-list" class="diet-list">
+                <!-- Dynamic items will go here -->
+            </ul>
+        </div>
+    </section>
+
+    <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
+    <section class="right-panel card">
+        <div class="nutrition-header">
+            <h2>Nutritional Breakdown</h2>
+            <span id="nutrition-view-indicator" class="indicator">Showing: Total Diet</span>
+        </div>
+
+        <div id="nutrition-grid" class="nutrition-grid">
+            <!-- Dynamic categories (macros, micros, aminos, etc.) will be rendered here -->
+        </div>
+    </section>
+</main>
+
+<script type="module" src="/src/app.js"></script>
+</body>
+</html>
