@@ -9,6 +9,7 @@ const state = {
 };
 
 // 2. Parser Logic
+// Dynamic Parser: Automatically matches any food key in your database
 function parseInputLine(line) {
     const trimmed = line.trim().toLowerCase();
     if (!trimmed) return null;
@@ -25,9 +26,9 @@ function parseInputLine(line) {
         if (unit === 'kg') amount *= 1000;
         if (unit === 'oz') amount *= 28.3495;
 
-        let foodKey = null;
-        if (foodName.includes('chicken')) foodKey = 'chicken';
-        if (foodName.includes('potato') || foodName.includes('potatoes')) foodKey = 'potatoes';
+        // DYNAMIC MATCHING: Automatically scans keys in your database
+        const databaseKeys = Object.keys(FOOD_DATABASE);
+        let foodKey = databaseKeys.find(key => foodName.includes(key)) || null;
 
         return {
             originalText: line,
@@ -141,7 +142,6 @@ function renderDietList() {
         listEl.appendChild(li);
     });
 }
-
 function renderNutritionPanel() {
     const gridEl = document.getElementById('nutrition-grid');
     const indicatorEl = document.getElementById('nutrition-view-indicator');
@@ -153,32 +153,64 @@ function renderNutritionPanel() {
 
     for (const [category, nutrients] of Object.entries(NUTRIENT_UNITS)) {
         const catEl = document.createElement('div');
-        catEl.className = 'nutrient-category';
+
+        // DYNAMIC CLASS ASSIGNMENT: Identify limit/warning categories
+        const isLimitCategory = category === 'antinutrients' || category === 'biogenic_amines';
+        catEl.className = `nutrient-category ${isLimitCategory ? 'limit-category' : ''}`;
 
         const displayTitle = category.replace(/_/g, ' ');
         catEl.innerHTML = `<h3>${displayTitle}</h3>`;
 
-        for (const [nutrient, unit] of Object.entries(nutrients)) {
-            const rawVal = activeData[category][nutrient] || 0;
-            const rdaTarget = RDA_TARGETS[category]?.[nutrient] || 100;
+        for (const [nutrientName, meta] of Object.entries(nutrients)) {
+
+            // Subheaders grouping
+            if (meta.isSubheader) {
+                const subheaderRow = document.createElement('div');
+                subheaderRow.className = 'nutrient-row subheader';
+                subheaderRow.innerHTML = `<span>${meta.label}</span>`;
+                catEl.appendChild(subheaderRow);
+                continue;
+            }
+
+            const unit = meta.unit;
+            const rawVal = activeData[category]?.[nutrientName] || 0;
             const displayVal = rawVal % 1 === 0 ? rawVal : rawVal.toFixed(2);
 
-            const percent = Math.min(100, (rawVal / rdaTarget) * 100);
-            const isExceeded = rawVal > rdaTarget;
+            const rdaTarget = RDA_TARGETS[category]?.[nutrientName] || 0;
+            const percent = rdaTarget > 0 ? Math.min(100, (rawVal / rdaTarget) * 100) : 0;
+            const isExceeded = rdaTarget > 0 && rawVal > rdaTarget;
 
             const row = document.createElement('div');
-            row.className = 'nutrient-row';
+            let indentClass = '';
+            if (meta.indent === 1) indentClass = 'indent-1';
+            if (meta.indent === 2) indentClass = 'indent-2';
+            row.className = `nutrient-row ${indentClass}`;
 
-            // FIXED: Standardized the unit format string so it displays 'displayVal unit / rdaTarget unit'
-            row.innerHTML = `
-                <div class="nutrient-info">
-                    <span>${nutrient}</span>
-                    <span>${displayVal} ${unit} / ${rdaTarget} ${unit}</span>
-                </div>
-                <div class="rda-container">
-                    <div class="rda-bar ${isExceeded ? 'exceeded' : ''}" style="width: ${percent}%"></div>
-                </div>
-            `;
+            // Render different templates based on whether the nutrient has an active target target
+            if (meta.noTarget) {
+                row.innerHTML = `
+                    <div class="nutrient-info">
+                        <span>${nutrientName}</span>
+                        <span class="no-target-val">${displayVal} ${unit}</span>
+                    </div>
+                    <div class="rda-container no-target-layout">
+                        <div class="rda-dots">••••••</div>
+                        <span class="nt-badge">N/T</span>
+                    </div>
+                `;
+            } else {
+                row.innerHTML = `
+                    <div class="nutrient-info">
+                        <span>${nutrientName}</span>
+                        <span>${displayVal} ${unit} / ${rdaTarget} ${unit}</span>
+                    </div>
+                    <div class="rda-container">
+                        <div class="rda-bar ${isExceeded ? 'exceeded' : ''}" style="width: ${percent}%"></div>
+                        <span class="percentage-label">${Math.round(percent)}%</span>
+                    </div>
+                `;
+            }
+
             catEl.appendChild(row);
         }
 

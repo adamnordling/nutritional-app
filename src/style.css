@@ -17,70 +17,133 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* 1. Viewport Bounding: Force body to exactly 100vh and hide scroll */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
     padding: 20px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .app-header {
     max-width: 1400px;
-    margin: 0 auto 20px auto;
-    display: flex;
-    align-items: center;
+    width: 100%;
+    margin: 0 auto 15px auto;
+    flex-shrink: 0; /* Header never shrinks */
 }
 
 .app-header h1 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
 }
 
 .badge {
-    font-size: 12px;
+    font-size: 11px;
     background: #e2fbe8;
     color: #27ae60;
-    padding: 4px 8px;
+    padding: 3px 6px;
     border-radius: 12px;
     margin-left: 10px;
     vertical-align: middle;
 }
 
+/* 2. Container Bounding */
 .app-container {
     max-width: 1400px;
+    width: 100%;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 20px;
+    flex-grow: 1; /* Fills remaining height */
+    height: calc(100% - 60px); /* Bounded to window height */
+    overflow: hidden; /* Crucial: stops the page itself from scrolling */
 }
 
-@media (max-width: 900px) {
-    .app-container {
-        grid-template-columns: 1fr;
-    }
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    overflow: hidden;
 }
 
+.input-card {
+    flex-shrink: 0; /* Input area stays constant */
+}
+
+.diet-card {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Stop card from overflowing */
+}
+
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden; /* Stop card from overflowing */
+}
+
+.nutrition-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+/* 3. Resizable & Scrollable Containers */
+/* 3. Non-Resizable, Bounded Scroll Containers */
+.resizable-scroll-container {
+    overflow-y: auto;
+    resize: none; /* Removed the vertical resizing handle entirely */
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding-right: 8px; /* Smooth spacing room for scrollbars */
+}
+
+/* Set specific default sizes & limits */
+.diet-list-wrapper {
+    flex-grow: 1;
+    min-height: 150px;
+    max-height: 100%;
+}
+
+.nutrition-grid-wrapper {
+    flex-grow: 1;
+    min-height: 300px;
+    max-height: 100%;
+}
+
+/* Style the native resize handle slightly better */
+.resizable-scroll-container::-webkit-resizer {
+    border-style: solid;
+    border-color: var(--text-muted);
+    border-width: 0 4px 4px 0;
+}
+
+/* Card Styling */
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 15px;
     box-shadow: var(--shadow);
 }
 
-h2 {
-    font-size: 18px;
-    margin-bottom: 4px;
-    font-weight: 600;
-}
-
 .subtitle {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-muted);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
-/* Updated Input Field Styles */
 .input-group {
     display: flex;
     gap: 8px;
@@ -88,14 +151,13 @@ h2 {
 
 input[type="text"] {
     flex-grow: 1;
-    height: 44px;
+    height: 40px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 0 12px;
     font-size: 14px;
     outline: none;
     background: #fafafa;
-    transition: all 0.2s;
 }
 
 input[type="text"]:focus {
@@ -104,23 +166,22 @@ input[type="text"]:focus {
 }
 
 button {
-    height: 44px;
+    height: 40px;
     background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 8px;
     padding: 0 16px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
 button:hover {
     background-color: var(--primary-hover);
 }
 
-/* Diet List Alignment & States */
+/* List UI styling */
 .diet-list {
     list-style: none;
 }
@@ -129,12 +190,11 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px;
+    padding: 10px;
     border: 1px solid transparent;
     border-bottom: 1px solid var(--border-color);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.15s;
     user-select: none;
 }
 
@@ -153,7 +213,7 @@ button:hover {
 
 .diet-item-text {
     flex-grow: 1;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .remove-btn {
@@ -162,43 +222,23 @@ button:hover {
     color: var(--danger-color);
     cursor: pointer;
     font-weight: bold;
-    font-size: 18px;
-    height: auto;
-    padding: 4px 8px;
+    font-size: 16px;
+    padding: 2px 6px;
     border-radius: 4px;
-    margin-left: 12px;
 }
 
 .remove-btn:hover {
     background-color: #fde8e8;
 }
 
-/* Nutrition Panel & Dynamic Grid */
-.nutrition-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 12px;
-    margin-bottom: 16px;
-}
-
-.indicator {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--primary-color);
-    background: #e2fbe8;
-    padding: 4px 10px;
-    border-radius: 6px;
-}
-
+/* Grid Layout inside the scrollable container */
 .nutrition-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 15px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
     .nutrition-grid {
         grid-template-columns: 1fr;
     }
@@ -207,22 +247,22 @@ button:hover {
 .nutrient-category {
     background: #fafafa;
     border-radius: 8px;
-    padding: 15px;
+    padding: 12px;
     border: 1px solid var(--border-color);
 }
 
 .nutrient-category h3 {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-muted);
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 6px;
-    margin-bottom: 10px;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .nutrient-row {
-    padding: 8px 0;
+    padding: 6px 0;
     border-bottom: 1px dashed #e9ecef;
 }
 
@@ -233,21 +273,137 @@ button:hover {
 .nutrient-info {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: 4px;
+    font-size: 12px;
+    margin-bottom: 3px;
 }
 
 .nutrient-info span:last-child {
     font-weight: 600;
 }
 
-/* RDA Progress Bar Component */
 .rda-container {
     width: 100%;
-    height: 6px;
+    height: 5px;
     background-color: #e9ecef;
     border-radius: 3px;
     overflow: hidden;
+}
+
+.rda-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.rda-bar.exceeded {
+    background-color: #3498db;
+}
+
+/* Custom Subheader Styling (Used to group Amino Acids inside Category) */
+.nutrient-row.subheader {
+    font-weight: bold;
+    color: #495057;
+    background-color: #f1f3f5;
+    padding: 6px 8px;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: none !important;
+}
+
+/* Tree Indentation & Bracket Visuals */
+.nutrient-row.indent-1 {
+    padding-left: 15px;
+    border-left: 2px solid var(--border-color);
+}
+
+.nutrient-row.indent-1 .nutrient-info span:first-child::before {
+    content: "↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.nutrient-row.indent-2 {
+    padding-left: 30px;
+    border-left: 2px solid var(--border-color);
+}
+
+.nutrient-row.indent-2 .nutrient-info span:first-child::before {
+    content: "    ↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+/* Give top-level category headers a slightly more prominent look */
+.nutrient-category h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+/* Custom Subheader Styling */
+.nutrient-row.subheader {
+    font-weight: bold;
+    color: #495057;
+    background-color: #f1f3f5;
+    padding: 6px 8px;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: none !important;
+}
+
+/* Tree Indentations */
+.nutrient-row.indent-1 {
+    padding-left: 15px;
+}
+
+.nutrient-row.indent-1 .nutrient-info span:first-child::before {
+    content: "↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.nutrient-row.indent-2 {
+    padding-left: 30px;
+}
+
+.nutrient-row.indent-2 .nutrient-info span:first-child::before {
+    content: "    ↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+/* RDA Row Adjustments */
+.rda-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    overflow: visible; /* Let text overlays render neatly */
+    position: relative;
 }
 
 .rda-bar {
@@ -257,7 +413,94 @@ button:hover {
     transition: width 0.3s ease;
 }
 
-/* Exceeding RDA (Blue color variation) */
 .rda-bar.exceeded {
     background-color: #3498db;
+}
+
+.percentage-label {
+    position: absolute;
+    right: -35px;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--text-muted);
+    width: 30px;
+    text-align: right;
+}
+
+/* Dotted No-Target Layout Styles */
+.rda-container.no-target-layout {
+    background-color: transparent !important;
+    overflow: visible;
+}
+
+.rda-dots {
+    letter-spacing: 4px;
+    color: #ced4da;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.nt-badge {
+    position: absolute;
+    right: -35px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #adb5bd;
+    width: 30px;
+    text-align: right;
+}
+
+.no-target-val {
+    color: var(--text-muted);
+}
+
+.nutrient-row {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e9ecef;
+    margin-right: 35px; /* Give room for percentage/NT labels on the right side */
+}
+
+/* Deep Nesting (Level 3) */
+.nutrient-row.indent-3 {
+    padding-left: 45px;
+    border-left: 2px solid var(--border-color);
+}
+
+.nutrient-row.indent-3 .nutrient-info span:first-child::before {
+    content: "        ↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+/* 3. Non-Resizable, Bounded Scroll Containers */
+.resizable-scroll-container {
+    overflow-y: auto;
+    resize: none; /* Removed the resizing handle entirely */
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding-right: 8px; /* Smooth spacing room for scrollbars */
+}
+
+/* Limit / Warning Categories (Red/Crimson Theme) */
+.nutrient-category.limit-category {
+    border-color: #f8d7da; /* Soft danger-card border */
+    background: #fffdfd;
+}
+
+.nutrient-category.limit-category h3 {
+    border-bottom: 2px solid var(--danger-color) !important; /* Crimson header underline */
+}
+
+.nutrient-category.limit-category .rda-bar {
+    background-color: var(--danger-color) !important; /* Crimson progress bar fill */
+}
+
+/* Optional: Color-shift the percentage labels to red for warning metrics */
+.nutrient-category.limit-category .percentage-label {
+    color: var(--danger-color);
 }

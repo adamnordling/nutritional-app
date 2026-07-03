@@ -12,9 +12,9 @@
 </header>
 
 <main class="app-container">
-    <!-- Left Side: Single Input & Active Diet List -->
+    <!-- Left Side: Inputs & Active Diet List -->
     <section class="left-panel">
-        <div class="card">
+        <div class="card input-card">
             <h2>Add Food</h2>
             <p class="subtitle">Type and press Enter (e.g., "500g chicken")</p>
             <div class="input-group">
@@ -23,12 +23,13 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card diet-card">
             <h2>My Diet</h2>
-            <p class="subtitle">Click an item to lock view, hover to preview</p>
-            <ul id="diet-list" class="diet-list">
-                <!-- Dynamic items will go here -->
-            </ul>
+            <p class="subtitle">Click to lock, hover to preview</p>
+            <!-- Scrollable & Resizable container -->
+            <div class="resizable-scroll-container diet-list-wrapper">
+                <ul id="diet-list" class="diet-list"></ul>
+            </div>
         </div>
     </section>
 
@@ -38,9 +39,9 @@
             <h2>Nutritional Breakdown</h2>
             <span id="nutrition-view-indicator" class="indicator">Showing: Total Diet</span>
         </div>
-
-        <div id="nutrition-grid" class="nutrition-grid">
-            <!-- Dynamic categories (macros, micros, aminos, etc.) will be rendered here -->
+        <!-- Scrollable & Resizable container -->
+        <div class="resizable-scroll-container nutrition-grid-wrapper">
+            <div id="nutrition-grid" class="nutrition-grid"></div>
         </div>
     </section>
 </main>
