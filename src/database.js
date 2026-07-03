@@ -3,97 +3,114 @@
 
 export const FOOD_DATABASE = {
     chicken: {
-        general: { Calories: 165, Water: 65, Alcohol: 0, Caffeine: 0, Ash: 1.0 },
+        general: { Calories: 165, Water: 65, Alcohol: 0, Caffeine: 0, Theobromine: 0, Ash: 1.0 },
         organic_acids: { "Citric Acid": 0, "Malic Acid": 0, "Lactic Acid": 0, "Acetic Acid": 0, "Succinic Acid": 0, "Salicylic Acid": 0 },
         carbohydrates: {
             "Total Carbohydrates": 0, "Soluble Fiber": 0, "Beta-Glucan": 0, Pectin: 0, Inulin: 0, FOS: 0, GOS: 0,
             "Insoluble Fiber": 0, Starch: 0, "Resistant Starch": 0, "Total Sugars": 0,
-            Sucrose: 0, Glucose: 0, Fructose: 0, Lactose: 0, Maltose: 0, Galactose: 0, Trehalose: 0,
+            Sucrose: 0, Glucose: 0, Fructose: 0, Lactose: 0, Maltose: 0, Galactose: 0, Trehalose: 0, "D-Mannose": 0,
             "Total Sugar Alcohols": 0, Erythritol: 0, Xylitol: 0, Sorbitol: 0, Mannitol: 0, Maltitol: 0
         },
         lipids: {
-            "Total Fat": 3.6, "Saturated Fat": 1.01, "Butyric Acid (C4:0)": 0, "Caproic Acid (C6:0)": 0, "Caprylic Acid (C8:0)": 0, "Capric Acid (C10:0)": 0, "Lauric Acid (C12:0)": 0, "Myristic Acid (C14:0)": 0.03, "Pentadecanoic Acid (C15:0)": 0, "Palmitic Acid (C16:0)": 0.72, "Stearic Acid (C18:0)": 0.26,
+            "Total Fat": 3.6, "Saturated Fat": 1.01, "Butyric Acid (C4:0)": 0, "Caproic Acid (C6:0)": 0, "Caprylic Acid (C8:0)": 0, "Capric Acid (C10:0)": 0, "Lauric Acid (C12:0)": 0, "Myristic Acid (C14:0)": 0.03, "Pentadecanoic Acid (C15:0)": 0, "Palmitic Acid (C16:0)": 0.72, "Stearic Acid (C18:0)": 0.26, "Arachidic Acid (C20:0)": 0, "Behenic Acid (C22:0)": 0, "Lignoceric Acid (C24:0)": 0,
             "Monounsaturated Fat": 1.15, "Oleic Acid (C18:1)": 1.10, "Palmitoleic Acid (C16:1)": 0.05, "Vaccenic Acid (C18:1)": 0,
             "Polyunsaturated Fat": 0.82, "Conjugated Linoleic Acid (CLA)": 0, "Trans Fat": 0.02, Cholesterol: 85,
             Phytosterols: 0, "Beta-Sitosterol": 0, Campesterol: 0, Stigmasterol: 0,
             Phosphatidylcholine: 65, Phosphatidylserine: 8, Phosphatidylethanolamine: 22, Sphingomyelin: 14, Plasmalogens: 4,
-            "Omega-3 Total": 0.03, ALA: 0.01, EPA: 0.01, DHA: 0.01, DPA: 0.00, SDA: 0.00,
-            "Omega-6 Total": 0.70, LA: 0.58, GLA: 0.00, AA: 0.12
+            "Omega-3 Total": 0.03, ALA: 0.01, EPA: 0.01, DHA: 0.01, DPA: 0.00, SDA: 0.00, ETA: 0.00,
+            "Omega-6 Total": 0.70, LA: 0.58, GLA: 0.00, AA: 0.12, DGLA: 0.00
         },
-        proteins_and_aminos: { "Total Protein": 31, Tryptophan: 0.34, Threonine: 1.29, Isoleucine: 1.48, Leucine: 2.37, Lysine: 2.62, Methionine: 0.81, Cystine: 0.38, Phenylalanine: 1.21, Tyrosine: 1.05, Valine: 1.51, Histidine: 0.93, Alanine: 1.83, Arginine: 2.05, "Aspartic Acid": 2.84, "Glutamic Acid": 4.80, Glycine: 1.63, Proline: 1.22, Serine: 1.24, Glutamine: 1.50, Taurine: 0.15, Citrulline: 0 },
+        proteins_and_aminos: { "Total Protein": 31, Tryptophan: 0.34, Threonine: 1.29, Isoleucine: 1.48, Leucine: 2.37, Lysine: 2.62, Methionine: 0.81, Cystine: 0.38, Phenylalanine: 1.21, Tyrosine: 1.05, Valine: 1.51, Histidine: 0.93, Alanine: 1.83, Arginine: 2.05, "Aspartic Acid": 2.84, "Glutamic Acid": 4.80, Glycine: 1.63, Proline: 1.22, Serine: 1.24, Glutamine: 1.50, Taurine: 0.15, Citrulline: 0, Ornithine: 0, "Beta-Alanine": 0 },
         biogenic_amines: { Histamine: 0, Tyramine: 0, Phenylethylamine: 0 },
         nucleic_acids_and_purines: { "Total Purines": 115, "RNA": 140, "DNA": 45 },
         vitamins: { "Vitamin A Total": 16, Retinol: 16, "Beta-Carotene": 0, "Alpha-Carotene": 0, "Beta-Cryptoxanthin": 0, "Lutein & Zeaxanthin": 0, Lycopene: 0, "Vitamin B1 (Thiamine)": 0.07, "Vitamin B2 (Riboflavin)": 0.12, "Vitamin B3 (Niacin)": 8.5, "Vitamin B5 (Pantothenic Acid)": 0.9, "Vitamin B6": 0.4, "Vitamin B7 (Biotin)": 1.9, "Vitamin B9 (Folate DFE)": 4, "Vitamin B12": 0.3, "Vitamin C": 0, "Vitamin D Total": 0.1, "Vitamin D2 (Ergocalciferol)": 0, "Vitamin D3 (Cholecalciferol)": 0.1, "Vitamin E Total": 0.20, "Alpha-Tocopherol": 0.20, "Beta-Tocopherol": 0, "Gamma-Tocopherol": 0, "Delta-Tocopherol": 0, "Alpha-Tocotrienol": 0, "Beta-Tocotrienol": 0, "Gamma-Tocotrienol": 0, "Delta-Tocotrienol": 0, "Vitamin K1": 0, "Vitamin K2 (MK-4)": 1.1, "Vitamin K2 (MK-7)": 0, "Vitamin K2 (MK-9)": 0, "Vitamin U (S-Methylmethionine)": 0, Choline: 85, Betaine: 10 },
-        minerals: { Calcium: 15, Iron: 1.0, Magnesium: 23, Phosphorus: 228, Potassium: 256, Sodium: 74, Zinc: 1.0, Copper: 0.05, Manganese: 0.02, Selenium: 22.8, Iodine: 4, Chromium: 2, Molybdenum: 1.5, Fluoride: 25, Boron: 0.1, Silicon: 0.2, Sulfur: 240, Chloride: 55, Lithium: 0.5, Vanadium: 0.2, Cobalt: 0.8, Strontium: 0.1, Nickel: 1.2, Germanium: 0.02, Rubidium: 0.4 },
+        minerals: { Calcium: 15, Iron: 1.0, Magnesium: 23, Phosphorus: 228, Potassium: 256, Sodium: 74, Zinc: 1.0, Copper: 0.05, Manganese: 0.02, Selenium: 22.8, Iodine: 4, Chromium: 2, Molybdenum: 1.5, Fluoride: 25, Boron: 0.1, Silicon: 0.2, Sulfur: 240, Chloride: 55, Lithium: 0.5, Vanadium: 0.2, Cobalt: 0.8, Strontium: 0.1, Nickel: 1.2, Germanium: 0.02, Rubidium: 0.4, Tin: 0.01 },
         cellular_bioactives: { "Coenzyme Q10": 1.5, "Nicotinamide Riboside (NR)": 0.2, "Pyrroloquinoline Quinone (PQQ)": 0.05, "Inositol (B8)": 12, PABA: 0.01, "Dietary Nitrate": 1.2, Ergothioneine: 0.1, Spermidine: 0.02, "L-Theanine": 0, "Urolithin A": 0 },
+        myconutrients_and_adaptogens: { "Hericenones & Erinacines": 0, Cordycepin: 0, Withanolides: 0, "Salidroside & Rosavin": 0, Bacosides: 0 },
+        bioactive_enzymes: { Bromelain: 0, Papain: 0 },
         antinutrients: { "Phytic Acid": 0, "Oxalic Acid": 0, Lectins: 0, Goitrogens: 0, Tannins: 0, Saponins: 0, "Trypsin Inhibitors": 0 },
-        antioxidants: { "Total Polyphenols": 0, "Total Flavonoids": 0, Anthocyanins: 0, Quercetin: 0, Resveratrol: 0, Glutathione: 14.0, Astaxanthin: 0, EGCG: 0, Curcumin: 0, Apigenin: 0, Fisetin: 0, Lignans: 0, Pterostilbene: 0, "Ursolic Acid": 0, "Chlorogenic Acid": 0, Allicin: 0, Sulforaphane: 0, Melatonin: 0.02, Capsaicin: 0 }
+        antioxidants: { "Total Polyphenols": 0, "Total Flavonoids": 0, Anthocyanins: 0, Quercetin: 0, Resveratrol: 0, Glutathione: 14.0, Astaxanthin: 0, EGCG: 0, Curcumin: 0, Apigenin: 0, Fisetin: 0, Lignans: 0, Pterostilbene: 0, "Ursolic Acid": 0, "Chlorogenic Acid": 0, Allicin: 0, Sulforaphane: 0, Melatonin: 0.02, Capsaicin: 0, DIM: 0 }
     },
     potato: {
-        general: { Calories: 77, Water: 79, Alcohol: 0, Caffeine: 0, Ash: 1.1 },
+        general: { Calories: 77, Water: 79, Alcohol: 0, Caffeine: 0, Theobromine: 0, Ash: 1.1 },
         organic_acids: { "Citric Acid": 320, "Malic Acid": 90, "Lactic Acid": 0, "Acetic Acid": 0, "Succinic Acid": 12, "Salicylic Acid": 0.1 },
         carbohydrates: {
             "Total Carbohydrates": 17, "Soluble Fiber": 0.8, "Beta-Glucan": 0, Pectin: 0.4, Inulin: 0, FOS: 0, GOS: 0,
             "Insoluble Fiber": 1.4, Starch: 15.0, "Resistant Starch": 1.2, "Total Sugars": 0.8,
-            Sucrose: 0.3, Glucose: 0.2, Fructose: 0.3, Lactose: 0, Maltose: 0, Galactose: 0, Trehalose: 0,
+            Sucrose: 0.3, Glucose: 0.2, Fructose: 0.3, Lactose: 0, Maltose: 0, Galactose: 0, Trehalose: 0, "D-Mannose": 0.05,
             "Total Sugar Alcohols": 0, Erythritol: 0, Xylitol: 0, Sorbitol: 0, Mannitol: 0, Maltitol: 0
         },
         lipids: {
-            "Total Fat": 0.1, "Saturated Fat": 0.03, "Butyric Acid (C4:0)": 0, "Caproic Acid (C6:0)": 0, "Caprylic Acid (C8:0)": 0, "Capric Acid (C10:0)": 0, "Lauric Acid (C12:0)": 0, "Myristic Acid (C14:0)": 0, "Pentadecanoic Acid (C15:0)": 0, "Palmitic Acid (C16:0)": 0.02, "Stearic Acid (C18:0)": 0.01,
+            "Total Fat": 0.1, "Saturated Fat": 0.03, "Butyric Acid (C4:0)": 0, "Caproic Acid (C6:0)": 0, "Caprylic Acid (C8:0)": 0, "Capric Acid (C10:0)": 0, "Lauric Acid (C12:0)": 0, "Myristic Acid (C14:0)": 0, "Pentadecanoic Acid (C15:0)": 0, "Palmitic Acid (C16:0)": 0.02, "Stearic Acid (C18:0)": 0.01, "Arachidic Acid (C20:0)": 0, "Behenic Acid (C22:0)": 0, "Lignoceric Acid (C24:0)": 0,
             "Monounsaturated Fat": 0.01, "Oleic Acid (C18:1)": 0.01, "Palmitoleic Acid (C16:1)": 0, "Vaccenic Acid (C18:1)": 0,
             "Polyunsaturated Fat": 0.04, "Conjugated Linoleic Acid (CLA)": 0, "Trans Fat": 0, Cholesterol: 0,
             Phytosterols: 8, "Beta-Sitosterol": 5, Campesterol: 2, Stigmasterol: 1,
             Phosphatidylcholine: 1.5, Phosphatidylserine: 0.2, Phosphatidylethanolamine: 0.5, Sphingomyelin: 0, Plasmalogens: 0,
-            "Omega-3 Total": 0.01, ALA: 0.01, EPA: 0, DHA: 0, DPA: 0, SDA: 0,
-            "Omega-6 Total": 0.03, LA: 0.03, GLA: 0, AA: 0
+            "Omega-3 Total": 0.01, ALA: 0.01, EPA: 0, DHA: 0, DPA: 0, SDA: 0, ETA: 0,
+            "Omega-6 Total": 0.03, LA: 0.03, GLA: 0, AA: 0, DGLA: 0
         },
-        proteins_and_aminos: { "Total Protein": 2, Tryptophan: 0.03, Threonine: 0.07, Isoleucine: 0.08, Leucine: 0.12, Lysine: 0.11, Methionine: 0.03, Cystine: 0.03, Phenylalanine: 0.09, Tyrosine: 0.06, Valine: 0.11, Histidine: 0.04, Alanine: 0.07, Arginine: 0.11, "Aspartic Acid": 0.52, "Glutamic Acid": 0.34, Glycine: 0.06, Proline: 0.07, Serine: 0.09, Glutamine: 0.10, Taurine: 0, Citrulline: 0 },
+        proteins_and_aminos: { "Total Protein": 2, Tryptophan: 0.03, Threonine: 0.07, Isoleucine: 0.08, Leucine: 0.12, Lysine: 0.11, Methionine: 0.03, Cystine: 0.03, Phenylalanine: 0.09, Tyrosine: 0.06, Valine: 0.11, Histidine: 0.04, Alanine: 0.07, Arginine: 0.11, "Aspartic Acid": 0.52, "Glutamic Acid": 0.34, Glycine: 0.06, Proline: 0.07, Serine: 0.09, Glutamine: 0.10, Taurine: 0, Citrulline: 0, Ornithine: 0, "Beta-Alanine": 0 },
         biogenic_amines: { Histamine: 0.1, Tyramine: 0.05, Phenylethylamine: 0 },
         nucleic_acids_and_purines: { "Total Purines": 16, "RNA": 28, "DNA": 6 },
         vitamins: { "Vitamin A Total": 1, Retinol: 0, "Beta-Carotene": 1, "Alpha-Carotene": 0, "Beta-Cryptoxanthin": 0, "Lutein & Zeaxanthin": 8, Lycopene: 0, "Vitamin B1 (Thiamine)": 0.08, "Vitamin B2 (Riboflavin)": 0.03, "Vitamin B3 (Niacin)": 1.1, "Vitamin B5 (Pantothenic Acid)": 0.3, "Vitamin B6": 0.3, "Vitamin B7 (Biotin)": 0.1, "Vitamin B9 (Folate DFE)": 16, "Vitamin B12": 0, "Vitamin C": 19.7, "Vitamin D Total": 0, "Vitamin D2 (Ergocalciferol)": 0, "Vitamin D3 (Cholecalciferol)": 0, "Vitamin E Total": 0.01, "Alpha-Tocopherol": 0.01, "Beta-Tocopherol": 0, "Gamma-Tocopherol": 0, "Delta-Tocopherol": 0, "Alpha-Tocotrienol": 0, "Beta-Tocotrienol": 0, "Gamma-Tocotrienol": 0, "Delta-Tocotrienol": 0, "Vitamin K1": 1.9, "Vitamin K2 (MK-4)": 0, "Vitamin K2 (MK-7)": 0, "Vitamin K2 (MK-9)": 0, "Vitamin U (S-Methylmethionine)": 0.2, Choline: 12.1, Betaine: 0.1 },
-        minerals: { Calcium: 12, Iron: 0.8, Magnesium: 23, Phosphorus: 57, Potassium: 421, Sodium: 6, Zinc: 0.3, Copper: 0.11, Manganese: 0.15, Selenium: 0.3, Iodine: 1, Chromium: 1, Molybdenum: 0.8, Fluoride: 15, Boron: 0.5, Silicon: 2.1, Lithium: 1.2, Vanadium: 0.1, Cobalt: 0.05, Sulfur: 14, Chloride: 38, Strontium: 0.4, Nickel: 0.5, Germanium: 0.01, Rubidium: 2.4 },
+        minerals: { Calcium: 12, Iron: 0.8, Magnesium: 23, Phosphorus: 57, Potassium: 421, Sodium: 6, Zinc: 0.3, Copper: 0.11, Manganese: 0.15, Selenium: 0.3, Iodine: 1, Chromium: 1, Molybdenum: 0.8, Fluoride: 15, Boron: 0.5, Silicon: 2.1, Lithium: 1.2, Vanadium: 0.1, Cobalt: 0.05, Sulfur: 14, Chloride: 38, Strontium: 0.4, Nickel: 0.5, Germanium: 0.01, Rubidium: 2.4, Tin: 0.01 },
         cellular_bioactives: { "Coenzyme Q10": 0.05, "Nicotinamide Riboside (NR)": 0, "Pyrroloquinoline Quinone (PQQ)": 0.01, "Inositol (B8)": 28, PABA: 0, "Dietary Nitrate": 4.5, Ergothioneine: 0.05, Spermidine: 0.11, "L-Theanine": 0, "Urolithin A": 0 },
+        myconutrients_and_adaptogens: { "Hericenones & Erinacines": 0.2, Cordycepin: 0, Withanolides: 0, "Salidroside & Rosavin": 0, Bacosides: 0 },
+        bioactive_enzymes: { Bromelain: 0, Papain: 1.5 },
         antinutrients: { "Phytic Acid": 18, "Oxalic Acid": 15, Lectins: 2, Goitrogens: 0, Tannins: 5, Saponins: 4, "Trypsin Inhibitors": 1 },
-        antioxidants: { "Total Polyphenols": 12, "Total Flavonoids": 3.5, Anthocyanins: 0, Quercetin: 1.2, Glutathione: 4.5, Astaxanthin: 0, EGCG: 0, Curcumin: 0, Apigenin: 0.02, Fisetin: 0, Lignans: 0.05, Pterostilbene: 0, "Ursolic Acid": 0, "Chlorogenic Acid": 3.8, Allicin: 0, Sulforaphane: 0, Melatonin: 0.05, Capsaicin: 0 }
+        antioxidants: { "Total Polyphenols": 12, "Total Flavonoids": 3.5, Anthocyanins: 0, Quercetin: 1.2, Glutathione: 4.5, Astaxanthin: 0, EGCG: 0, Curcumin: 0, Apigenin: 0.02, Fisetin: 0, Lignans: 0.05, Pterostilbene: 0, "Ursolic Acid": 0, "Chlorogenic Acid": 3.8, Allicin: 0, Sulforaphane: 0, Melatonin: 0.05, Capsaicin: 0, DIM: 0 }
     }
 };
 
 // 2. Comprehensive RDA / ODI Daily Target Matrix
 export const RDA_TARGETS = {
-    general: { Calories: 2000, Water: 2500, Alcohol: 0, Caffeine: 100, Ash: 10 },
+    general: { Calories: 2000, Water: 2500, Alcohol: 0, Caffeine: 100, Theobromine: 200, Ash: 10 },
     organic_acids: { "Citric Acid": 500, "Malic Acid": 300, "Lactic Acid": 500, "Acetic Acid": 200, "Succinic Acid": 50, "Salicylic Acid": 5 },
     carbohydrates: {
         "Total Carbohydrates": 275, "Soluble Fiber": 8, "Beta-Glucan": 3, Pectin: 2, Inulin: 4, FOS: 2, GOS: 2,
         "Insoluble Fiber": 20, Starch: 150, "Resistant Starch": 5, "Total Sugars": 50,
-        Sucrose: 10, Glucose: 10, Fructose: 10, Lactose: 10, Maltose: 5, Galactose: 5, Trehalose: 5,
+        Sucrose: 10, Glucose: 10, Fructose: 10, Lactose: 10, Maltose: 5, Galactose: 5, Trehalose: 5, "D-Mannose": 5,
         "Total Sugar Alcohols": 10, Erythritol: 5, Xylitol: 5, Sorbitol: 5, Mannitol: 5, Maltitol: 5
     },
     lipids: {
-        "Total Fat": 78, "Saturated Fat": 20, "Butyric Acid (C4:0)": 1000, "Caproic Acid (C6:0)": 100, "Caprylic Acid (C8:0)": 500, "Capric Acid (C10:0)": 500, "Lauric Acid (C12:0)": 1000, "Myristic Acid (C14:0)": 300, "Pentadecanoic Acid (C15:0)": 100, "Palmitic Acid (C16:0)": 1000, "Stearic Acid (C18:0)": 500,
+        "Total Fat": 78, "Saturated Fat": 20, "Butyric Acid (C4:0)": 1000, "Caproic Acid (C6:0)": 100, "Caprylic Acid (C8:0)": 500, "Capric Acid (C10:0)": 500, "Lauric Acid (C12:0)": 1000, "Myristic Acid (C14:0)": 300, "Pentadecanoic Acid (C15:0)": 100, "Palmitic Acid (C16:0)": 1000, "Stearic Acid (C18:0)": 500, "Arachidic Acid (C20:0)": 100, "Behenic Acid (C22:0)": 100, "Lignoceric Acid (C24:0)": 100,
         "Monounsaturated Fat": 30, "Oleic Acid (C18:1)": 25, "Palmitoleic Acid (C16:1)": 2, "Vaccenic Acid (C18:1)": 1,
         "Polyunsaturated Fat": 17, "Conjugated Linoleic Acid (CLA)": 1500, "Trans Fat": 2, Cholesterol: 300,
         Phytosterols: 2000, "Beta-Sitosterol": 1000, Campesterol: 400, Stigmasterol: 200,
         Phosphatidylcholine: 500, Phosphatidylserine: 100, Phosphatidylethanolamine: 200, Sphingomyelin: 100, Plasmalogens: 20,
-        "Omega-3 Total": 1.6, ALA: 1.6, EPA: 0.25, DHA: 0.25, DPA: 0.05, SDA: 0.10,
-        "Omega-6 Total": 17, LA: 17, GLA: 0.10, AA: 0.5
+        "Omega-3 Total": 1.6, ALA: 1.6, EPA: 0.25, DHA: 0.25, DPA: 0.05, SDA: 0.10, ETA: 0.10,
+        "Omega-6 Total": 17, LA: 17, GLA: 0.10, AA: 0.5, DGLA: 0.15
     },
-    proteins_and_aminos: { "Total Protein": 56, Tryptophan: 0.28, Threonine: 1.05, Isoleucine: 1.4, Leucine: 2.73, Lysine: 2.1, Methionine: 1.05, Cystine: 1.05, Phenylalanine: 1.75, Tyrosine: 1.75, Valine: 1.82, Histidine: 0.7, Alanine: 3.5, Arginine: 4.5, "Aspartic Acid": 6.0, "Glutamic Acid": 10.0, Glycine: 4.0, Proline: 4.0, Serine: 4.0, Glutamine: 5.0, Taurine: 1.0, Citrulline: 3000 },
+    proteins_and_aminos: { "Total Protein": 56, Tryptophan: 0.28, Threonine: 1.05, Isoleucine: 1.4, Leucine: 2.73, Lysine: 2.1, Methionine: 1.05, Cystine: 1.05, Phenylalanine: 1.75, Tyrosine: 1.75, Valine: 1.82, Histidine: 0.7, Alanine: 3.5, Arginine: 4.5, "Aspartic Acid": 6.0, "Glutamic Acid": 10.0, Glycine: 4.0, Proline: 4.0, Serine: 4.0, Glutamine: 5.0, Taurine: 1.0, Citrulline: 3000, Ornithine: 500, "Beta-Alanine": 1600 },
     biogenic_amines: { Histamine: 5, Tyramine: 10, Phenylethylamine: 2 },
     nucleic_acids_and_purines: { "Total Purines": 400, "RNA": 1000, "DNA": 300 },
     vitamins: { "Vitamin A Total": 900, Retinol: 900, "Beta-Carotene": 5000, "Alpha-Carotene": 1000, "Beta-Cryptoxanthin": 1000, "Lutein & Zeaxanthin": 12000, Lycopene: 10000, "Vitamin B1 (Thiamine)": 1.2, "Vitamin B2 (Riboflavin)": 1.3, "Vitamin B3 (Niacin)": 16, "Vitamin B5 (Pantothenic Acid)": 5, "Vitamin B6": 1.3, "Vitamin B7 (Biotin)": 30, "Vitamin B9 (Folate DFE)": 400, "Vitamin B12": 2.4, "Vitamin C": 90, "Vitamin D Total": 15, "Vitamin D2 (Ergocalciferol)": 5, "Vitamin D3 (Cholecalciferol)": 10, "Vitamin E Total": 15, "Alpha-Tocopherol": 15, "Beta-Tocopherol": 2, "Gamma-Tocopherol": 5, "Delta-Tocopherol": 2, "Alpha-Tocotrienol": 2, "Beta-Tocotrienol": 1, "Gamma-Tocotrienol": 2, "Delta-Tocotrienol": 1, "Vitamin K1": 120, "Vitamin K2 (MK-4)": 100, "Vitamin K2 (MK-7)": 50, "Vitamin K2 (MK-9)": 30, "Vitamin U (S-Methylmethionine)": 50, Choline: 550, Betaine: 100 },
-    minerals: { Calcium: 1000, Iron: 8, Magnesium: 400, Phosphorus: 700, Potassium: 3400, Sodium: 2300, Zinc: 11, Copper: 0.9, Manganese: 2.3, Selenium: 55, Iodine: 150, Chromium: 35, Molybdenum: 45, Fluoride: 4000, Boron: 3, Silicon: 30, Sulfur: 1000, Chloride: 2300, Lithium: 1000, Vanadium: 10, Cobalt: 5, Strontium: 5, Nickel: 100, Germanium: 5, Rubidium: 1000 },
+    minerals: { Calcium: 1000, Iron: 8, Magnesium: 400, Phosphorus: 700, Potassium: 3400, Sodium: 2300, Zinc: 11, Copper: 0.9, Manganese: 2.3, Selenium: 55, Iodine: 150, Chromium: 35, Molybdenum: 45, Fluoride: 4000, Boron: 3, Silicon: 30, Sulfur: 1000, Chloride: 2300, Lithium: 1000, Vanadium: 10, Cobalt: 5, Strontium: 5, Nickel: 100, Germanium: 5, Rubidium: 1000, Tin: 10 },
     cellular_bioactives: { "Coenzyme Q10": 100, "Nicotinamide Riboside (NR)": 250, "Pyrroloquinoline Quinone (PQQ)": 20, "Inositol (B8)": 1000, PABA: 50, "Dietary Nitrate": 150, Ergothioneine: 10, Spermidine: 12, "L-Theanine": 100, "Urolithin A": 250 },
+    myconutrients_and_adaptogens: { "Hericenones & Erinacines": 50, Cordycepin: 10, Withanolides: 20, "Salidroside & Rosavin": 15, Bacosides: 150 },
+    bioactive_enzymes: { Bromelain: 100, Papain: 100 },
     antinutrients: { "Phytic Acid": 1000, "Oxalic Acid": 200, Lectins: 10, Goitrogens: 5, Tannins: 100, Saponins: 50, "Trypsin Inhibitors": 5 },
-    antioxidants: { "Total Polyphenols": 500, "Total Flavonoids": 200, Anthocyanins: 50, Quercetin: 50, Resveratrol: 20, Glutathione: 100, Astaxanthin: 4, EGCG: 200, Curcumin: 200, Apigenin: 50, Fisetin: 100, Lignans: 50, Pterostilbene: 50, "Ursolic Acid": 100, "Chlorogenic Acid": 100, Allicin: 10, Sulforaphane: 15, Melatonin: 5, Capsaicin: 5 }
+    antioxidants: { "Total Polyphenols": 500, "Total Flavonoids": 200, Anthocyanins: 50, Quercetin: 50, Resveratrol: 20, Glutathione: 100, Astaxanthin: 4, EGCG: 200, Curcumin: 200, Apigenin: 50, Fisetin: 100, Lignans: 50, Pterostilbene: 50, "Ursolic Acid": 100, "Chlorogenic Acid": 100, Allicin: 10, Sulforaphane: 15, Melatonin: 5, Capsaicin: 5, DIM: 100, Kaempferol: 50,
+        Glucoraphanin: 10}
 };
 
-// 3. Complete Tree Layout Definition
+// 3. Tolerable Upper Limit (UL) Targets (Exceeding these triggers warning-yellow)
+export const UL_TARGETS = {
+    general: { Calories: 3500, Water: 5000, Caffeine: 400, Theobromine: 800 },
+    lipids: { "Saturated Fat": 40, "Trans Fat": 3, Cholesterol: 500, "Omega-6 Total": 30 },
+    vitamins: { "Vitamin A Total": 3000, Retinol: 3000, "Vitamin B3 (Niacin)": 35, "Vitamin B6": 100, "Vitamin D Total": 100, "Vitamin E Total": 1000, Choline: 3500 },
+    minerals: { Calcium: 2500, Iron: 45, Magnesium: 350, Potassium: 5000, Sodium: 2300, Zinc: 40, Copper: 10, Manganese: 11, Selenium: 400, Iodine: 1100, Fluoride: 10000 },
+    antinutrients: { "Phytic Acid": 1500, "Oxalic Acid": 500 }
+};
+
+// 4. Complete Tree Layout Definition
 export const NUTRIENT_UNITS = {
     general: {
         Calories: { unit: "kcal" },
         Water: { unit: "g" },
         Alcohol: { unit: "g" },
         Caffeine: { unit: "mg" },
+        Theobromine: { unit: "mg" },
         Ash: { unit: "g" }
     },
     organic_acids: {
@@ -123,6 +140,7 @@ export const NUTRIENT_UNITS = {
         Maltose: { unit: "g", indent: 2 },
         Galactose: { unit: "g", indent: 2 },
         Trehalose: { unit: "g", indent: 2 },
+        "D-Mannose": { unit: "g", indent: 2 },
         "Total Sugar Alcohols": { unit: "g", indent: 1 },
         Erythritol: { unit: "g", indent: 2 },
         Xylitol: { unit: "g", indent: 2 },
@@ -142,6 +160,9 @@ export const NUTRIENT_UNITS = {
         "Pentadecanoic Acid (C15:0)": { unit: "mg", indent: 2 },
         "Palmitic Acid (C16:0)": { unit: "mg", indent: 2 },
         "Stearic Acid (C18:0)": { unit: "mg", indent: 2 },
+        "Arachidic Acid (C20:0)": { unit: "mg", indent: 2 },
+        "Behenic Acid (C22:0)": { unit: "mg", indent: 2 },
+        "Lignoceric Acid (C24:0)": { unit: "mg", indent: 2 },
         "Monounsaturated Fat": { unit: "g", indent: 1 },
         "Oleic Acid (C18:1)": { unit: "g", indent: 2 },
         "Palmitoleic Acid (C16:1)": { unit: "g", indent: 2 },
@@ -165,10 +186,12 @@ export const NUTRIENT_UNITS = {
         DHA: { unit: "g", indent: 1 },
         DPA: { unit: "g", indent: 1 },
         SDA: { unit: "g", indent: 1 },
+        ETA: { unit: "g", indent: 1 },
         "Omega-6 Total": { unit: "g" },
         LA: { unit: "g", indent: 1 },
         GLA: { unit: "g", indent: 1 },
-        AA: { unit: "g", indent: 1 }
+        AA: { unit: "g", indent: 1 },
+        DGLA: { unit: "g", indent: 1 }
     },
     proteins_and_aminos: {
         "Total Protein": { unit: "g" },
@@ -194,7 +217,9 @@ export const NUTRIENT_UNITS = {
         Serine: { unit: "g", indent: 1 },
         Glutamine: { unit: "g", indent: 1 },
         Taurine: { unit: "g", indent: 1 },
-        Citrulline: { unit: "mg", indent: 1 }
+        Citrulline: { unit: "mg", indent: 1 },
+        Ornithine: { unit: "mg", indent: 1 },
+        "Beta-Alanine": { unit: "mg", indent: 1 }
     },
     biogenic_amines: {
         Histamine: { unit: "mg" },
@@ -268,7 +293,8 @@ export const NUTRIENT_UNITS = {
         Strontium: { unit: "mg" },
         Nickel: { unit: "mcg" },
         Germanium: { unit: "mcg" },
-        Rubidium: { unit: "mcg" }
+        Rubidium: { unit: "mcg" },
+        Tin: { unit: "mcg" }
     },
     cellular_bioactives: {
         "Coenzyme Q10": { unit: "mg" },
@@ -280,7 +306,19 @@ export const NUTRIENT_UNITS = {
         Ergothioneine: { unit: "mg" },
         Spermidine: { unit: "mg" },
         "L-Theanine": { unit: "mg" },
-        "Urolithin A": { unit: "mg" }
+        "Urolithin A": { unit: "mg" },
+        "Alpha-Lipoic Acid (ALA-Antioxidant)": { unit: "mg" }
+    },
+    myconutrients_and_adaptogens: {
+        "Hericenones & Erinacines": { unit: "mg" },
+        Cordycepin: { unit: "mg" },
+        Withanolides: { unit: "mg" },
+        "Salidroside & Rosavin": { unit: "mg" },
+        Bacosides: { unit: "mg" }
+    },
+    bioactive_enzymes: {
+        Bromelain: { unit: "mg" },
+        Papain: { unit: "mg" }
     },
     antinutrients: {
         "Phytic Acid": { unit: "mg" },
@@ -310,6 +348,9 @@ export const NUTRIENT_UNITS = {
         Allicin: { unit: "mg" },
         Sulforaphane: { unit: "mg" },
         Melatonin: { unit: "mcg" },
-        Capsaicin: { unit: "mg" }
+        Capsaicin: { unit: "mg" },
+        DIM: { unit: "mg" },
+        Kaempferol: { unit: "mg" },
+        Glucoraphanin: { unit: "mg" }
     }
 };

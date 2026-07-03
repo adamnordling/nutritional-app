@@ -34,14 +34,21 @@
     </section>
 
     <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
+    <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
     <section class="right-panel card">
         <div class="nutrition-header">
             <h2>Nutritional Breakdown</h2>
-            <span id="nutrition-view-indicator" class="indicator">Showing: Total Diet</span>
+            <div class="header-controls">
+                <button id="toggle-all-btn" class="toggle-all-btn">Collapse All</button>
+                <span id="nutrition-view-indicator" class="indicator">Showing: Total Diet</span>
+            </div>
         </div>
-        <!-- Scrollable & Resizable container -->
+        <!-- Scrollable container -->
         <div class="resizable-scroll-container nutrition-grid-wrapper">
-            <div id="nutrition-grid" class="nutrition-grid"></div>
+            <div id="nutrition-columns" class="nutrition-columns">
+                <div id="column-left" class="nutrition-column"></div>
+                <div id="column-right" class="nutrition-column"></div>
+            </div>
         </div>
     </section>
 </main>

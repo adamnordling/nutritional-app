@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. GLOBAL STYLES, VARIABLES & RESETS
+   ========================================================================== */
 :root {
     --bg-color: #f8f9fa;
     --card-bg: #ffffff;
@@ -17,7 +20,6 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* 1. Viewport Bounding: Force body to exactly 100vh and hide scroll */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -25,14 +27,18 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; /* Restricts the main viewport from scrolling */
 }
 
+
+/* ==========================================================================
+   2. MAIN APPLICATION GRID LAYOUT
+   ========================================================================== */
 .app-header {
     max-width: 1400px;
     width: 100%;
     margin: 0 auto 15px auto;
-    flex-shrink: 0; /* Header never shrinks */
+    flex-shrink: 0;
 }
 
 .app-header h1 {
@@ -50,7 +56,6 @@ body {
     vertical-align: middle;
 }
 
-/* 2. Container Bounding */
 .app-container {
     max-width: 1400px;
     width: 100%;
@@ -58,11 +63,15 @@ body {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 20px;
-    flex-grow: 1; /* Fills remaining height */
-    height: calc(100% - 60px); /* Bounded to window height */
-    overflow: hidden; /* Crucial: stops the page itself from scrolling */
+    flex-grow: 1;
+    height: calc(100% - 60px);
+    overflow: hidden;
 }
 
+
+/* ==========================================================================
+   3. LEFT SIDEBAR PANEL (ADD FOOD & DIET LIST)
+   ========================================================================== */
 .left-panel {
     display: flex;
     flex-direction: column;
@@ -72,21 +81,81 @@ body {
 }
 
 .input-card {
-    flex-shrink: 0; /* Input area stays constant */
+    flex-shrink: 0;
 }
 
 .diet-card {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Stop card from overflowing */
+    overflow: hidden;
 }
 
+.diet-list-wrapper {
+    flex-grow: 1;
+    min-height: 150px;
+    max-height: 100%;
+}
+
+.diet-list {
+    list-style: none;
+}
+
+.diet-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.diet-item:hover {
+    background-color: #f1f3f5;
+}
+
+.diet-item.hovered {
+    background-color: #e2fbe8;
+}
+
+.diet-item.selected {
+    background-color: #d1f7db;
+    border-color: var(--primary-color);
+}
+
+.diet-item-text {
+    flex-grow: 1;
+    font-size: 13px;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 12px;
+}
+
+.remove-btn:hover {
+    background-color: #fde8e8;
+}
+
+
+/* ==========================================================================
+   4. RIGHT PANEL: ACCORDION DASHBOARD COLUMNS
+   ========================================================================== */
 .right-panel {
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow: hidden; /* Stop card from overflowing */
+    overflow: hidden;
 }
 
 .nutrition-header {
@@ -99,37 +168,35 @@ body {
     flex-shrink: 0;
 }
 
-/* 3. Resizable & Scrollable Containers */
-/* 3. Non-Resizable, Bounded Scroll Containers */
-.resizable-scroll-container {
-    overflow-y: auto;
-    resize: none; /* Removed the vertical resizing handle entirely */
-    border: 1px solid transparent;
-    border-radius: 6px;
-    padding-right: 8px; /* Smooth spacing room for scrollbars */
-}
-
-/* Set specific default sizes & limits */
-.diet-list-wrapper {
-    flex-grow: 1;
-    min-height: 150px;
-    max-height: 100%;
-}
-
 .nutrition-grid-wrapper {
     flex-grow: 1;
     min-height: 300px;
     max-height: 100%;
 }
 
-/* Style the native resize handle slightly better */
-.resizable-scroll-container::-webkit-resizer {
-    border-style: solid;
-    border-color: var(--text-muted);
-    border-width: 0 4px 4px 0;
+.nutrition-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start; /* Elements sit at natural heights */
 }
 
-/* Card Styling */
+.nutrition-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .nutrition-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ==========================================================================
+   5. UTILITY & GENERIC COMPONENTS
+   ========================================================================== */
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -181,95 +248,239 @@ button:hover {
     background-color: var(--primary-hover);
 }
 
-/* List UI styling */
-.diet-list {
-    list-style: none;
-}
-
-.diet-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid transparent;
-    border-bottom: 1px solid var(--border-color);
-    border-radius: 6px;
-    cursor: pointer;
-    user-select: none;
-}
-
-.diet-item:hover {
-    background-color: #f1f3f5;
-}
-
-.diet-item.hovered {
-    background-color: #e2fbe8;
-}
-
-.diet-item.selected {
-    background-color: #d1f7db;
-    border-color: var(--primary-color);
-}
-
-.diet-item-text {
-    flex-grow: 1;
+.indicator {
     font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-color);
+    background: #e2fbe8;
+    padding: 4px 10px;
+    border-radius: 6px;
 }
 
-.remove-btn {
-    background: none;
-    border: none;
-    color: var(--danger-color);
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 2px 6px;
-    border-radius: 4px;
+.resizable-scroll-container {
+    overflow-y: auto;
+    resize: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding-right: 8px;
 }
 
-.remove-btn:hover {
-    background-color: #fde8e8;
+.resizable-scroll-container::-webkit-resizer {
+    border-style: solid;
+    border-color: var(--text-muted);
+    border-width: 0 4px 4px 0;
 }
 
-/* Grid Layout inside the scrollable container */
-.nutrition-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
 
-@media (max-width: 800px) {
-    .nutrition-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
+/* ==========================================================================
+   6. INTERACTIVE CATEGORY CARDS & TOGGLES
+   ========================================================================== */
 .nutrient-category {
     background: #fafafa;
     border-radius: 8px;
     padding: 12px;
     border: 1px solid var(--border-color);
+    transition: box-shadow 0.2s, border-color 0.2s;
+    cursor: pointer; /* Indicates the non-content area is clickable */
 }
 
 .nutrient-category h3 {
-    font-size: 12px;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 4px;
-    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    border-bottom: none !important;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
 
+/* Hover effects for category titles */
+.nutrient-category h3:hover {
+    color: var(--primary-hover);
+}
+
+.nutrient-category.limit-category h3:hover {
+    color: var(--danger-color);
+}
+
+/* Collapsible Arrow and States */
+.toggle-icon {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+.nutrient-category.collapsed {
+    border-color: #e9ecef;
+}
+
+.nutrient-category.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.category-content {
+    display: block;
+    margin-top: 12px;
+    cursor: default; /* Resets default cursor so text rows override cleanly */
+}
+
+.category-content.hidden {
+    display: none;
+}
+
+
+/* ==========================================================================
+   7. COLLAPSIBLE PROGRESS BAR LINES
+   ========================================================================== */
+.category-progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: #e9ecef;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.category-progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Dynamic Limit-color overrides (Red fill) */
+.limit-category .category-progress-fill {
+    background-color: var(--danger-color) !important;
+}
+
+.nutrient-category.limit-category {
+    border-color: #f8d7da;
+    background: #fffdfd;
+}
+
+.nutrient-category.limit-category .percentage-label {
+    color: var(--danger-color);
+}
+
+
+/* ==========================================================================
+   8. INTERACTIVE TOGGLE CONTROLS (HEADER)
+   ========================================================================== */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-all-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    height: auto;
+    width: auto;
+}
+
+.toggle-all-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: #f4fdf6;
+}
+
+
+/* ==========================================================================
+   9. NUTRIENT ROWS & TREE INDENTATIONS
+   ========================================================================== */
 .nutrient-row {
-    padding: 6px 0;
-    border-bottom: 1px dashed #e9ecef;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-color);
+    margin-right: 0px; /* Aligns perfectly with card boundaries */
 }
 
 .nutrient-row:last-child {
     border-bottom: none;
 }
 
+/* Hover-Highlighted Rows */
+.nutrient-row.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease, padding 0.15s ease;
+    padding: 8px 10px; /* internal hover-ring boundaries padding */
+    margin-left: -10px; /* Offsets margins to align text perfectly with headers */
+    width: calc(100% + 20px); /* Keeps text from shifting during hovers */
+    border-radius: 6px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.nutrient-row.clickable-row:hover {
+    background-color: #f1f3f5; /* Subtle card highlight */
+}
+
+/* Tree Indentations */
+.nutrient-row.indent-1.clickable-row { padding-left: 15px; }
+.nutrient-row.indent-2.clickable-row { padding-left: 30px; }
+.nutrient-row.indent-3.clickable-row { padding-left: 45px; }
+
+.nutrient-row.indent-1 .nutrient-info span:first-child::before {
+    content: "↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.nutrient-row.indent-2 .nutrient-info span:first-child::before {
+    content: "    ↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.nutrient-row.indent-3 {
+    padding-left: 45px;
+    border-left: 2px solid var(--border-color);
+}
+
+.nutrient-row.indent-3 .nutrient-info span:first-child::before {
+    content: "        ↳ ";
+    color: var(--text-muted);
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.nutrient-row.subheader {
+    font-weight: bold;
+    color: #495057;
+    background-color: #f1f3f5;
+    padding: 6px 8px;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: none !important;
+}
+
+
+/* ==========================================================================
+   10. PROGRESS BARS & WARNING CODING
+   ========================================================================== */
 .nutrient-info {
     display: flex;
     justify-content: space-between;
@@ -282,128 +493,15 @@ button:hover {
 }
 
 .rda-container {
-    width: 100%;
-    height: 5px;
-    background-color: #e9ecef;
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.rda-bar {
-    height: 100%;
-    background-color: var(--primary-color);
-    transition: width 0.3s ease;
-}
-
-.rda-bar.exceeded {
-    background-color: #3498db;
-}
-
-/* Custom Subheader Styling (Used to group Amino Acids inside Category) */
-.nutrient-row.subheader {
-    font-weight: bold;
-    color: #495057;
-    background-color: #f1f3f5;
-    padding: 6px 8px;
-    margin-top: 14px;
-    margin-bottom: 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: none !important;
-}
-
-/* Tree Indentation & Bracket Visuals */
-.nutrient-row.indent-1 {
-    padding-left: 15px;
-    border-left: 2px solid var(--border-color);
-}
-
-.nutrient-row.indent-1 .nutrient-info span:first-child::before {
-    content: "↳ ";
-    color: var(--text-muted);
-    font-family: monospace;
-    font-weight: bold;
-    margin-right: 4px;
-}
-
-.nutrient-row.indent-2 {
-    padding-left: 30px;
-    border-left: 2px solid var(--border-color);
-}
-
-.nutrient-row.indent-2 .nutrient-info span:first-child::before {
-    content: "    ↳ ";
-    color: var(--text-muted);
-    font-family: monospace;
-    font-weight: bold;
-    margin-right: 4px;
-}
-
-/* Give top-level category headers a slightly more prominent look */
-.nutrient-category h3 {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1a1a1a;
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 6px;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
-
-/* Custom Subheader Styling */
-.nutrient-row.subheader {
-    font-weight: bold;
-    color: #495057;
-    background-color: #f1f3f5;
-    padding: 6px 8px;
-    margin-top: 14px;
-    margin-bottom: 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: none !important;
-}
-
-/* Tree Indentations */
-.nutrient-row.indent-1 {
-    padding-left: 15px;
-}
-
-.nutrient-row.indent-1 .nutrient-info span:first-child::before {
-    content: "↳ ";
-    color: var(--text-muted);
-    font-family: monospace;
-    font-weight: bold;
-    margin-right: 4px;
-}
-
-.nutrient-row.indent-2 {
-    padding-left: 30px;
-}
-
-.nutrient-row.indent-2 .nutrient-info span:first-child::before {
-    content: "    ↳ ";
-    color: var(--text-muted);
-    font-family: monospace;
-    font-weight: bold;
-    margin-right: 4px;
-}
-
-/* RDA Row Adjustments */
-.rda-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
+    width: calc(100% - 35px); /* Reserves 35px inside card boundaries for percentages */
     height: 10px;
     background-color: #e9ecef;
     border-radius: 3px;
-    overflow: visible; /* Let text overlays render neatly */
     position: relative;
+    overflow: visible;
 }
 
 .rda-bar {
@@ -419,7 +517,7 @@ button:hover {
 
 .percentage-label {
     position: absolute;
-    right: -35px;
+    right: -35px; /* Sits perfectly within the 35px padding gap */
     font-size: 11px;
     font-weight: bold;
     color: var(--text-muted);
@@ -427,7 +525,19 @@ button:hover {
     text-align: right;
 }
 
-/* Dotted No-Target Layout Styles */
+/* Over-the-Limit Warnings (Standard RDA exceeding UL boundaries) */
+.rda-bar.over-limit {
+    background-color: #f1c40f !important; /* Warning Yellow Bar */
+}
+
+.percentage-label.over-limit-text {
+    color: #e67e22 !important; /* Orange text color for easy readability */
+}
+
+
+/* ==========================================================================
+   11. DOTTED NO-TARGET (N/T) SYSTEM LAYOUT
+   ========================================================================== */
 .rda-container.no-target-layout {
     background-color: transparent !important;
     overflow: visible;
@@ -445,7 +555,7 @@ button:hover {
 
 .nt-badge {
     position: absolute;
-    right: -35px;
+    right: -35px; /* Sits perfectly within the 35px padding gap */
     font-size: 11px;
     font-weight: bold;
     color: #adb5bd;
@@ -457,50 +567,125 @@ button:hover {
     color: var(--text-muted);
 }
 
-.nutrient-row {
-    padding: 8px 0;
-    border-bottom: 1px dashed #e9ecef;
-    margin-right: 35px; /* Give room for percentage/NT labels on the right side */
+
+/* ==========================================================================
+   12. EXPANDED NUTRITION ANALYSIS DRAWER
+   ========================================================================== */
+.nutrient-details-panel {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 8px 10px 8px -10px; /* Offsets padding margins cleanly */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
-/* Deep Nesting (Level 3) */
-.nutrient-row.indent-3 {
-    padding-left: 45px;
-    border-left: 2px solid var(--border-color);
+.nutrient-details-panel h4 {
+    font-size: 13px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.nutrient-row.indent-3 .nutrient-info span:first-child::before {
-    content: "        ↳ ";
-    color: var(--text-muted);
-    font-family: monospace;
-    font-weight: bold;
-    margin-right: 4px;
+.sources-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 15px;
 }
 
-/* 3. Non-Resizable, Bounded Scroll Containers */
-.resizable-scroll-container {
-    overflow-y: auto;
-    resize: none; /* Removed the resizing handle entirely */
-    border: 1px solid transparent;
+.sources-container.single-column {
+    grid-template-columns: 1fr;
+}
+
+.sources-list {
+    background: #fafafa;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    padding-right: 8px; /* Smooth spacing room for scrollbars */
+    padding: 10px;
 }
 
-/* Limit / Warning Categories (Red/Crimson Theme) */
-.nutrient-category.limit-category {
-    border-color: #f8d7da; /* Soft danger-card border */
-    background: #fffdfd;
+.sources-list h5 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 4px;
 }
 
-.nutrient-category.limit-category h3 {
-    border-bottom: 2px solid var(--danger-color) !important; /* Crimson header underline */
+.source-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 3px 0;
 }
 
-.nutrient-category.limit-category .rda-bar {
-    background-color: var(--danger-color) !important; /* Crimson progress bar fill */
+.source-item span:last-child {
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
-/* Optional: Color-shift the percentage labels to red for warning metrics */
-.nutrient-category.limit-category .percentage-label {
-    color: var(--danger-color);
+
+/* ==========================================================================
+   13. MULTI-COLOR RAD/UL CALIBRATED SCALE
+   ========================================================================== */
+.detailed-meter-container {
+    margin: 15px 0 20px 0;
+    position: relative;
+    user-select: none;
+}
+
+.meter-bar-wrapper {
+    position: relative;
+    height: 18px;
+    margin: 8px 0;
+}
+
+.meter-bar {
+    height: 8px;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.meter-marker {
+    position: absolute;
+    top: -5px;
+    font-size: 8px;
+    color: #e67e22;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.meter-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 5;
+}
+
+.meter-labels-top, .meter-labels-bottom {
+    position: relative;
+    height: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.meter-labels-top span, .meter-labels-bottom span {
+    position: absolute;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.meter-labels-bottom .zero-label {
+    transform: none;
+    left: 0;
 }
