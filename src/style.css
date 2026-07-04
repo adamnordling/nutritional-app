@@ -929,3 +929,34 @@ button:hover {
 .compare-slot-meter {
     margin: 5px 0 10px 0;
 }
+
+
+/* ==========================================================================
+   ASBOPRTION
+   ========================================================================== */
+
+/* Update comparison containers to handle wider net vs gross labels */
+.rda-container.compare-container {
+    width: calc(100% - 75px) !important;
+}
+
+.compare-percentages {
+    right: -75px !important;
+    width: 70px !important;
+}
+
+/* Accessible, semi-transparent striped style for bio-unabsorbed segments */
+.rda-bar.unabsorbed {
+    opacity: 0.35 !important;
+    background-image: linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.2) 75%,
+            transparent 75%,
+            transparent
+    ) !important;
+    background-size: 8px 8px !important;
+}

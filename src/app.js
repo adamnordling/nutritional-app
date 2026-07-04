@@ -245,7 +245,8 @@ function calculateAggregate(dietList) {
     for (const [category, nutrients] of Object.entries(NUTRIENT_UNITS)) {
         totals[category] = {};
         for (const nutrient of Object.keys(nutrients)) {
-            totals[category][nutrient] = 0;
+            totals[category][nutrient] = 0;              // Gross ingested
+            totals[category][nutrient + "_absorbed"] = 0; // Net absorbed
         }
     }
 
@@ -253,16 +254,23 @@ function calculateAggregate(dietList) {
 
     dietList.forEach(item => {
         if (!item || !item.foodKey) return;
+
+        const foodDef = FOOD_DATABASE[item.foodKey];
+        const absorptionMap = (foodDef && foodDef.absorption) ? foodDef.absorption : {};
+
         for (const category of Object.keys(NUTRIENT_UNITS)) {
             for (const nutrient of Object.keys(NUTRIENT_UNITS[category])) {
-                totals[category][nutrient] += getNutrientValue(item, category, nutrient);
+                const rawVal = getNutrientValue(item, category, nutrient);
+                const absorptionRate = (absorptionMap[nutrient] !== undefined) ? absorptionMap[nutrient] : 1.0;
+
+                totals[category][nutrient] += rawVal;
+                totals[category][nutrient + "_absorbed"] += (rawVal * absorptionRate);
             }
         }
     });
 
     return totals;
 }
-
 function getActiveContext() {
     if (state.selectedIndex !== null) {
         return {
@@ -565,6 +573,7 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
 }
 
 // Upgraded Category Card Builder with Full-Card Collapse Interactivity
+
 function createCategoryCard(category, activeData) {
     const nutrients = NUTRIENT_UNITS[category];
     if (!nutrients) return null;
@@ -577,7 +586,6 @@ function createCategoryCard(category, activeData) {
 
     const displayTitle = category.replace(/_/g, ' ');
 
-    // Compute percentages and render split titles if comparing
     let progressLabel = '';
     let progress1 = null;
     let progress2 = null;
@@ -603,7 +611,6 @@ function createCategoryCard(category, activeData) {
     `;
     catEl.appendChild(headerEl);
 
-    // Dynamic split progress bars for comparison or single bar for diet
     const progressContainer = document.createElement('div');
     if (activeData && activeData.isCompare) {
         progressContainer.className = 'category-progress-bar compare-category-bar';
@@ -653,24 +660,35 @@ function createCategoryCard(category, activeData) {
             if (activeData && activeData.isCompare) {
                 const rawVal1 = activeData.slot1[category]?.[nutrientName] || 0;
                 const rawVal2 = activeData.slot2[category]?.[nutrientName] || 0;
+                const rawAbsorbed1 = activeData.slot1[category]?.[nutrientName + "_absorbed"] || 0;
+                const rawAbsorbed2 = activeData.slot2[category]?.[nutrientName + "_absorbed"] || 0;
 
                 const displayVal1 = rawVal1 % 1 === 0 ? rawVal1 : rawVal1.toFixed(2);
                 const displayVal2 = rawVal2 % 1 === 0 ? rawVal2 : rawVal2.toFixed(2);
+                const displayAbs1 = rawAbsorbed1 % 1 === 0 ? rawAbsorbed1 : rawAbsorbed1.toFixed(2);
+                const displayAbs2 = rawAbsorbed2 % 1 === 0 ? rawAbsorbed2 : rawAbsorbed2.toFixed(2);
 
                 const percent1 = Math.min(100, rdaTarget > 0 ? (rawVal1 / rdaTarget) * 100 : 0);
                 const percent2 = Math.min(100, rdaTarget > 0 ? (rawVal2 / rdaTarget) * 100 : 0);
+                const absorbedPercent1 = Math.min(100, rdaTarget > 0 ? (rawAbsorbed1 / rdaTarget) * 100 : 0);
+                const absorbedPercent2 = Math.min(100, rdaTarget > 0 ? (rawAbsorbed2 / rdaTarget) * 100 : 0);
+
+                const unabsorbedPercent1 = Math.max(0, percent1 - absorbedPercent1);
+                const unabsorbedPercent2 = Math.max(0, percent2 - absorbedPercent2);
 
                 const actualPercent1 = rdaTarget > 0 ? (rawVal1 / rdaTarget) * 100 : 0;
                 const actualPercent2 = rdaTarget > 0 ? (rawVal2 / rdaTarget) * 100 : 0;
+                const actualAbsorbedPercent1 = rdaTarget > 0 ? (rawAbsorbed1 / rdaTarget) * 100 : 0;
+                const actualAbsorbedPercent2 = rdaTarget > 0 ? (rawAbsorbed2 / rdaTarget) * 100 : 0;
 
                 if (meta.noTarget) {
                     row.innerHTML = `
                         <div class="nutrient-info compare-info">
                             <span>${nutrientName}</span>
                             <span class="compare-vals">
-                                <span style="color: ${col1}; font-weight: bold;">${displayVal1} ${unit}</span> 
+                                <span style="color: ${col1}; font-weight: bold;">${displayAbs1} (${displayVal1}) ${unit}</span> 
                                 <span class="vs-divider">vs</span> 
-                                <span style="color: ${col2}; font-weight: bold;">${displayVal2} ${unit}</span>
+                                <span style="color: ${col2}; font-weight: bold;">${displayAbs2} (${displayVal2}) ${unit}</span>
                             </span>
                         </div>
                         <div class="rda-container compare-container no-target-layout">
@@ -683,29 +701,43 @@ function createCategoryCard(category, activeData) {
                         <div class="nutrient-info compare-info">
                             <span>${nutrientName}</span>
                             <span class="compare-vals">
-                                <span style="color: ${col1}; font-weight: bold;">${displayVal1} ${unit}</span> 
+                                <span style="color: ${col1}; font-weight: bold;">${displayAbs1} (${displayVal1}) ${unit}</span> 
                                 <span class="vs-divider">vs</span> 
-                                <span style="color: ${col2}; font-weight: bold;">${displayVal2} ${unit}</span> 
+                                <span style="color: ${col2}; font-weight: bold;">${displayAbs2} (${displayVal2}) ${unit}</span> 
                                 <span class="target-val">/ ${rdaTarget} ${unit}</span>
                             </span>
                         </div>
                         <div class="rda-container compare-container">
                             <div class="compare-bars-wrapper">
-                                <div class="rda-bar compare-bar bar-1" style="width: ${percent1}%; background-color: ${col1};"></div>
-                                <div class="rda-bar compare-bar bar-2" style="width: ${percent2}%; background-color: ${col2};"></div>
+                                <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 5px; border-radius: 2px; overflow: hidden;">
+                                    <div class="rda-bar compare-bar bar-1" style="width: ${absorbedPercent1}%; background-color: ${col1};"></div>
+                                    <div class="rda-bar compare-bar bar-1 unabsorbed" style="width: ${unabsorbedPercent1}%; background-color: ${col1};"></div>
+                                </div>
+                                <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 5px; border-radius: 2px; overflow: hidden;">
+                                    <div class="rda-bar compare-bar bar-2" style="width: ${absorbedPercent2}%; background-color: ${col2};"></div>
+                                    <div class="rda-bar compare-bar bar-2 unabsorbed" style="width: ${unabsorbedPercent2}%; background-color: ${col2};"></div>
+                                </div>
                             </div>
                             <div class="compare-percentages">
-                                <span class="compare-pct" style="color: ${col1};">${Math.round(actualPercent1)}%</span>
-                                <span class="compare-pct" style="color: ${col2};">${Math.round(actualPercent2)}%</span>
+                                <span class="compare-pct" style="color: ${col1};">${Math.round(actualAbsorbedPercent1)}% (${Math.round(actualPercent1)}%)</span>
+                                <span class="compare-pct" style="color: ${col2};">${Math.round(actualAbsorbedPercent2)}% (${Math.round(actualPercent2)}%)</span>
                             </div>
                         </div>
                     `;
                 }
             } else {
                 const rawVal = (activeData && activeData[category]) ? (activeData[category][nutrientName] || 0) : 0;
+                const rawAbsorbed = (activeData && activeData[category]) ? (activeData[category][nutrientName + "_absorbed"] || 0) : 0;
+
                 const displayVal = rawVal % 1 === 0 ? rawVal : rawVal.toFixed(2);
+                const displayAbs = rawAbsorbed % 1 === 0 ? rawAbsorbed : rawAbsorbed.toFixed(2);
+
                 const actualPercent = rdaTarget > 0 ? (rawVal / rdaTarget) * 100 : 0;
                 const percent = Math.min(100, actualPercent);
+
+                const actualAbsorbedPercent = rdaTarget > 0 ? (rawAbsorbed / rdaTarget) * 100 : 0;
+                const absorbedPercent = Math.min(100, actualAbsorbedPercent);
+                const unabsorbedPercent = Math.max(0, percent - absorbedPercent);
 
                 const isExceeded = rdaTarget > 0 && rawVal > rdaTarget;
                 const isOverLimit = ulTarget > 0 && rawVal > ulTarget;
@@ -723,7 +755,7 @@ function createCategoryCard(category, activeData) {
                     row.innerHTML = `
                         <div class="nutrient-info">
                             <span>${nutrientName}</span>
-                            <span class="no-target-val">${displayVal} ${unit}</span>
+                            <span class="no-target-val">${displayAbs} net (${displayVal} gross) ${unit}</span>
                         </div>
                         <div class="rda-container no-target-layout">
                             <div class="rda-dots">••••••</div>
@@ -734,11 +766,14 @@ function createCategoryCard(category, activeData) {
                     row.innerHTML = `
                         <div class="nutrient-info">
                             <span>${nutrientName}</span>
-                            <span>${displayVal} ${unit} / ${rdaTarget} ${unit}</span>
+                            <span>${displayAbs} net (${displayVal} gross) ${unit} / ${rdaTarget} ${unit}</span>
                         </div>
                         <div class="rda-container">
-                            <div class="rda-bar ${barClass}" style="width: ${percent}%"></div>
-                            <span class="percentage-label ${textClass}">${Math.round(actualPercent)}%</span>
+                            <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 100%; border-radius: 3px; overflow: hidden; align-items: center; justify-content: flex-start;">
+                                <div class="rda-bar ${barClass}" style="width: ${absorbedPercent}%;"></div>
+                                <div class="rda-bar unabsorbed" style="width: ${unabsorbedPercent}%; background-color: var(--primary-color);"></div>
+                            </div>
+                            <span class="percentage-label ${textClass}">${Math.round(actualAbsorbedPercent)}% (${Math.round(actualPercent)}%)</span>
                         </div>
                     `;
                 }
@@ -758,18 +793,22 @@ function createCategoryCard(category, activeData) {
                 if (activeData && activeData.isCompare) {
                     const rawVal1 = activeData.slot1[category]?.[nutrientName] || 0;
                     const rawVal2 = activeData.slot2[category]?.[nutrientName] || 0;
+                    const rawAbsorbed1 = activeData.slot1[category]?.[nutrientName + "_absorbed"] || 0;
+                    const rawAbsorbed2 = activeData.slot2[category]?.[nutrientName + "_absorbed"] || 0;
+
                     const col1 = state.compareSlots[0].color;
                     const col2 = state.compareSlots[1].color;
                     const label1 = state.compareSlots[0].parsed ? state.compareSlots[0].parsed.displayName : 'Item A';
                     const label2 = state.compareSlots[1].parsed ? state.compareSlots[1].parsed.displayName : 'Item B';
 
-                    const analysisHtml = getNutrientAnalysisCompareHTML(category, nutrientName, rawVal1, rawVal2, rdaTarget, ulTarget, unit, col1, col2, label1, label2);
+                    // Passing net absorbed values directly into detailed analysis graphs
+                    const analysisHtml = getNutrientAnalysisCompareHTML(category, nutrientName, rawAbsorbed1, rawAbsorbed2, rdaTarget, ulTarget, unit, col1, col2, label1, label2);
                     const detailPanel = document.createElement('div');
                     detailPanel.innerHTML = analysisHtml;
                     contentWrapper.appendChild(detailPanel.firstElementChild);
                 } else {
-                    const rawVal = (activeData && activeData[category]) ? (activeData[category][nutrientName] || 0) : 0;
-                    const analysisHtml = getNutrientAnalysisHTML(category, nutrientName, rawVal, rdaTarget, ulTarget, unit);
+                    const rawAbsorbed = (activeData && activeData[category]) ? (activeData[category][nutrientName + "_absorbed"] || 0) : 0;
+                    const analysisHtml = getNutrientAnalysisHTML(category, nutrientName, rawAbsorbed, rdaTarget, ulTarget, unit);
                     const detailPanel = document.createElement('div');
                     detailPanel.innerHTML = analysisHtml;
                     contentWrapper.appendChild(detailPanel.firstElementChild);
@@ -792,6 +831,8 @@ function createCategoryCard(category, activeData) {
 
     return catEl;
 }
+
+
 function renderNutritionPanel() {
     const leftColumnEl = document.getElementById('column-left');
     const rightColumnEl = document.getElementById('column-right');
