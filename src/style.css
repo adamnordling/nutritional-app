@@ -85,16 +85,17 @@ body {
 }
 
 .diet-card {
-    flex-grow: 1;
+    flex: 0 1 auto; /* Changed from flex-grow: 1 to wrap tightly to content height */
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    max-height: 100%;
 }
 
 .diet-list-wrapper {
-    flex-grow: 1;
-    min-height: 150px;
-    max-height: 100%;
+    flex: 0 1 auto; /* Changed from flex-grow: 1 */
+    min-height: 50px; /* Reduced from 150px to fit short lists perfectly */
+    max-height: 350px; /* Set max height so it scrolls automatically when items accumulate */
 }
 
 .diet-list {
@@ -368,6 +369,16 @@ button:hover {
     color: var(--danger-color);
 }
 
+/* Custom stacked dual progress tracks for categories in comparison mode */
+.category-progress-bar.compare-category-bar {
+    background-color: transparent !important;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow: visible;
+    margin-bottom: 12px;
+}
 
 /* ==========================================================================
    8. INTERACTIVE TOGGLE CONTROLS (HEADER)
@@ -688,4 +699,233 @@ button:hover {
 .meter-labels-bottom .zero-label {
     transform: none;
     left: 0;
+}
+
+
+/* ==========================================================================
+   14. MODE SWITCHER TABS & COMPARISON SPECIFIC STYLES
+   ========================================================================== */
+.mode-tabs {
+    display: flex;
+    background: #e9ecef;
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 15px;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.tab-btn {
+    flex: 1;
+    height: 36px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: var(--text-color);
+}
+
+.tab-btn.active {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.mode-view {
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Changed from 100% to shrink-wrap internal cards */
+    max-height: 100%;
+}
+
+.mode-view.hidden {
+    display: none !important;
+}
+
+.compare-slots-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.compare-slot {
+    background: #fafafa;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.slot-badge {
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.clear-slot-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 4px;
+    height: auto;
+    width: auto;
+}
+
+.clear-slot-btn:hover {
+    color: var(--danger-color);
+}
+
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.color-picker-wrapper label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.color-options {
+    display: flex;
+    gap: 8px;
+}
+
+.color-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.color-dot:hover {
+    transform: scale(1.15);
+}
+
+.color-dot.active {
+    border-color: #212529;
+    box-shadow: 0 0 0 2px white inset;
+}
+
+.slot-status {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-top: 10px;
+    margin-top: 12px; /* Adds clean spacing below color pickers */
+    border-top: 1px solid var(--border-color);
+    font-weight: 500;
+}
+
+.slot-status.active {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.compare-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.compare-vals {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vs-divider {
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.target-val {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.rda-container.compare-container {
+    height: 18px !important;
+    flex-direction: row;
+    align-items: center;
+    background-color: #e9ecef;
+    padding: 0;
+    overflow: visible;
+    width: calc(100% - 55px) !important;
+}
+
+.compare-bars-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
+    height: 100%;
+    padding: 2px 0;
+    box-sizing: border-box;
+}
+
+.rda-bar.compare-bar {
+    height: 5px;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.compare-percentages {
+    position: absolute;
+    right: -55px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1;
+    font-size: 10px;
+    font-weight: bold;
+    width: 50px;
+    text-align: right;
+    height: 100%;
+}
+
+.compare-pct {
+    line-height: 1.1;
+}
+
+.compare-meters-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.compare-slot-meter {
+    margin: 5px 0 10px 0;
 }
