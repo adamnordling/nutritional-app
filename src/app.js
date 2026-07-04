@@ -708,12 +708,12 @@ function createCategoryCard(category, activeData) {
                             </span>
                         </div>
                         <div class="rda-container compare-container">
-                            <div class="compare-bars-wrapper">
-                                <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 5px; border-radius: 2px; overflow: hidden;">
+                            <div class="compare-bars-wrapper" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2px; height: 100%;">
+                                <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 5px; background-color: #e9ecef; border-radius: 2px; overflow: hidden;">
                                     <div class="rda-bar compare-bar bar-1" style="width: ${absorbedPercent1}%; background-color: ${col1};"></div>
                                     <div class="rda-bar compare-bar bar-1 unabsorbed" style="width: ${unabsorbedPercent1}%; background-color: ${col1};"></div>
                                 </div>
-                                <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 5px; border-radius: 2px; overflow: hidden;">
+                                <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 5px; background-color: #e9ecef; border-radius: 2px; overflow: hidden;">
                                     <div class="rda-bar compare-bar bar-2" style="width: ${absorbedPercent2}%; background-color: ${col2};"></div>
                                     <div class="rda-bar compare-bar bar-2 unabsorbed" style="width: ${unabsorbedPercent2}%; background-color: ${col2};"></div>
                                 </div>
@@ -739,16 +739,24 @@ function createCategoryCard(category, activeData) {
                 const absorbedPercent = Math.min(100, actualAbsorbedPercent);
                 const unabsorbedPercent = Math.max(0, percent - absorbedPercent);
 
-                const isExceeded = rdaTarget > 0 && rawVal > rdaTarget;
-                const isOverLimit = ulTarget > 0 && rawVal > ulTarget;
-
                 let barClass = '';
                 let textClass = '';
-                if (isOverLimit) {
-                    barClass = 'over-limit';
-                    textClass = 'over-limit-text';
-                } else if (isExceeded) {
-                    barClass = 'exceeded';
+
+                if (isLimitCategory) {
+                    // Under target limit = light red, Over target limit = dark red
+                    const isOver = rdaTarget > 0 && rawVal > rdaTarget;
+                    barClass = isOver ? 'limit-over' : 'limit-under';
+                    textClass = ''; // Resets percentage text to standard gray
+                } else {
+                    const isExceeded = rdaTarget > 0 && rawVal > rdaTarget;
+                    const isOverLimit = ulTarget > 0 && rawVal > ulTarget;
+
+                    if (isOverLimit) {
+                        barClass = 'over-limit';
+                        textClass = 'over-limit-text';
+                    } else if (isExceeded) {
+                        barClass = 'exceeded';
+                    }
                 }
 
                 if (meta.noTarget) {
@@ -769,7 +777,7 @@ function createCategoryCard(category, activeData) {
                             <span>${displayAbs} net (${displayVal} gross) ${unit} / ${rdaTarget} ${unit}</span>
                         </div>
                         <div class="rda-container">
-                            <div class="rda-bar-wrapper" style="display: flex; width: 100%; height: 100%; border-radius: 3px; overflow: hidden; align-items: center; justify-content: flex-start;">
+                            <div class="rda-bar-wrapper" style="display: flex; flex: 1; height: 100%; background-color: #e9ecef; border-radius: 3px; overflow: hidden; align-items: center; justify-content: flex-start;">
                                 <div class="rda-bar ${barClass}" style="width: ${absorbedPercent}%;"></div>
                                 <div class="rda-bar unabsorbed" style="width: ${unabsorbedPercent}%; background-color: var(--primary-color);"></div>
                             </div>
