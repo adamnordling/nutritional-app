@@ -438,6 +438,7 @@ button:hover {
 
 .nutrient-row.clickable-row:hover {
     background-color: #f1f3f5; /* Subtle card highlight */
+    /* background-color: #e2fbe8; /* Standardizes the green hover theme across the app */
 }
 
 /* Tree Indentations */
@@ -506,11 +507,10 @@ button:hover {
 .rda-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: calc(100% - 35px); /* Reserves 35px inside card boundaries for percentages */
+    gap: 10px;
+    width: 100% !important;
     height: 10px;
-    background-color: #e9ecef;
-    border-radius: 3px;
+    background-color: transparent !important; /* Track background moves to internal wrapper */
     position: relative;
     overflow: visible;
 }
@@ -527,13 +527,13 @@ button:hover {
 }
 
 .percentage-label {
-    position: absolute;
-    right: -35px; /* Sits perfectly within the 35px padding gap */
     font-size: 11px;
     font-weight: bold;
     color: var(--text-muted);
-    width: 30px;
     text-align: right;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 35px;
 }
 
 /* Over-the-Limit Warnings (Standard RDA exceeding UL boundaries) */
@@ -545,6 +545,15 @@ button:hover {
     color: #e67e22 !important; /* Orange text color for easy readability */
 }
 
+
+/* Custom red progress bar states for limit categories (Antinutrients & Biogenic Amines) */
+.rda-bar.limit-under {
+    background-color: #f5c2c2 !important; /* Soft Light Red */
+}
+
+.rda-bar.limit-over {
+    background-color: #c0392b !important; /* Rich Dark Red (exceeding limit) */
+}
 
 /* ==========================================================================
    11. DOTTED NO-TARGET (N/T) SYSTEM LAYOUT
@@ -876,20 +885,24 @@ button:hover {
 
 .rda-container.compare-container {
     height: 18px !important;
+    display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #e9ecef;
+    background-color: transparent !important; /* Track backgrounds move to internal wrappers */
     padding: 0;
     overflow: visible;
-    width: calc(100% - 55px) !important;
+    width: 100% !important;
+    gap: 10px;
 }
 
+/* Changed width: 100% to flex-grow: 1 to prevent pushing labels downwards */
+/* Changed width: 100% to flex-grow: 1 to prevent pushing labels downwards */
 .compare-bars-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 2px;
-    width: 100%;
+    flex-grow: 1;
     height: 100%;
     padding: 2px 0;
     box-sizing: border-box;
@@ -902,17 +915,15 @@ button:hover {
 }
 
 .compare-percentages {
-    position: absolute;
-    right: -55px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    line-height: 1;
+    line-height: 1.1;
     font-size: 10px;
     font-weight: bold;
-    width: 50px;
     text-align: right;
-    height: 100%;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .compare-pct {
@@ -959,4 +970,69 @@ button:hover {
             transparent
     ) !important;
     background-size: 8px 8px !important;
+}
+
+
+/* ==========================================================================
+   FIX: ALIGN PROGRESS BARS AND PERCENTAGE LABELS SIDE-BY-SIDE
+   ========================================================================== */
+
+/* 1. Ensure the standard progress bar row uses normal flex flow (no absolute positioning) */
+.rda-container {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    height: 10px !important;
+    background-color: transparent !important;
+    gap: 12px !important;
+}
+
+/* 2. Strip absolute positioning on standard mode labels */
+.percentage-label {
+    position: static !important; /* Force browser to treat it as a flex item */
+    font-size: 11px !important;
+    font-weight: bold !important;
+    color: var(--text-muted) !important;
+    text-align: right !important;
+    white-space: nowrap !important; /* Never wrap */
+    flex-shrink: 0 !important;
+    width: 75px !important; /* Set a standard alignment width */
+}
+
+/* 3. Ensure comparison row container uses flex flow (no absolute positioning) */
+.rda-container.compare-container {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    height: 18px !important;
+    width: 100% !important;
+    background-color: transparent !important;
+    gap: 12px !important;
+}
+
+/* 4. Ensure comparison bar tracks stretch to occupy remaining space */
+.compare-bars-wrapper {
+    width: auto !important; /* Strip the hardcoded 100% */
+    flex-grow: 1 !important; /* Stretch automatically */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 2px !important;
+}
+
+/* 5. Strip absolute positioning on comparison mode labels */
+.compare-percentages {
+    position: static !important; /* Force browser to treat it as a flex item */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    line-height: 1.1 !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    text-align: right !important;
+    white-space: nowrap !important; /* Never wrap */
+    flex-shrink: 0 !important;
+    width: 75px !important; /* Align perfectly with standard mode labels */
 }
