@@ -8,7 +8,14 @@ const state = {
     selectedIndex: null,
     allCollapsed: false,
     collapsedCategories: {},
-    expandedNutrient: null
+    expandedNutrient: null,
+
+    // Add these mode fields
+    mode: 'diet',
+    compareSlots: [
+        { id: 'slot1', parsed: null, color: '#0072b2', displayName: 'Item A' },
+        { id: 'slot2', parsed: null, color: '#e69f00', displayName: 'Item B' }
+    ]
 };
 
 // Column Layout Configurations
@@ -228,8 +235,8 @@ function parseInputLine(line) {
 
 // 3. State Calculations
 function getNutrientValue(item, category, nutrient) {
-    if (!item.foodKey || !FOOD_DATABASE[item.foodKey]) return 0;
-    const baseValue = FOOD_DATABASE[item.foodKey][category][nutrient];
+    if (!item || !item.foodKey || !FOOD_DATABASE[item.foodKey]) return 0;
+    const baseValue = FOOD_DATABASE[item.foodKey][category]?.[nutrient];
     return baseValue ? (baseValue * (item.amount / 100)) : 0;
 }
 
@@ -242,8 +249,10 @@ function calculateAggregate(dietList) {
         }
     }
 
+    if (!Array.isArray(dietList)) return totals;
+
     dietList.forEach(item => {
-        if (!item.foodKey) return;
+        if (!item || !item.foodKey) return;
         for (const category of Object.keys(NUTRIENT_UNITS)) {
             for (const nutrient of Object.keys(NUTRIENT_UNITS[category])) {
                 totals[category][nutrient] += getNutrientValue(item, category, nutrient);
@@ -330,6 +339,8 @@ function renderDietList() {
 }
 
 function getCategoryProgress(category, activeData) {
+    if (!activeData || activeData.isCompare) return null;
+
     const nutrients = NUTRIENT_UNITS[category];
     if (!nutrients) return 0;
 
@@ -352,7 +363,6 @@ function getCategoryProgress(category, activeData) {
     if (totalTargeted === 0) return null;
     return Math.round(sumPercentage / totalTargeted);
 }
-
 function toggleAllCategories() {
     const allCategories = [...leftColumnLayout, ...rightColumnLayout];
     const shouldCollapse = !state.allCollapsed;
@@ -398,6 +408,93 @@ function createRdaUlMeter(category, nutrientName, currentValue, rdaTarget, ulTar
     `;
 }
 
+
+function createCompareSlotMeter(label, currentValue, rdaTarget, ulTarget, unit, color) {
+    const rda = rdaTarget || 0;
+    const ul = ulTarget || (rda * 1.5);
+    const maxScale = ul * 1.35;
+
+    const rdaPercent = (rda / maxScale) * 100;
+    const ulPercent = (ul / maxScale) * 100;
+    const markerPercent = Math.min(100, (currentValue / maxScale) * 100);
+
+    const gradientFill = `linear-gradient(to right, #78909c 0%, #78909c ${rdaPercent}%, ${color} ${rdaPercent}%, ${color} ${ulPercent}%, #e67e22 ${ulPercent}%, #e67e22 100%)`;
+
+    return `
+        <div class="detailed-meter-container compare-slot-meter">
+            <div class="meter-labels-top">
+                <span class="compare-slot-label" style="left: 0; transform: none; font-weight: bold; color: ${color};">${label} (${currentValue % 1 === 0 ? currentValue : currentValue.toFixed(2)} ${unit})</span>
+                ${ulTarget > 0 ? `<span class="ul-label" style="left: ${ulPercent}%">UL: ${ulTarget} ${unit}</span>` : ''}
+            </div>
+            <div class="meter-bar-wrapper">
+                <div class="meter-marker" style="left: ${markerPercent}%">▼</div>
+                <div class="meter-bar" style="background: ${gradientFill}">
+                    <div class="meter-tick zero" style="left: 0%"></div>
+                    ${rda > 0 ? `<div class="meter-tick rda" style="left: ${rdaPercent}%"></div>` : ''}
+                    ${ulTarget > 0 ? `<div class="meter-tick ul" style="left: ${ulPercent}%"></div>` : ''}
+                </div>
+            </div>
+            <div class="meter-labels-bottom">
+                <span class="zero-label" style="left: 0%">0</span>
+                ${rda > 0 ? `<span class="rda-label" style="left: ${rdaPercent}%">RDA: ${rda} ${unit}</span>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function getNutrientAnalysisCompareHTML(category, nutrientName, val1, val2, rdaTarget, ulTarget, unit, col1, col2, label1, label2) {
+    const details = NUTRIENT_ANALYTICS[nutrientName] || {
+        description: `${nutrientName} is an active biochemical compound vital for structural integrity, enzyme regulation, and systemic physiological support.`,
+        sourcesTitleLeft: "Highest Sources",
+        sourcesLeft: [
+            { food: `High ${nutrientName} Food A`, amount: `High` },
+            { food: `High ${nutrientName} Food B`, amount: `Moderate` }
+        ]
+    };
+
+    const meter1Html = createCompareSlotMeter(label1, val1, rdaTarget, ulTarget, unit, col1);
+    const meter2Html = createCompareSlotMeter(label2, val2, rdaTarget, ulTarget, unit, col2);
+
+    const leftTitle = details.sourcesTitleLeft || "Highest Sources";
+    const rightTitle = details.sourcesTitleRight || "";
+
+    let sourcesHtml = '';
+    if (details.sourcesRight) {
+        sourcesHtml = `
+            <div class="sources-container">
+                <div class="sources-list">
+                    <h5>${leftTitle}</h5>
+                    ${details.sourcesLeft.map(s => `<div class="source-item"><span>${s.food}</span><span>${s.amount}</span></div>`).join('')}
+                </div>
+                <div class="sources-list">
+                    <h5>${rightTitle}</h5>
+                    ${details.sourcesRight.map(s => `<div class="source-item"><span>${s.food}</span><span>${s.amount}</span></div>`).join('')}
+                </div>
+            </div>
+        `;
+    } else {
+        sourcesHtml = `
+            <div class="sources-container single-column">
+                <div class="sources-list">
+                    <h5>${leftTitle}</h5>
+                    ${details.sourcesLeft.map(s => `<div class="source-item"><span>${s.food}</span><span>${s.amount}</span></div>`).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="nutrient-details-panel">
+            <h4>${nutrientName} Comparison</h4>
+            <div class="compare-meters-wrapper">
+                ${meter1Html}
+                ${meter2Html}
+            </div>
+            <p class="detail-description">${details.description}</p>
+            ${sourcesHtml}
+        </div>
+    `;
+}
 // 4. DRY (Don't Repeat Yourself) Drawer Template Engine
 function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget, ulTarget, unit) {
     // Ingest data from the registry, fallback seamlessly to mock values if not defined yet
@@ -479,10 +576,26 @@ function createCategoryCard(category, activeData) {
     catEl.className = `nutrient-category ${isLimitCategory ? 'limit-category' : ''} ${isCollapsed ? 'collapsed' : ''}`;
 
     const displayTitle = category.replace(/_/g, ' ');
-    const progress = getCategoryProgress(category, activeData);
-    const progressLabel = progress !== null ? `(${progress}%)` : '';
 
-    // Render Card Header (Click handler removed from here)
+    // Compute percentages and render split titles if comparing
+    let progressLabel = '';
+    let progress1 = null;
+    let progress2 = null;
+    const col1 = state.compareSlots[0].color;
+    const col2 = state.compareSlots[1].color;
+
+    if (activeData && activeData.isCompare) {
+        progress1 = getCategoryProgress(category, activeData.slot1);
+        progress2 = getCategoryProgress(category, activeData.slot2);
+
+        const p1Str = progress1 !== null ? `${progress1}%` : '0%';
+        const p2Str = progress2 !== null ? `${progress2}%` : '0%';
+        progressLabel = `<span style="color: ${col1}; font-size: 11px;">(${p1Str})</span> <span style="font-size: 10px; color: #aaa; text-transform: lowercase;">vs</span> <span style="color: ${col2}; font-size: 11px;">(${p2Str})</span>`;
+    } else {
+        const progress = getCategoryProgress(category, activeData);
+        progressLabel = progress !== null ? `(${progress}%)` : '';
+    }
+
     const headerEl = document.createElement('h3');
     headerEl.innerHTML = `
         <span>${displayTitle} ${progressLabel}</span>
@@ -490,16 +603,28 @@ function createCategoryCard(category, activeData) {
     `;
     catEl.appendChild(headerEl);
 
-    // Active Category Progress Bar
+    // Dynamic split progress bars for comparison or single bar for diet
     const progressContainer = document.createElement('div');
-    progressContainer.className = 'category-progress-bar';
-    const progressWidth = progress !== null ? progress : 100;
-    progressContainer.innerHTML = `
-        <div class="category-progress-fill" style="width: ${progressWidth}%"></div>
-    `;
+    if (activeData && activeData.isCompare) {
+        progressContainer.className = 'category-progress-bar compare-category-bar';
+        progressContainer.innerHTML = `
+            <div class="category-progress-bar" style="margin: 0; height: 3px;">
+                <div class="category-progress-fill" style="width: ${progress1 !== null ? progress1 : 0}%; background-color: ${col1};"></div>
+            </div>
+            <div class="category-progress-bar" style="margin: 0; height: 3px;">
+                <div class="category-progress-fill" style="width: ${progress2 !== null ? progress2 : 0}%; background-color: ${col2};"></div>
+            </div>
+        `;
+    } else {
+        progressContainer.className = 'category-progress-bar';
+        const progress = getCategoryProgress(category, activeData);
+        const progressWidth = progress !== null ? progress : 100;
+        progressContainer.innerHTML = `
+            <div class="category-progress-fill" style="width: ${progressWidth}%"></div>
+        `;
+    }
     catEl.appendChild(progressContainer);
 
-    // Content Wrapper
     const contentWrapper = document.createElement('div');
     contentWrapper.className = `category-content ${isCollapsed ? 'hidden' : ''}`;
 
@@ -515,17 +640,8 @@ function createCategoryCard(category, activeData) {
             }
 
             const unit = meta.unit;
-            const rawVal = activeData[category]?.[nutrientName] || 0;
-            const displayVal = rawVal % 1 === 0 ? rawVal : rawVal.toFixed(2);
-
             const rdaTarget = RDA_TARGETS[category]?.[nutrientName] || 0;
             const ulTarget = UL_TARGETS[category]?.[nutrientName] || 0;
-
-            const actualPercent = rdaTarget > 0 ? (rawVal / rdaTarget) * 100 : 0;
-            const percent = Math.min(100, actualPercent);
-
-            const isExceeded = rdaTarget > 0 && rawVal > rdaTarget;
-            const isOverLimit = ulTarget > 0 && rawVal > ulTarget;
 
             const row = document.createElement('div');
             let indentClass = '';
@@ -534,47 +650,104 @@ function createCategoryCard(category, activeData) {
             if (meta.indent === 3) indentClass = 'indent-3';
             row.className = `nutrient-row clickable-row ${indentClass}`;
 
-            let barClass = '';
-            let textClass = '';
-            if (isOverLimit) {
-                barClass = 'over-limit';
-                textClass = 'over-limit-text';
-            } else if (isExceeded) {
-                barClass = 'exceeded';
-            }
+            if (activeData && activeData.isCompare) {
+                const rawVal1 = activeData.slot1[category]?.[nutrientName] || 0;
+                const rawVal2 = activeData.slot2[category]?.[nutrientName] || 0;
 
-            if (meta.noTarget) {
-                row.innerHTML = `
-                    <div class="nutrient-info">
-                        <span>${nutrientName}</span>
-                        <span class="no-target-val">${displayVal} ${unit}</span>
-                    </div>
-                    <div class="rda-container no-target-layout">
-                        <div class="rda-dots">••••••</div>
-                        <span class="nt-badge">N/T</span>
-                    </div>
-                `;
+                const displayVal1 = rawVal1 % 1 === 0 ? rawVal1 : rawVal1.toFixed(2);
+                const displayVal2 = rawVal2 % 1 === 0 ? rawVal2 : rawVal2.toFixed(2);
+
+                const percent1 = Math.min(100, rdaTarget > 0 ? (rawVal1 / rdaTarget) * 100 : 0);
+                const percent2 = Math.min(100, rdaTarget > 0 ? (rawVal2 / rdaTarget) * 100 : 0);
+
+                const actualPercent1 = rdaTarget > 0 ? (rawVal1 / rdaTarget) * 100 : 0;
+                const actualPercent2 = rdaTarget > 0 ? (rawVal2 / rdaTarget) * 100 : 0;
+
+                if (meta.noTarget) {
+                    row.innerHTML = `
+                        <div class="nutrient-info compare-info">
+                            <span>${nutrientName}</span>
+                            <span class="compare-vals">
+                                <span style="color: ${col1}; font-weight: bold;">${displayVal1} ${unit}</span> 
+                                <span class="vs-divider">vs</span> 
+                                <span style="color: ${col2}; font-weight: bold;">${displayVal2} ${unit}</span>
+                            </span>
+                        </div>
+                        <div class="rda-container compare-container no-target-layout">
+                            <div class="rda-dots">••••••</div>
+                            <span class="nt-badge">N/T</span>
+                        </div>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <div class="nutrient-info compare-info">
+                            <span>${nutrientName}</span>
+                            <span class="compare-vals">
+                                <span style="color: ${col1}; font-weight: bold;">${displayVal1} ${unit}</span> 
+                                <span class="vs-divider">vs</span> 
+                                <span style="color: ${col2}; font-weight: bold;">${displayVal2} ${unit}</span> 
+                                <span class="target-val">/ ${rdaTarget} ${unit}</span>
+                            </span>
+                        </div>
+                        <div class="rda-container compare-container">
+                            <div class="compare-bars-wrapper">
+                                <div class="rda-bar compare-bar bar-1" style="width: ${percent1}%; background-color: ${col1};"></div>
+                                <div class="rda-bar compare-bar bar-2" style="width: ${percent2}%; background-color: ${col2};"></div>
+                            </div>
+                            <div class="compare-percentages">
+                                <span class="compare-pct" style="color: ${col1};">${Math.round(actualPercent1)}%</span>
+                                <span class="compare-pct" style="color: ${col2};">${Math.round(actualPercent2)}%</span>
+                            </div>
+                        </div>
+                    `;
+                }
             } else {
-                row.innerHTML = `
-                    <div class="nutrient-info">
-                        <span>${nutrientName}</span>
-                        <span>${displayVal} ${unit} / ${rdaTarget} ${unit}</span>
-                    </div>
-                    <div class="rda-container">
-                        <div class="rda-bar ${barClass}" style="width: ${percent}%"></div>
-                        <span class="percentage-label ${textClass}">${Math.round(actualPercent)}%</span>
-                    </div>
-                `;
+                const rawVal = (activeData && activeData[category]) ? (activeData[category][nutrientName] || 0) : 0;
+                const displayVal = rawVal % 1 === 0 ? rawVal : rawVal.toFixed(2);
+                const actualPercent = rdaTarget > 0 ? (rawVal / rdaTarget) * 100 : 0;
+                const percent = Math.min(100, actualPercent);
+
+                const isExceeded = rdaTarget > 0 && rawVal > rdaTarget;
+                const isOverLimit = ulTarget > 0 && rawVal > ulTarget;
+
+                let barClass = '';
+                let textClass = '';
+                if (isOverLimit) {
+                    barClass = 'over-limit';
+                    textClass = 'over-limit-text';
+                } else if (isExceeded) {
+                    barClass = 'exceeded';
+                }
+
+                if (meta.noTarget) {
+                    row.innerHTML = `
+                        <div class="nutrient-info">
+                            <span>${nutrientName}</span>
+                            <span class="no-target-val">${displayVal} ${unit}</span>
+                        </div>
+                        <div class="rda-container no-target-layout">
+                            <div class="rda-dots">••••••</div>
+                            <span class="nt-badge">N/T</span>
+                        </div>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <div class="nutrient-info">
+                            <span>${nutrientName}</span>
+                            <span>${displayVal} ${unit} / ${rdaTarget} ${unit}</span>
+                        </div>
+                        <div class="rda-container">
+                            <div class="rda-bar ${barClass}" style="width: ${percent}%"></div>
+                            <span class="percentage-label ${textClass}">${Math.round(actualPercent)}%</span>
+                        </div>
+                    `;
+                }
             }
 
-// Click Handler: Toggle expanding details
             const uniqueKey = `${category}_${nutrientName}`;
             row.addEventListener('click', (e) => {
                 if (e.target.closest('.rda-container')) return;
-
-                // FIXED: Prevents event bubbling to catEl during DOM destruction
                 e.stopPropagation();
-
                 state.expandedNutrient = (state.expandedNutrient === uniqueKey) ? null : uniqueKey;
                 renderNutritionPanel();
             });
@@ -582,19 +755,33 @@ function createCategoryCard(category, activeData) {
             contentWrapper.appendChild(row);
 
             if (state.expandedNutrient === uniqueKey) {
-                const analysisHtml = getNutrientAnalysisHTML(category, nutrientName, rawVal, rdaTarget, ulTarget, unit);
-                const detailPanel = document.createElement('div');
-                detailPanel.innerHTML = analysisHtml;
-                contentWrapper.appendChild(detailPanel.firstElementChild);
+                if (activeData && activeData.isCompare) {
+                    const rawVal1 = activeData.slot1[category]?.[nutrientName] || 0;
+                    const rawVal2 = activeData.slot2[category]?.[nutrientName] || 0;
+                    const col1 = state.compareSlots[0].color;
+                    const col2 = state.compareSlots[1].color;
+                    const label1 = state.compareSlots[0].parsed ? state.compareSlots[0].parsed.displayName : 'Item A';
+                    const label2 = state.compareSlots[1].parsed ? state.compareSlots[1].parsed.displayName : 'Item B';
+
+                    const analysisHtml = getNutrientAnalysisCompareHTML(category, nutrientName, rawVal1, rawVal2, rdaTarget, ulTarget, unit, col1, col2, label1, label2);
+                    const detailPanel = document.createElement('div');
+                    detailPanel.innerHTML = analysisHtml;
+                    contentWrapper.appendChild(detailPanel.firstElementChild);
+                } else {
+                    const rawVal = (activeData && activeData[category]) ? (activeData[category][nutrientName] || 0) : 0;
+                    const analysisHtml = getNutrientAnalysisHTML(category, nutrientName, rawVal, rdaTarget, ulTarget, unit);
+                    const detailPanel = document.createElement('div');
+                    detailPanel.innerHTML = analysisHtml;
+                    contentWrapper.appendChild(detailPanel.firstElementChild);
+                }
             }
         }
     }
 
     catEl.appendChild(contentWrapper);
 
-    // BIND AT THE CARD LEVEL: Clicking card header area triggers collapse, rows do not
     catEl.addEventListener('click', (e) => {
-        if (e.target.closest('.category-content')) return; // Bypasses clicks inside expanded lists
+        if (e.target.closest('.category-content')) return;
 
         state.collapsedCategories[category] = !isCollapsed;
         const allCategories = [...leftColumnLayout, ...rightColumnLayout];
@@ -605,7 +792,6 @@ function createCategoryCard(category, activeData) {
 
     return catEl;
 }
-
 function renderNutritionPanel() {
     const leftColumnEl = document.getElementById('column-left');
     const rightColumnEl = document.getElementById('column-right');
@@ -615,9 +801,20 @@ function renderNutritionPanel() {
     leftColumnEl.innerHTML = '';
     rightColumnEl.innerHTML = '';
 
-    const context = getActiveContext();
-    indicatorEl.textContent = context.label;
-    const activeData = calculateAggregate(context.items);
+    let activeData;
+
+    if (state.mode === 'compare') {
+        indicatorEl.textContent = 'Showing: Comparison';
+        activeData = {
+            isCompare: true,
+            slot1: calculateAggregate(state.compareSlots[0].parsed ? [state.compareSlots[0].parsed] : []),
+            slot2: calculateAggregate(state.compareSlots[1].parsed ? [state.compareSlots[1].parsed] : [])
+        };
+    } else {
+        const context = getActiveContext();
+        indicatorEl.textContent = context.label;
+        activeData = calculateAggregate(context.items);
+    }
 
     if (toggleAllBtn) {
         toggleAllBtn.textContent = state.allCollapsed ? 'Expand All' : 'Collapse All';
@@ -643,6 +840,101 @@ document.getElementById('toggle-all-btn').addEventListener('click', toggleAllCat
 // 7. Event Listener Binding & Bootstrapping
 document.getElementById('toggle-all-btn').addEventListener('click', toggleAllCategories);
 
+
+// Mode Switcher Toggles
+// Mode Switcher Toggles
+const tabDietBtn = document.getElementById('tab-diet');
+const tabCompareBtn = document.getElementById('tab-compare');
+const dietModeViews = document.getElementById('diet-mode-views');
+const compareModeViews = document.getElementById('compare-mode-views');
+
+tabDietBtn.addEventListener('click', () => {
+    state.mode = 'diet';
+    tabDietBtn.classList.add('active');
+    tabCompareBtn.classList.remove('active');
+    dietModeViews.classList.remove('hidden');
+    compareModeViews.classList.add('hidden');
+    renderNutritionPanel();
+});
+
+tabCompareBtn.addEventListener('click', () => {
+    state.mode = 'compare';
+    tabCompareBtn.classList.add('active');
+    tabDietBtn.classList.remove('active');
+    dietModeViews.classList.add('hidden');
+    compareModeViews.classList.remove('hidden');
+    renderNutritionPanel();
+});
+
+// Slot Control References
+const compareInput1 = document.getElementById('compare-input-1');
+const compareAdd1Btn = document.getElementById('compare-add-1-btn');
+const clearSlot1Btn = document.getElementById('clear-slot-1-btn');
+
+const compareInput2 = document.getElementById('compare-input-2');
+const compareAdd2Btn = document.getElementById('compare-add-2-btn');
+const clearSlot2Btn = document.getElementById('clear-slot-2-btn');
+
+function updateSlotUI(slotIndex) {
+    const slot = state.compareSlots[slotIndex];
+    const cardEl = document.getElementById(`slot-${slotIndex + 1}-card`);
+    const statusEl = document.getElementById(`slot-${slotIndex + 1}-status`);
+    const badgeEl = cardEl.querySelector('.slot-badge');
+    const inputEl = document.getElementById(`compare-input-${slotIndex + 1}`);
+
+    badgeEl.style.backgroundColor = slot.color;
+
+    if (slot.parsed) {
+        statusEl.innerHTML = `Loaded: <strong>${slot.parsed.amount}g</strong> ${slot.parsed.displayName}`;
+        statusEl.classList.add('active');
+        inputEl.value = '';
+    } else {
+        statusEl.textContent = 'No food loaded';
+        statusEl.classList.remove('active');
+    }
+}
+
+function setCompareSlot(slotIndex, text) {
+    const parsed = parseInputLine(text);
+    if (parsed) {
+        state.compareSlots[slotIndex].parsed = parsed;
+        updateSlotUI(slotIndex);
+        renderNutritionPanel();
+    }
+}
+
+function clearCompareSlot(slotIndex) {
+    state.compareSlots[slotIndex].parsed = null;
+    updateSlotUI(slotIndex);
+    renderNutritionPanel();
+}
+
+// Bind Slot Actions
+compareAdd1Btn.addEventListener('click', () => setCompareSlot(0, compareInput1.value));
+compareInput1.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') setCompareSlot(0, compareInput1.value);
+});
+clearSlot1Btn.addEventListener('click', () => clearCompareSlot(0));
+
+compareAdd2Btn.addEventListener('click', () => setCompareSlot(1, compareInput2.value));
+compareInput2.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') setCompareSlot(1, compareInput2.value);
+});
+clearSlot2Btn.addEventListener('click', () => clearCompareSlot(1));
+
+// Color Dot Listeners
+document.querySelectorAll('.color-options').forEach(optionsContainer => {
+    const slotIndex = parseInt(optionsContainer.getAttribute('data-slot')) - 1;
+    optionsContainer.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+            optionsContainer.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+            state.compareSlots[slotIndex].color = dot.getAttribute('data-color');
+            updateSlotUI(slotIndex);
+            renderNutritionPanel();
+        });
+    });
+});
 // 5. Actions & Triggers
 function addFood() {
     const inputEl = document.getElementById('food-input');
@@ -678,5 +970,8 @@ document.getElementById('food-input').addEventListener('keydown', (e) => {
 });
 
 // Bootstrapping
+// Bootstrapping
 renderDietList();
+updateSlotUI(0);
+updateSlotUI(1);
 renderNutritionPanel();
