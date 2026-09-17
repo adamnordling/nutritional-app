@@ -72,6 +72,9 @@ new favicon
 some food eat up nutrients, vitamin C protocol carnivore?
 some nutrients are more important than other , like magnesium > coq10 or spermidine, WHY?
 
+<footer>
+    <p>Created by <a href="https://adamnordling.github.io/" rel="author">Adam Nordling</a></p>
+</footer>
 
 save items, for next time u go back into the app
 npm run validate
