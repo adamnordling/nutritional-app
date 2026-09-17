@@ -1,0 +1,16 @@
+{
+  "name": "Nutritional App",
+  "short_name": "Nutritional App",
+  "description": "Precision Biochemical Nutrition & Bioavailability Tracker",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#131418",
+  "theme_color": "#2ecc71",
+  "icons": [
+    {
+      "src": "./src/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
