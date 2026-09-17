@@ -1,25 +1,33 @@
-// sw.js - Safe Stale-While-Revalidate Service Worker
-const CACHE_NAME = 'nutritional-app-cache-v1';
+// sw.js - Safe Stale-While-Revalidate Service Worker for Open Nutrition
+const CACHE_NAME = 'open-nutrition-cache-v1';
 
-// Copied from portfolio, changes needed later.
-// List of core assets to cache on install
 const STATIC_ASSETS = [
     './',
     './index.html',
+    './manifest.webmanifest',
     './src/style.css',
     './src/main.js',
-    './src/assets/profile-picture-resized.webp',
-    './src/assets/favicon.svg'
+    './src/foods.js',
+    './src/schema.js',
+    './src/assets/logo.png',
+    './src/assets/favicon_io/favicon-32x32.png',
+    './src/assets/favicon_io/favicon-16x16.png',
+    './src/assets/favicon_io/apple-touch-icon.png',
+    './src/assets/favicon_io/android-chrome-192x192.png',
+    './src/assets/favicon_io/android-chrome-512x512.png'
 ];
 
 self.addEventListener('install', event => {
-    // Force immediate activation; do not wait in limbo
     self.skipWaiting();
-    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS)));
+    event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            // Use cache.addAll with individual catch so missing optional assets don't abort installation
+            return Promise.allSettled(STATIC_ASSETS.map(url => cache.add(url)));
+        })
+    );
 });
 
 self.addEventListener('activate', event => {
-    // Clean up old caches if CACHE_NAME increments
     event.waitUntil(
         caches
             .keys()
@@ -35,10 +43,8 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    // Do not intercept external API calls (e.g. GitHub API)
     if (!event.request.url.startsWith(self.location.origin)) return;
 
-    // Stale-While-Revalidate: Return cache immediately, update cache in background
     event.respondWith(
         caches.open(CACHE_NAME).then(async cache => {
             const cachedResponse = await cache.match(event.request);
@@ -50,10 +56,7 @@ self.addEventListener('fetch', event => {
                     }
                     return networkResponse;
                 })
-                .catch(() => {
-                    // Network failed; offline mode fallback
-                    return cachedResponse;
-                });
+                .catch(() => cachedResponse);
 
             return cachedResponse || fetchPromise;
         })

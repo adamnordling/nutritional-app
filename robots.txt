@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://adamnordling.github.io/nutritional-app/sitemap.xml
+Sitemap: https://adamnordling.github.io/open_nutrition/sitemap.xml
