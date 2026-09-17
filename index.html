@@ -5,13 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-        <!-- Theme Color & Mobile Chrome/Safari status bar controls -->
+        <!-- Theme Color & Status Bar -->
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#131418" media="(prefers-color-scheme: dark)" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Nutritional App" />
+        <meta name="apple-mobile-web-app-title" content="Open Nutrition" />
 
         <!-- Strict Content Security Policy (CSP) -->
         <meta
@@ -19,71 +19,134 @@
             content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; object-src 'none';"
         />
 
-        <!-- Primary SEO Metadata -->
-        <title>Nutritional App — Precision Biochemical Nutrition & Bioavailability Tracker</title>
+        <!-- Primary Title & Description (hyphen free) -->
+        <title>Open Nutrition | The nutrition tracker that shows you more</title>
         <meta
             name="description"
-            content="An advanced, client-side nutrition and bioavailability tracker analyzing micronutrient ratios, fatty acid profiles, and absorption rates."
+            content="An advanced, client side nutrition and bioavailability tracker analyzing micronutrient ratios, fatty acid profiles, and absorption rates."
         />
-        <meta name="author" content="Adam Nordling" />
+        <meta name="author" content="Open Nutrition" />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://adamnordling.github.io/nutritional-app/" />
+        <link rel="canonical" href="https://adamnordling.github.io/open_nutrition" />
 
         <!-- Open Graph / Universal Social Preview -->
-        <meta property="og:site_name" content="Nutritional App" />
+        <meta property="og:site_name" content="Open Nutrition" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://adamnordling.github.io/nutritional-app/" />
-        <meta property="og:title" content="Nutritional App — Precision Biochemical Nutrition Tracker" />
+        <meta property="og:url" content="https://adamnordling.github.io/open_nutrition/" />
+        <meta property="og:title" content="Open Nutrition | Precision Biochemical Nutrition Tracker" />
         <meta
             property="og:description"
-            content="Track gross ingestion vs. net biological absorption with advanced RDA/UL calibration and side-by-side food comparison."
+            content="Track gross ingestion vs net biological absorption with advanced RDA and UL calibration and side by side food comparison."
         />
         <meta property="og:image" content="./src/assets/og-image.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
 
-        <!-- Twitter / X Card -->
+        <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Nutritional App — Precision Nutrition Tracker" />
+        <meta name="twitter:title" content="Open Nutrition | Precision Nutrition Tracker" />
         <meta
             name="twitter:description"
-            content="Track gross ingestion vs. net biological absorption with full biochemical breakdowns."
+            content="Track gross ingestion vs net biological absorption with full biochemical breakdowns."
         />
         <meta name="twitter:image" content="./src/assets/og-image.png" />
 
-        <!-- Web Application Manifest for PWA installation -->
+        <!-- Complete favicon_io Suite from src/assets/favicon_io/ -->
+        <link rel="apple-touch-icon" sizes="180x180" href="./src/assets/favicon_io/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="./src/assets/favicon_io/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="./src/assets/favicon_io/favicon-16x16.png" />
+        <link rel="shortcut icon" href="./src/assets/favicon_io/favicon.ico" />
         <link rel="manifest" href="./manifest.webmanifest" />
 
-        <!-- Preload Critical Rendering Path Assets -->
+        <!-- Preload Critical Assets -->
         <link rel="preload" href="./src/style.css" as="style" />
         <link rel="preload" href="src/main.js" as="script" crossorigin="anonymous" />
 
-        <!-- Stylesheet & Favicon Links (All strictly relative for GitHub Pages) -->
+        <!-- Stylesheet -->
         <link rel="stylesheet" href="./src/style.css" />
-        <link rel="icon" type="image/svg+xml" href="./src/assets/favicon.svg" />
-        <link rel="apple-touch-icon" href="./src/assets/apple-touch-icon.png" />
     </head>
     <body>
-        <header class="app-header">
-            <h1>🍏 Nutritional App <span class="badge">Core Prototype</span></h1>
-        </header>
+        <!-- Ambient Atmospheric Background Blobs -->
+        <div class="ambient-glow glow-top-left" aria-hidden="true"></div>
+        <div class="ambient-glow glow-top-right" aria-hidden="true"></div>
 
+        <!-- Hero Intro Section -->
+        <section class="hero-section">
+            <div class="hero-container">
+                <div class="hero-header-row">
+                    <img
+                        src="./src/assets/logo.png"
+                        alt="Open Nutrition Logo"
+                        class="hero-inline-logo"
+                        onerror="this.style.display = 'none'"
+                    />
+                    <h1 class="hero-title">
+                        <span class="title-dark">Open</span> <span class="title-green">Nutrition</span>
+                    </h1>
+                </div>
+
+                <p class="hero-tagline">The nutrition tracker that shows you more.</p>
+
+                <!-- Identity Callout Box -->
+                <div class="hero-callout">
+                    <span class="callout-highlight">100% free. Open source. No ads. No account.</span>
+                    <p class="callout-body">
+                        Track calories, macros, vitamins, minerals, RDA, AI, UL — and go deeper into antioxidants,
+                        bioactives, antinutrients, polyphenols, organic acids, purines, enzymes, biogenic amines and
+                        more.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Application Workspace -->
         <main class="app-container">
-            <!-- Left Side: Inputs & Active Diet List / Comparison Mode -->
             <!-- Left Side: Inputs & Active Diet List / Comparison Mode -->
             <section class="left-panel">
                 <div class="mode-tabs">
-                    <button id="tab-diet" class="tab-btn active" type="button">📋 My Diet</button>
-                    <button id="tab-compare" class="tab-btn" type="button">⚖️ Comparison Mode</button>
+                    <button id="tab-diet" class="tab-btn active" type="button">
+                        <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                        </svg>
+                        <span>My Diet</span>
+                    </button>
+                    <button id="tab-compare" class="tab-btn" type="button">
+                        <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M16 3h5v5"></path>
+                            <path d="M8 3H3v5"></path>
+                            <path d="M12 21V11"></path>
+                            <path d="m3 11 9-8 9 8"></path>
+                        </svg>
+                        <span>Comparison Mode</span>
+                    </button>
                 </div>
 
                 <!-- Diet Mode Workspace -->
                 <div id="diet-mode-views" class="mode-view">
-                    <!-- Dynamic Biological Field Note (Slides down on hover/click) -->
+                    <!-- Dynamic Biological Field Note -->
                     <div id="food-insight-card" class="food-insight-card hidden">
                         <div class="insight-header">
                             <div class="insight-title-group">
-                                <span class="insight-badge">🔬 Biological Profile</span>
+                                <span class="insight-badge">Biological Profile</span>
                                 <h4 id="insight-food-title">Food Name</h4>
                             </div>
                             <button type="button" id="close-insight-btn" class="close-insight-btn" title="Close note">
@@ -94,27 +157,21 @@
                         <div class="insight-tags" id="insight-tags"></div>
                         <div class="insight-body">
                             <div class="insight-block">
-                                <span class="insight-label label-superpower">⚡ Physiological Role:</span>
+                                <span class="insight-label label-superpower">Physiological Role</span>
                                 <p id="insight-superpower"></p>
                             </div>
                             <div class="insight-block">
-                                <span class="insight-label label-nuance">⚠️ Metabolic Nuance:</span>
+                                <span class="insight-label label-nuance">Metabolic Nuance</span>
                                 <p id="insight-nuance"></p>
                             </div>
                             <div class="insight-block prep-block">
-                                <span class="insight-label label-prep">🍳 Biochemical Prep Tip:</span>
+                                <span class="insight-label label-prep">Biochemical Prep Tip</span>
                                 <p id="insight-prep"></p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card input-card" style="position: relative">
-                        <!-- Tutorial Hint -->
-                        <div id="first-time-hint" class="tutorial-hint" aria-hidden="true">
-                            <span>Click here to add foods!</span>
-                            <span class="hint-arrow">→</span>
-                        </div>
-
+                    <div class="card input-card">
                         <!-- Step 1: Food Search -->
                         <div id="food-step-search" class="food-input-step">
                             <div class="search-input-wrapper">
@@ -126,6 +183,8 @@
                                     fill="none"
                                     stroke="currentColor"
                                     stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
                                 >
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -133,10 +192,15 @@
                                 <input
                                     type="text"
                                     id="food-search-input"
-                                    placeholder="Search or select food..."
+                                    placeholder="Search food (e.g. Chicken, Potato)..."
                                     autocomplete="off"
                                     spellcheck="false"
                                 />
+                            </div>
+                            <!-- Subtle in-card hint -->
+                            <div id="first-time-hint" class="input-inline-hint">
+                                <span class="hint-dot"></span> Try typing <span class="hint-sample">chicken</span> or
+                                <span class="hint-sample">potato</span>
                             </div>
                             <div id="food-dropdown" class="food-dropdown hidden">
                                 <ul id="food-dropdown-list" class="food-dropdown-list"></ul>
@@ -213,9 +277,12 @@
                         </div>
                     </div>
 
-                    <div class="card diet-card" style="margin-top: 15px">
-                        <h2>My Diet</h2>
-                        <p class="subtitle">Click to lock, hover to preview</p>
+                    <div class="card diet-card">
+                        <div class="card-header-row">
+                            <h3>My Diet</h3>
+                            <span class="section-badge">Today</span>
+                        </div>
+                        <p class="subtitle">Click item to lock insights, hover to preview</p>
                         <div class="resizable-scroll-container diet-list-wrapper">
                             <ul id="diet-list" class="diet-list"></ul>
                         </div>
@@ -225,22 +292,15 @@
                 <!-- Comparison Mode Workspace -->
                 <div id="compare-mode-views" class="mode-view hidden">
                     <!-- Slot A -->
-                    <!-- Slot A -->
-                    <div class="card input-card" id="slot-1-card" style="position: relative">
-                        <!-- Comparison Tutorial Hint -->
-                        <div id="compare-first-time-hint" class="tutorial-hint" aria-hidden="true">
-                            <span>Click here to add foods!</span>
-                            <span class="hint-arrow">→</span>
-                        </div>
-
+                    <div class="card input-card" id="slot-1-card">
                         <div class="slot-header">
                             <span class="slot-badge" style="background-color: #0072b2">Item A</span>
                             <button class="clear-slot-btn" id="clear-slot-1-btn" title="Clear Slot A" type="button">
                                 &times;
                             </button>
                         </div>
-                        <div class="color-picker-wrapper" style="margin: 4px 0 10px 0">
-                            <label>Color:</label>
+                        <div class="color-picker-wrapper">
+                            <label>Accent</label>
                             <div class="color-options" data-slot="1">
                                 <span
                                     class="color-dot active"
@@ -339,15 +399,15 @@
                     </div>
 
                     <!-- Slot B -->
-                    <div class="card diet-card" id="slot-2-card" style="margin-top: 15px; position: relative">
+                    <div class="card diet-card" id="slot-2-card">
                         <div class="slot-header">
                             <span class="slot-badge" style="background-color: #e69f00">Item B</span>
                             <button class="clear-slot-btn" id="clear-slot-2-btn" title="Clear Slot B" type="button">
                                 &times;
                             </button>
                         </div>
-                        <div class="color-picker-wrapper" style="margin: 4px 0 10px 0">
-                            <label>Color:</label>
+                        <div class="color-picker-wrapper">
+                            <label>Accent</label>
                             <div class="color-options" data-slot="2">
                                 <span
                                     class="color-dot active"
@@ -448,22 +508,20 @@
             </section>
 
             <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
-            <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
             <section class="right-panel card">
                 <div class="nutrition-header">
                     <h2>Nutritional Breakdown</h2>
                     <div class="header-controls">
                         <button id="toggle-all-btn" class="toggle-all-btn" type="button">Expand All</button>
-                        <span id="nutrition-view-indicator" class="indicator">Showing: Total Diet</span>
+                        <span id="nutrition-view-indicator" class="indicator">Total Diet Summary</span>
                     </div>
                 </div>
 
                 <!-- Cronometer-Style Top Summary Dashboard -->
-                <!-- Cronometer-Style Top Summary Dashboard -->
                 <div id="nutrition-summary-dashboard" class="nutrition-summary-dashboard">
                     <!-- Left: Circular Rings + Water Tracker -->
                     <div class="summary-left-col">
-                        <!-- Top Rings: Energy Consumed & Pure RDA Target Score -->
+                        <!-- Top Rings -->
                         <div class="summary-rings-panel">
                             <!-- Ring 1: Energy Consumed -->
                             <div class="ring-widget">
@@ -488,7 +546,7 @@
                                 <span class="ring-label">Consumed</span>
                             </div>
 
-                            <!-- Ring 2: Pure Positive Micronutrient Target Score -->
+                            <!-- Ring 2: RDA Score -->
                             <div class="ring-widget">
                                 <div class="ring-svg-container">
                                     <svg viewBox="0 0 36 36" class="circular-ring">
@@ -538,23 +596,53 @@
                         <!-- Water Intake Sub-Card -->
                         <div class="water-tracker-card">
                             <div class="water-header">
-                                <span class="water-title">💧 Water Intake</span>
+                                <div class="water-title-group">
+                                    <svg
+                                        width="13"
+                                        height="13"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="#0284c7"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                    </svg>
+                                    <span class="water-title">Water Intake</span>
+                                </div>
                                 <div class="water-vol-text" id="water-vol-text">0.00 L / 0.0 fl oz</div>
                             </div>
-                            <!-- 8 Interactive Glasses (250ml each = 2.0L total glasses) -->
                             <div class="water-glasses-row">
                                 <button type="button" id="water-minus-btn" class="water-btn" title="Remove 0.25L glass">
                                     −
                                 </button>
                                 <div class="glasses-container" id="glasses-container">
-                                    <span class="glass-icon" data-idx="0">🥤</span>
-                                    <span class="glass-icon" data-idx="1">🥤</span>
-                                    <span class="glass-icon" data-idx="2">🥤</span>
-                                    <span class="glass-icon" data-idx="3">🥤</span>
-                                    <span class="glass-icon" data-idx="4">🥤</span>
-                                    <span class="glass-icon" data-idx="5">🥤</span>
-                                    <span class="glass-icon" data-idx="6">🥤</span>
-                                    <span class="glass-icon" data-idx="7">🥤</span>
+                                    <!-- 8 Minimalistic SVG Water Cups -->
+                                    <button type="button" class="glass-btn" data-idx="0">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
+                                    <button type="button" class="glass-btn" data-idx="1">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
+                                    <button type="button" class="glass-btn" data-idx="2">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
+                                    <button type="button" class="glass-btn" data-idx="3">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
+                                    <button type="button" class="glass-btn" data-idx="4">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
+                                    <button type="button" class="glass-btn" data-idx="5">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
+                                    <button type="button" class="glass-btn" data-idx="6">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
+                                    <button type="button" class="glass-btn" data-idx="7">
+                                        <span class="glass-fill-bar"></span>
+                                    </button>
                                 </div>
                                 <button type="button" id="water-plus-btn" class="water-btn" title="Add 0.25L glass">
                                     +
@@ -566,7 +654,7 @@
                         </div>
                     </div>
 
-                    <!-- Right: Precision Macro Target Rows + Glycine Ratio -->
+                    <!-- Right: Precision Macro Target Rows -->
                     <div class="summary-macros-panel">
                         <!-- Energy -->
                         <div class="macro-target-row">
@@ -608,10 +696,10 @@
                             <span class="macro-pct" id="macro-fat-pct">0%</span>
                         </div>
 
-                        <!-- Glycine vs Methionine Methylation Ratio -->
+                        <!-- Glycine vs Methionine -->
                         <div class="glycine-ratio-card">
                             <div class="glycine-header">
-                                <span class="glycine-title">🧬 Glycine : Methionine Balance</span>
+                                <span class="glycine-title">Glycine : Methionine Ratio</span>
                                 <span class="glycine-score" id="glycine-ratio-val">0.00 : 1.0 (Target ≥ 1.0)</span>
                             </div>
                             <div class="macro-progress-track">
@@ -630,7 +718,6 @@
             </section>
         </main>
 
-        <!-- Relative path to JS: Prevents 404 on GitHub Pages subpaths -->
         <script type="module" src="src/main.js"></script>
     </body>
 </html>
