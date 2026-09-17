@@ -79,6 +79,35 @@
 
                 <!-- Diet Mode Workspace -->
                 <div id="diet-mode-views" class="mode-view">
+                    <!-- Dynamic Biological Field Note (Slides down on hover/click) -->
+                    <div id="food-insight-card" class="food-insight-card hidden">
+                        <div class="insight-header">
+                            <div class="insight-title-group">
+                                <span class="insight-badge">🔬 Biological Profile</span>
+                                <h4 id="insight-food-title">Food Name</h4>
+                            </div>
+                            <button type="button" id="close-insight-btn" class="close-insight-btn" title="Close note">
+                                &times;
+                            </button>
+                        </div>
+                        <p class="insight-family" id="insight-family">Family / Origin</p>
+                        <div class="insight-tags" id="insight-tags"></div>
+                        <div class="insight-body">
+                            <div class="insight-block">
+                                <span class="insight-label label-superpower">⚡ Physiological Role:</span>
+                                <p id="insight-superpower"></p>
+                            </div>
+                            <div class="insight-block">
+                                <span class="insight-label label-nuance">⚠️ Metabolic Nuance:</span>
+                                <p id="insight-nuance"></p>
+                            </div>
+                            <div class="insight-block prep-block">
+                                <span class="insight-label label-prep">🍳 Biochemical Prep Tip:</span>
+                                <p id="insight-prep"></p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card input-card" style="position: relative">
                         <!-- Tutorial Hint -->
                         <div id="first-time-hint" class="tutorial-hint" aria-hidden="true">

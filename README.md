@@ -36,3 +36,35 @@ carnivore warning
 
 localstorage
 
+
+guidelines > start website > tutorial
+
+remove emojis?
+
+fix add food
+
+warning stickers on sticker note
+
+### 1. nutrient interactions
+
+Add badges for nutrient conflicts and synergies, like calcium/iron competition, oxalates, vitamin C + iron, and fat-soluble vitamins + fat.
+
+### 2. methionine/glycine balance
+
+Add a glycine-to-methionine ratio gauge based on the user's foods, with suggestions when the ratio gets too low.
+
+### 3. omega-6/omega-3 balance
+
+Add a live omega-6 to omega-3 ratio dial that warns when the ratio gets too high.
+
+### 4. meal grouping
+
+Let users split foods into separate meals instead of only tracking daily totals. Use this for meal-specific nutrient interactions and timing rules.
+
+### 5. auto-fill nutrient gaps
+
+Add an optimize button that finds foods and quantities needed to fill nutrient gaps while avoiding excessive nutrients and unwanted compounds.
+
+
+
+npm run validate

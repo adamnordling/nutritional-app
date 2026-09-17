@@ -273,36 +273,6 @@ function formatMultiUnits(grams) {
     return `${g}g / ${oz}oz / ${lbs} pounds`;
 }
 
-function parseComparisonLine(line) {
-    const trimmed = line.trim().toLowerCase();
-    if (!trimmed) return null;
-
-    const match = trimmed.match(/^(\d+(?:\.\d+)?)\s*(g|kg|oz)?\s+(.+)$/i);
-    if (!match) return null;
-
-    let amount = parseFloat(match[1]);
-    const unit = match[2] || 'g';
-    const rawFoodName = match[3].trim();
-
-    if (unit === 'kg') amount *= 1000;
-    if (unit === 'oz') amount *= 28.3495;
-
-    let matchedKey = null;
-    for (const [key, food] of Object.entries(FOOD_DATABASE)) {
-        const hasAlias = food.aliases?.some(alias => rawFoodName.includes(alias));
-        if (rawFoodName.includes(key) || hasAlias) {
-            matchedKey = key;
-            break;
-        }
-    }
-
-    return {
-        amount: Math.round(amount),
-        foodKey: matchedKey,
-        displayName: matchedKey ? FOOD_DATABASE[matchedKey].displayName : `${rawFoodName} (Unknown)`
-    };
-}
-
 /* ==========================================================================
    4. VISUAL METERS & CALIBRATED SCALES
    ========================================================================== */
@@ -388,9 +358,8 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
     const leftTitle = details.sourcesTitleLeft || 'Highest Sources';
     const rightTitle = details.sourcesTitleRight || '';
 
-    let sourcesHtml = '';
-    if (details.sourcesRight) {
-        sourcesHtml = `
+    const sourcesHtml = details.sourcesRight
+        ? `
             <div class="sources-container">
                 <div class="sources-list">
                     <h5>${leftTitle}</h5>
@@ -401,9 +370,8 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
                     ${details.sourcesRight.map(s => `<div class="source-item"><span>${s.food}</span><span>${s.amount}</span></div>`).join('')}
                 </div>
             </div>
-        `;
-    } else {
-        sourcesHtml = `
+        `
+        : `
             <div class="sources-container single-column">
                 <div class="sources-list">
                     <h5>${leftTitle}</h5>
@@ -411,7 +379,6 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
                 </div>
             </div>
         `;
-    }
 
     return `
         <div class="nutrient-details-panel">
@@ -473,22 +440,24 @@ function createCategoryCard(category, activeData) {
     const displayTitle = category.replace(/_/g, ' ');
     const icon = CATEGORY_ICONS[category] || '📊';
 
-    let progressLabel = '';
     let progress1 = null;
     let progress2 = null;
     const col1 = state.compareSlots[0].color;
     const col2 = state.compareSlots[1].color;
 
-    if (activeData && activeData.isCompare) {
-        progress1 = getCategoryProgress(category, activeData.slot1);
-        progress2 = getCategoryProgress(category, activeData.slot2);
-        const p1Str = progress1 !== null ? `${progress1}%` : '0%';
-        const p2Str = progress2 !== null ? `${progress2}%` : '0%';
-        progressLabel = `<span style="color: ${col1}; font-size: 11px;">(${p1Str})</span> <span style="font-size: 10px; color: #aaa;">vs</span> <span style="color: ${col2}; font-size: 11px;">(${p2Str})</span>`;
-    } else {
-        const progress = getCategoryProgress(category, activeData);
-        progressLabel = progress !== null ? `(${progress}%)` : '';
-    }
+    const progressLabel =
+        activeData && activeData.isCompare
+            ? (() => {
+                  progress1 = getCategoryProgress(category, activeData.slot1);
+                  progress2 = getCategoryProgress(category, activeData.slot2);
+                  const p1Str = progress1 !== null ? `${progress1}%` : '0%';
+                  const p2Str = progress2 !== null ? `${progress2}%` : '0%';
+                  return `<span style="color: ${col1}; font-size: 11px;">(${p1Str})</span> <span style="font-size: 10px; color: #aaa;">vs</span> <span style="color: ${col2}; font-size: 11px;">(${p2Str})</span>`;
+              })()
+            : (() => {
+                  const progress = getCategoryProgress(category, activeData);
+                  return progress !== null ? `(${progress}%)` : '';
+              })();
 
     const headerEl = document.createElement('h3');
     headerEl.innerHTML = `
@@ -533,7 +502,7 @@ function createCategoryCard(category, activeData) {
             const ulTarget = UL_TARGETS[category]?.[nutrientName] || 0;
 
             const row = document.createElement('div');
-            let indentClass = meta.indent ? `indent-${meta.indent}` : '';
+            const indentClass = meta.indent ? `indent-${meta.indent}` : '';
             row.className = `nutrient-row clickable-row ${indentClass}`;
 
             if (activeData && activeData.isCompare) {
@@ -778,7 +747,7 @@ function renderDietList() {
 
     state.diet.forEach((item, index) => {
         const li = document.createElement('li');
-        let classes = ['diet-item'];
+        const classes = ['diet-item'];
         if (state.selectedIndex === index) classes.push('selected');
         else if (state.hoveredIndex === index) classes.push('hovered');
         li.className = classes.join(' ');
@@ -792,7 +761,13 @@ function renderDietList() {
         `;
 
         li.addEventListener('click', () => {
-            state.selectedIndex = state.selectedIndex === index ? null : index;
+            if (state.selectedIndex === index) {
+                state.selectedIndex = null;
+                hideFoodInsight();
+            } else {
+                state.selectedIndex = index;
+                showFoodInsight(item.foodKey);
+            }
             renderDietList();
             renderNutritionPanel();
         });
@@ -878,7 +853,6 @@ let hasInteractedWithSearch = false;
 
 function updateTutorialHint() {
     if (!tutorialHint) return;
-    // Show if diet is empty and user hasn't clicked search yet
     if (hasInteractedWithSearch || state.diet.length > 0) {
         tutorialHint.style.display = 'none';
     } else {
@@ -892,6 +866,53 @@ function dismissTutorial() {
         tutorialHint.style.display = 'none';
     }
 }
+
+// =========================================================================
+// BIOLOGICAL INSIGHT CARD (FIELD NOTE) CONTROLLER
+// =========================================================================
+
+const insightCard = document.getElementById('food-insight-card');
+const insightTitle = document.getElementById('insight-food-title');
+const insightFamily = document.getElementById('insight-family');
+const insightTags = document.getElementById('insight-tags');
+const insightSuperpower = document.getElementById('insight-superpower');
+const insightNuance = document.getElementById('insight-nuance');
+const insightPrep = document.getElementById('insight-prep');
+const closeInsightBtn = document.getElementById('close-insight-btn');
+
+function showFoodInsight(foodKey) {
+    if (!insightCard || !foodKey || !FOOD_DATABASE[foodKey]) return;
+    const food = FOOD_DATABASE[foodKey];
+    const info = food.insights;
+    if (!info) return;
+
+    insightTitle.textContent = food.displayName;
+    insightFamily.textContent = info.family || '';
+    insightSuperpower.textContent = info.superpower || '';
+    insightNuance.textContent = info.nuance || '';
+    insightPrep.textContent = info.prepTip || '';
+
+    insightTags.innerHTML = '';
+    (info.tags || []).forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'insight-tag';
+        span.textContent = tag;
+        insightTags.appendChild(span);
+    });
+
+    insightCard.classList.remove('hidden');
+}
+
+function hideFoodInsight() {
+    insightCard?.classList.add('hidden');
+}
+
+closeInsightBtn?.addEventListener('click', () => {
+    hideFoodInsight();
+    state.selectedIndex = null;
+    renderDietList();
+    renderNutritionPanel();
+});
 
 // 1. Food Dropdown Autocomplete
 function getSortedFoods() {
@@ -990,11 +1011,10 @@ function resetToSearch() {
 
     if (searchInput) {
         searchInput.value = '';
-        searchInput.blur(); // Cleanly unfocuses so no dropdown pops open
+        searchInput.blur();
     }
 }
 
-// 2. Amount Presets Dropdown
 // 2. Amount Presets Dropdown
 function renderAmountPresets() {
     if (!amountDropdownList) return;
@@ -1022,7 +1042,6 @@ function renderAmountPresets() {
         amountDropdownList.appendChild(li);
     });
 
-    // Scroll into view AFTER elements exist in the DOM
     const activeItem = amountDropdownList.querySelector('.amount-preset-item.is-selected');
     activeItem?.scrollIntoView({ block: 'nearest' });
 }
@@ -1041,10 +1060,10 @@ function closeAmountDropdown() {
 function commitAddFood() {
     if (!selectedFoodKey) return;
 
-    let amount = parseFloat(amountInput?.value);
-    if (!amount || isNaN(amount) || amount <= 0) return;
+    const rawAmount = parseFloat(amountInput?.value);
+    if (!rawAmount || isNaN(rawAmount) || rawAmount <= 0) return;
 
-    const grams = amount * UNIT_CONVERSIONS[currentUnit].toGrams;
+    const grams = rawAmount * UNIT_CONVERSIONS[currentUnit].toGrams;
 
     state.diet.push({
         id: Date.now() + Math.random(),
@@ -1058,7 +1077,7 @@ function commitAddFood() {
     resetToSearch();
 }
 
-// 4. Unit Conversion Engine (Clicks + Keyboard ArrowUp / ArrowDown)
+// 4. Unit Conversion Engine
 function switchUnit(newUnit) {
     if (!UNIT_CONVERSIONS[newUnit]) return;
 
@@ -1096,7 +1115,7 @@ document.addEventListener('click', e => {
     }
 });
 
-const UNIT_KEYS = Object.keys(UNIT_CONVERSIONS); // ['g', 'kg', 'mg', 'oz', 'lbs']
+const UNIT_KEYS = Object.keys(UNIT_CONVERSIONS);
 
 unitTriggerBtn?.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -1200,7 +1219,7 @@ searchInput?.addEventListener('keydown', e => {
 });
 
 /* ==========================================================================
-   7. COMPARISON SLOTS CONTROLLER (POWERED BY SAME 2-STEP ENGINE)
+   7. COMPARISON SLOTS CONTROLLER
    ========================================================================== */
 
 function setupComparisonSlot(slotIndex) {
@@ -1226,7 +1245,6 @@ function setupComparisonSlot(slotIndex) {
     const unitLabel = document.getElementById(`slot-${num}-unit-label`);
     const clearBtn = document.getElementById(`clear-slot-${num}-btn`);
 
-    // Render Food Search
     function renderSlotFoods(q = '') {
         if (!dropdownList) return;
         dropdownList.innerHTML = '';
@@ -1272,7 +1290,39 @@ function setupComparisonSlot(slotIndex) {
     });
     searchInput?.addEventListener('blur', () => setTimeout(() => dropdown?.classList.add('hidden'), 150));
 
-    // Render Amount Presets
+    searchInput?.addEventListener('keydown', e => {
+        const items = dropdownList?.querySelectorAll('.food-dropdown-item') || [];
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            highlightedIndex = (highlightedIndex + 1) % items.length;
+            renderSlotFoods(searchInput.value);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            highlightedIndex = (highlightedIndex - 1 + items.length) % items.length;
+            renderSlotFoods(searchInput.value);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const filtered = getSortedFoods().filter(food => {
+                const q = searchInput.value.trim().toLowerCase();
+                if (!q) return true;
+                return (
+                    food.displayName.toLowerCase().includes(q) || food.aliases?.some(a => a.toLowerCase().includes(q))
+                );
+            });
+            if (highlightedIndex >= 0 && filtered[highlightedIndex]) {
+                slotFoodKey = filtered[highlightedIndex].key;
+                if (selectedName) selectedName.textContent = filtered[highlightedIndex].displayName;
+                dropdown?.classList.add('hidden');
+                searchStep?.classList.add('hidden');
+                qtyStep?.classList.remove('hidden');
+                amountInput.value = '';
+                amountInput?.focus();
+            }
+        }
+    });
+
     function renderPresets() {
         if (!amountDropdownList) return;
         amountDropdownList.innerHTML = '';
@@ -1299,7 +1349,29 @@ function setupComparisonSlot(slotIndex) {
     });
     amountInput?.addEventListener('blur', () => setTimeout(() => amountDropdown?.classList.add('hidden'), 150));
 
-    // Unit Picker
+    amountInput?.addEventListener('keydown', e => {
+        const presets = UNIT_CONVERSIONS[slotUnit].presets;
+        if (presets.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            highlightedAmount = (highlightedAmount + 1) % presets.length;
+            renderPresets();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            highlightedAmount = (highlightedAmount - 1 + presets.length) % presets.length;
+            renderPresets();
+        } else if (e.key === 'Enter') {
+            if (!amountDropdown?.classList.contains('hidden') && highlightedAmount >= 0) {
+                e.preventDefault();
+                amountInput.value = presets[highlightedAmount];
+                amountDropdown?.classList.add('hidden');
+            } else {
+                commitSlot();
+            }
+        }
+    });
+
     unitBtn?.addEventListener('click', e => {
         e.stopPropagation();
         unitMenu?.classList.toggle('hidden');
@@ -1320,7 +1392,6 @@ function setupComparisonSlot(slotIndex) {
         });
     });
 
-    // Reset to Search
     function resetSlotSearch() {
         slotFoodKey = null;
         qtyStep?.classList.add('hidden');
@@ -1329,10 +1400,9 @@ function setupComparisonSlot(slotIndex) {
     }
     cancelBtn?.addEventListener('click', resetSlotSearch);
 
-    // Commit Slot Selection
     function commitSlot() {
         if (!slotFoodKey) return;
-        let amt = parseFloat(amountInput.value);
+        const amt = parseFloat(amountInput.value);
         if (!amt || isNaN(amt) || amt <= 0) return;
         const grams = amt * UNIT_CONVERSIONS[slotUnit].toGrams;
 
@@ -1346,11 +1416,7 @@ function setupComparisonSlot(slotIndex) {
         resetSlotSearch();
     }
     confirmBtn?.addEventListener('click', commitSlot);
-    amountInput?.addEventListener('keydown', e => {
-        if (e.key === 'Enter') commitSlot();
-    });
 
-    // Clear Slot
     clearBtn?.addEventListener('click', () => {
         state.compareSlots[slotIndex].parsed = null;
         updateSlotUI(slotIndex);
@@ -1359,7 +1425,6 @@ function setupComparisonSlot(slotIndex) {
     });
 }
 
-// Initialize Slot 1 and Slot 2
 setupComparisonSlot(0);
 setupComparisonSlot(1);
 
@@ -1434,8 +1499,6 @@ toggleAllBtn?.addEventListener('click', () => {
     renderNutritionPanel();
 });
 
-// Run immediate bootstrap
-// Run immediate bootstrap
 renderDietList();
 updateSlotUI(0);
 updateSlotUI(1);

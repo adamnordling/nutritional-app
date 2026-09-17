@@ -519,6 +519,7 @@ export function createFood(sparseFood) {
         id: sparseFood.id,
         displayName: sparseFood.displayName,
         aliases: sparseFood.aliases || [sparseFood.id],
+        insights: sparseFood.insights || null,
         absorption: {}
     };
 

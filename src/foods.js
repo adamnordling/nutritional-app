@@ -6,6 +6,15 @@ export const FOOD_DATABASE = {
         id: 'chicken',
         displayName: 'Chicken Breast (Cooked)',
         aliases: ['chicken', 'chicken breast', 'poultry'],
+        insights: {
+            family: 'Gallus gallus domesticus (Avian Muscle)',
+            tags: ['Zero FODMAP', 'Lean Bioavailable Protein', 'High Methionine'],
+            superpower:
+                'One of the highest DIAAS protein scores (>1.2) known. Exceptionally dense in branched-chain amino acids (leucine), creatine, and carnosine with negligible intramuscular lipid.',
+            nuance: 'Muscle vs. Bone & Collagen Myth: Boneless/skinless breast is pure muscle meat, meaning it is high in methionine but nearly devoid of glycine and proline. Relying purely on lean breast without collagen from skin, cartilage, or bone broth skews your methionine-to-glycine ratio, which drives up homocysteine and demands higher folate/B12 for methylation.',
+            prepTip:
+                'Cooking bone-in or with skin leaches gelatinous collagen into the meat. If eating skinless breast daily, pair with glycine/collagen sources or bone broth to balance methylation.'
+        },
         general: { Calories: 165, Water: 65, Ash: 1.0 },
         lipids: {
             'Total Fat': 3.6,
@@ -138,6 +147,15 @@ export const FOOD_DATABASE = {
         id: 'potato',
         displayName: 'Russet Potato (Boiled)',
         aliases: ['potato', 'potatoes', 'russet potato'],
+        insights: {
+            family: 'Solanaceae (Nightshade Family, Stem Tuber)',
+            tags: ['#1 Satiety Index', 'Low FODMAP', 'Cellular Whole Carb'],
+            superpower:
+                "Ranked #1 on Holt's Clinical Satiety Index—providing the highest fullness-to-calorie ratio of any tested whole food. A cellular (non-refined) carbohydrate that preserves intact plant cell walls, delaying glucose release.",
+            nuance: 'Nightshades & Antinutrients: Contains steroidal glycoalkaloids (solanine and chaconine) and lectins. Glycoalkaloids concentrate in green-tinted skins and sprouts, which can irritate gut linings and inhibit acetylcholinesterase. Never eat greenish potatoes.',
+            prepTip:
+                'Resistant Starch Super-Hack: If boiled potatoes are cooled in the fridge for 12+ hours, their digestible starch retrogrades into Type-3 Resistant Starch (RS3). This drops their glycemic impact by ~30% and acts as prebiotic fiber for butyrate-producing gut bacteria.'
+        },
         general: { Calories: 77, Water: 79, Ash: 1.1 },
         organic_acids: {
             'Citric Acid': 320,
