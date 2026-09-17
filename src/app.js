@@ -1,5 +1,5 @@
-import './style.css';
-import { FOOD_DATABASE, RDA_TARGETS, UL_TARGETS, NUTRIENT_UNITS } from './database.js';
+import { RDA_TARGETS, UL_TARGETS, NUTRIENT_UNITS } from './schema.js';
+import { FOOD_DATABASE } from './foods.js';
 
 // 1. Application State
 const state = {
@@ -44,159 +44,159 @@ const rightColumnLayout = [
 const NUTRIENT_ANALYTICS = {
     Calories: {
         description: `Food provides the energy you need for your cells to carry out their duties to keep us healthy. Energy is locked by chemical bonds in food and is released through digestion and metabolism of carbohydrates, fat, protein and alcohol. Calories (kcal) are the unit we use to measure the amount of energy in a food.\n\nOn average there are:\n- 9 kcal/g (37.7 kJ/g) in fat\n- 4 kcal/g (16.7 kJ/g) in carbohydrates\n- 4 kcal/g (16.7 kJ/g) in protein\n- 7 kcal/g (29.3 kJ/g) in alcohol.`,
-        sourcesTitleLeft: "Highest Calories",
+        sourcesTitleLeft: 'Highest Calories',
         sourcesLeft: [
-            { food: "Olive Oil", amount: "884 kcal" },
-            { food: "Almonds", amount: "579 kcal" },
-            { food: "Peanut Butter", amount: "588 kcal" },
-            { food: "Cheddar Cheese", amount: "403 kcal" },
-            { food: "Ribeye Steak", amount: "291 kcal" },
-            { food: "Whole Eggs", amount: "143 kcal" },
-            { food: "Wild Salmon", amount: "206 kcal" },
-            { food: "Sweet Potato", amount: "86 kcal" },
-            { food: "Greek Yogurt", amount: "97 kcal" },
-            { food: "White Rice", amount: "130 kcal" }
+            { food: 'Olive Oil', amount: '884 kcal' },
+            { food: 'Almonds', amount: '579 kcal' },
+            { food: 'Peanut Butter', amount: '588 kcal' },
+            { food: 'Cheddar Cheese', amount: '403 kcal' },
+            { food: 'Ribeye Steak', amount: '291 kcal' },
+            { food: 'Whole Eggs', amount: '143 kcal' },
+            { food: 'Wild Salmon', amount: '206 kcal' },
+            { food: 'Sweet Potato', amount: '86 kcal' },
+            { food: 'Greek Yogurt', amount: '97 kcal' },
+            { food: 'White Rice', amount: '130 kcal' }
         ],
-        sourcesTitleRight: "Lowest Calories",
+        sourcesTitleRight: 'Lowest Calories',
         sourcesRight: [
-            { food: "Spinach", amount: "23 kcal" },
-            { food: "Broccoli", amount: "34 kcal" },
-            { food: "Blueberries", amount: "57 kcal" },
-            { food: "Potato", amount: "77 kcal" },
-            { food: "Strawberries", amount: "32 kcal" },
-            { food: "Carrots", amount: "41 kcal" },
-            { food: "Onions", amount: "40 kcal" },
-            { food: "Cabbage", amount: "25 kcal" },
-            { food: "Asparagus", amount: "20 kcal" },
-            { food: "Zucchini", amount: "17 kcal" }
+            { food: 'Spinach', amount: '23 kcal' },
+            { food: 'Broccoli', amount: '34 kcal' },
+            { food: 'Blueberries', amount: '57 kcal' },
+            { food: 'Potato', amount: '77 kcal' },
+            { food: 'Strawberries', amount: '32 kcal' },
+            { food: 'Carrots', amount: '41 kcal' },
+            { food: 'Onions', amount: '40 kcal' },
+            { food: 'Cabbage', amount: '25 kcal' },
+            { food: 'Asparagus', amount: '20 kcal' },
+            { food: 'Zucchini', amount: '17 kcal' }
         ]
     },
-    "Vitamin B1 (Thiamine)": {
+    'Vitamin B1 (Thiamine)': {
         description: `Thiamine (Vitamin B1) is a water-soluble coenzyme essential for pyruvate dehydrogenase, a critical gateway step in converting glucose into ATP energy. It heavily supports neurological function, cellular growth, and systemic metabolic pathways.`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Nutritional Yeast", amount: "15.00 mg" },
-            { food: "Sunflower Seeds", amount: "2.30 mg" },
-            { food: "Macadamia Nuts", amount: "1.20 mg" },
-            { food: "Pork Chops", amount: "0.90 mg" },
-            { food: "Pine Nuts", amount: "0.40 mg" },
-            { food: "Black Beans", amount: "0.40 mg" },
-            { food: "Lentils", amount: "0.35 mg" },
-            { food: "Navy Beans", amount: "0.30 mg" },
-            { food: "Green Peas", amount: "0.25 mg" },
-            { food: "Whole Wheat Bread", amount: "0.20 mg" }
+            { food: 'Nutritional Yeast', amount: '15.00 mg' },
+            { food: 'Sunflower Seeds', amount: '2.30 mg' },
+            { food: 'Macadamia Nuts', amount: '1.20 mg' },
+            { food: 'Pork Chops', amount: '0.90 mg' },
+            { food: 'Pine Nuts', amount: '0.40 mg' },
+            { food: 'Black Beans', amount: '0.40 mg' },
+            { food: 'Lentils', amount: '0.35 mg' },
+            { food: 'Navy Beans', amount: '0.30 mg' },
+            { food: 'Green Peas', amount: '0.25 mg' },
+            { food: 'Whole Wheat Bread', amount: '0.20 mg' }
         ]
     },
-    "Vitamin B2 (Riboflavin)": {
+    'Vitamin B2 (Riboflavin)': {
         description: `Riboflavin (Vitamin B2) is the precursor to FAD and FMN, essential cofactors in cellular respiration and the mitochondrial electron transport chain. It is highly critical for fatty acid oxidation, drug metabolism, and eye integrity.`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Nutritional Yeast", amount: "4.00 mg" },
-            { food: "Beef Liver", amount: "2.70 mg" },
-            { food: "Almonds", amount: "1.10 mg" },
-            { food: "Whole Eggs", amount: "0.45 mg" },
-            { food: "Feta Cheese", amount: "0.45 mg" },
-            { food: "Wild Salmon", amount: "0.35 mg" },
-            { food: "Shiitake Mushrooms", amount: "0.30 mg" },
-            { food: "Mackerel", amount: "0.30 mg" },
-            { food: "Spinach", amount: "0.20 mg" },
-            { food: "Grass-Fed Beef", amount: "0.20 mg" }
+            { food: 'Nutritional Yeast', amount: '4.00 mg' },
+            { food: 'Beef Liver', amount: '2.70 mg' },
+            { food: 'Almonds', amount: '1.10 mg' },
+            { food: 'Whole Eggs', amount: '0.45 mg' },
+            { food: 'Feta Cheese', amount: '0.45 mg' },
+            { food: 'Wild Salmon', amount: '0.35 mg' },
+            { food: 'Shiitake Mushrooms', amount: '0.30 mg' },
+            { food: 'Mackerel', amount: '0.30 mg' },
+            { food: 'Spinach', amount: '0.20 mg' },
+            { food: 'Grass-Fed Beef', amount: '0.20 mg' }
         ]
     },
-    "Vitamin B3 (Niacin)": {
+    'Vitamin B3 (Niacin)': {
         description: `Niacin (Vitamin B3) is the fundamental precursor for NAD+ and NADH, the key cellular electron carriers involved in glycolysis and sirtuin-mediated DNA repair. Optimal intake is highly critical for maintaining cellular longevity.`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Nutritional Yeast", amount: "35.00 mg" },
-            { food: "Yellowfin Tuna", amount: "18.00 mg" },
-            { food: "Chicken Breast", amount: "14.80 mg" },
-            { food: "Beef Liver", amount: "13.20 mg" },
-            { food: "Peanuts", amount: "12.00 mg" },
-            { food: "Wild Salmon", amount: "8.70 mg" },
-            { food: "Turkey Breast", amount: "8.10 mg" },
-            { food: "Pork Chops", amount: "7.50 mg" },
-            { food: "Portobello Mushrooms", amount: "6.20 mg" },
-            { food: "Grass-Fed Beef", amount: "5.50 mg" }
+            { food: 'Nutritional Yeast', amount: '35.00 mg' },
+            { food: 'Yellowfin Tuna', amount: '18.00 mg' },
+            { food: 'Chicken Breast', amount: '14.80 mg' },
+            { food: 'Beef Liver', amount: '13.20 mg' },
+            { food: 'Peanuts', amount: '12.00 mg' },
+            { food: 'Wild Salmon', amount: '8.70 mg' },
+            { food: 'Turkey Breast', amount: '8.10 mg' },
+            { food: 'Pork Chops', amount: '7.50 mg' },
+            { food: 'Portobello Mushrooms', amount: '6.20 mg' },
+            { food: 'Grass-Fed Beef', amount: '5.50 mg' }
         ]
     },
-    "Vitamin B5 (Pantothenic Acid)": {
+    'Vitamin B5 (Pantothenic Acid)': {
         description: `Pantothenic Acid (Vitamin B5) is the vital chemical building block needed to synthesize Coenzyme A (CoA). It supports carbohydrate metabolism, red blood cell synthesis, fatty acid synthesis, and neurotransmitter regulation.`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Shiitake Mushrooms", amount: "7.60 mg" },
-            { food: "Sunflower Seeds", amount: "7.00 mg" },
-            { food: "Beef Liver", amount: "6.30 mg" },
-            { food: "Wild Salmon", amount: "1.70 mg" },
-            { food: "Avocado", amount: "1.40 mg" },
-            { food: "Chicken Breast", amount: "0.90 mg" },
-            { food: "Whole Eggs", amount: "0.90 mg" },
-            { food: "Sweet Potato", amount: "0.80 mg" },
-            { food: "Broccoli", amount: "0.50 mg" },
-            { food: "Milk", amount: "0.40 mg" }
+            { food: 'Shiitake Mushrooms', amount: '7.60 mg' },
+            { food: 'Sunflower Seeds', amount: '7.00 mg' },
+            { food: 'Beef Liver', amount: '6.30 mg' },
+            { food: 'Wild Salmon', amount: '1.70 mg' },
+            { food: 'Avocado', amount: '1.40 mg' },
+            { food: 'Chicken Breast', amount: '0.90 mg' },
+            { food: 'Whole Eggs', amount: '0.90 mg' },
+            { food: 'Sweet Potato', amount: '0.80 mg' },
+            { food: 'Broccoli', amount: '0.50 mg' },
+            { food: 'Milk', amount: '0.40 mg' }
         ]
     },
-    "Vitamin B6": {
+    'Vitamin B6': {
         description: `Vitamin B6 (Pyridoxine) serves as a cofactor in over 100 enzymatic reactions, primarily focusing on amino acid metabolism, red blood cell synthesis (heme), neurotransmitter synthesis (serotonin, dopamine), and immune response.`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Sunflower Seeds", amount: "1.30 mg" },
-            { food: "Pistachios", amount: "1.10 mg" },
-            { food: "Wild Salmon", amount: "0.90 mg" },
-            { food: "Grass-Fed Beef", amount: "0.70 mg" },
-            { food: "Yellowfin Tuna", amount: "0.60 mg" },
-            { food: "Chicken Breast", amount: "0.50 mg" },
-            { food: "Bananas", amount: "0.40 mg" },
-            { food: "Avocado", amount: "0.30 mg" },
-            { food: "Potato", amount: "0.30 mg" },
-            { food: "Spinach", amount: "0.20 mg" }
+            { food: 'Sunflower Seeds', amount: '1.30 mg' },
+            { food: 'Pistachios', amount: '1.10 mg' },
+            { food: 'Wild Salmon', amount: '0.90 mg' },
+            { food: 'Grass-Fed Beef', amount: '0.70 mg' },
+            { food: 'Yellowfin Tuna', amount: '0.60 mg' },
+            { food: 'Chicken Breast', amount: '0.50 mg' },
+            { food: 'Bananas', amount: '0.40 mg' },
+            { food: 'Avocado', amount: '0.30 mg' },
+            { food: 'Potato', amount: '0.30 mg' },
+            { food: 'Spinach', amount: '0.20 mg' }
         ]
     },
-    "Vitamin B7 (Biotin)": {
+    'Vitamin B7 (Biotin)': {
         description: `Biotin (Vitamin B7) is a crucial carboxylase cofactor that assists in metabolizing fats, amino acids, and glucose. It plays an emerging, heavily researched role in gene expression, chromatin structure, and nail/hair integrity.`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Whole Eggs", amount: "20.00 mcg" },
-            { food: "Nutritional Yeast", amount: "15.00 mcg" },
-            { food: "Beef Liver", amount: "15.00 mcg" },
-            { food: "Peanuts", amount: "10.00 mcg" },
-            { food: "Almonds", amount: "7.00 mcg" },
-            { food: "Sweet Potato", amount: "4.00 mcg" },
-            { food: "Wild Salmon", amount: "4.00 mcg" },
-            { food: "Sunflower Seeds", amount: "3.00 mcg" },
-            { food: "Avocado", amount: "2.00 mcg" },
-            { food: "Cauliflower", amount: "2.00 mcg" }
+            { food: 'Whole Eggs', amount: '20.00 mcg' },
+            { food: 'Nutritional Yeast', amount: '15.00 mcg' },
+            { food: 'Beef Liver', amount: '15.00 mcg' },
+            { food: 'Peanuts', amount: '10.00 mcg' },
+            { food: 'Almonds', amount: '7.00 mcg' },
+            { food: 'Sweet Potato', amount: '4.00 mcg' },
+            { food: 'Wild Salmon', amount: '4.00 mcg' },
+            { food: 'Sunflower Seeds', amount: '3.00 mcg' },
+            { food: 'Avocado', amount: '2.00 mcg' },
+            { food: 'Cauliflower', amount: '2.00 mcg' }
         ]
     },
-    "Vitamin B9 (Folate DFE)": {
+    'Vitamin B9 (Folate DFE)': {
         description: `Folate (Vitamin B9) is highly essential for methyl donation, DNA methylation, cellular division, and healthy red blood cell development. It is critical for systemic neurological development and cell growth [1.1.2, 1.2.2].`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Beef Liver", amount: "290.00 mcg" },
-            { food: "Spinach", amount: "194.00 mcg" },
-            { food: "Lentils", amount: "181.00 mcg" },
-            { food: "Asparagus", amount: "149.00 mcg" },
-            { food: "Black Beans", amount: "130.00 mcg" },
-            { food: "Avocado", amount: "81.00 mcg" },
-            { food: "Broccoli", amount: "63.00 mcg" },
-            { food: "Romaine Lettuce", amount: "55.00 mcg" },
-            { food: "Brussels Sprouts", amount: "47.00 mcg" },
-            { food: "Orange", amount: "30.00 mcg" }
+            { food: 'Beef Liver', amount: '290.00 mcg' },
+            { food: 'Spinach', amount: '194.00 mcg' },
+            { food: 'Lentils', amount: '181.00 mcg' },
+            { food: 'Asparagus', amount: '149.00 mcg' },
+            { food: 'Black Beans', amount: '130.00 mcg' },
+            { food: 'Avocado', amount: '81.00 mcg' },
+            { food: 'Broccoli', amount: '63.00 mcg' },
+            { food: 'Romaine Lettuce', amount: '55.00 mcg' },
+            { food: 'Brussels Sprouts', amount: '47.00 mcg' },
+            { food: 'Orange', amount: '30.00 mcg' }
         ]
     },
-    "Vitamin B12": {
+    'Vitamin B12': {
         description: `Cobalamin (Vitamin B12) is a complex cobalt-based cofactor critical for myelin sheath integrity, normal red blood cell development, and proper brain function. It is almost exclusively bioavailable in animal foods.`,
-        sourcesTitleLeft: "Top 10 Dietary Sources (per 100g)",
+        sourcesTitleLeft: 'Top 10 Dietary Sources (per 100g)',
         sourcesLeft: [
-            { food: "Clams", amount: "99.00 mcg" },
-            { food: "Beef Liver", amount: "59.00 mcg" },
-            { food: "Sardines", amount: "9.00 mcg" },
-            { food: "Mackerel", amount: "8.00 mcg" },
-            { food: "Wild Salmon", amount: "3.20 mcg" },
-            { food: "Grass-Fed Beef", amount: "2.60 mcg" },
-            { food: "Tuna", amount: "2.20 mcg" },
-            { food: "Milk", amount: "0.45 mcg" },
-            { food: "Greek Yogurt", amount: "0.30 mcg" },
-            { food: "Whole Eggs", amount: "0.30 mcg" }
+            { food: 'Clams', amount: '99.00 mcg' },
+            { food: 'Beef Liver', amount: '59.00 mcg' },
+            { food: 'Sardines', amount: '9.00 mcg' },
+            { food: 'Mackerel', amount: '8.00 mcg' },
+            { food: 'Wild Salmon', amount: '3.20 mcg' },
+            { food: 'Grass-Fed Beef', amount: '2.60 mcg' },
+            { food: 'Tuna', amount: '2.20 mcg' },
+            { food: 'Milk', amount: '0.45 mcg' },
+            { food: 'Greek Yogurt', amount: '0.30 mcg' },
+            { food: 'Whole Eggs', amount: '0.30 mcg' }
         ]
     }
 };
@@ -207,27 +207,32 @@ function parseInputLine(line) {
     const trimmed = line.trim().toLowerCase();
     if (!trimmed) return null;
 
-    // Matches standard input structures like "500g chicken"
     const regex = /^(\d+(?:\.\d+)?)\s*(g|kg|oz)?\s+(.+)$/i;
     const match = trimmed.match(regex);
 
     if (match) {
         let amount = parseFloat(match[1]);
         const unit = match[2] || 'g';
-        const foodName = match[3].trim();
+        const rawFoodName = match[3].trim();
 
         if (unit === 'kg') amount *= 1000;
         if (unit === 'oz') amount *= 28.3495;
 
-        // DYNAMIC MATCHING: Automatically scans keys in your database
-        const databaseKeys = Object.keys(FOOD_DATABASE);
-        let foodKey = databaseKeys.find(key => foodName.includes(key)) || null;
+        // Matches by food key OR by any alias (e.g. 'potatoes' matches 'potato')
+        let matchedKey = null;
+        for (const [key, food] of Object.entries(FOOD_DATABASE)) {
+            const hasAliasMatch = food.aliases?.some(alias => rawFoodName.includes(alias));
+            if (rawFoodName.includes(key) || hasAliasMatch) {
+                matchedKey = key;
+                break;
+            }
+        }
 
         return {
             originalText: line,
             amount: Math.round(amount),
-            foodKey: foodKey,
-            displayName: foodKey ? foodKey.charAt(0).toUpperCase() + foodKey.slice(1) : `${foodName} (Unknown)`
+            foodKey: matchedKey,
+            displayName: matchedKey ? FOOD_DATABASE[matchedKey].displayName : `${rawFoodName} (Unknown)`
         };
     }
     return null;
@@ -237,7 +242,7 @@ function parseInputLine(line) {
 function getNutrientValue(item, category, nutrient) {
     if (!item || !item.foodKey || !FOOD_DATABASE[item.foodKey]) return 0;
     const baseValue = FOOD_DATABASE[item.foodKey][category]?.[nutrient];
-    return baseValue ? (baseValue * (item.amount / 100)) : 0;
+    return baseValue ? baseValue * (item.amount / 100) : 0;
 }
 
 function calculateAggregate(dietList) {
@@ -245,8 +250,8 @@ function calculateAggregate(dietList) {
     for (const [category, nutrients] of Object.entries(NUTRIENT_UNITS)) {
         totals[category] = {};
         for (const nutrient of Object.keys(nutrients)) {
-            totals[category][nutrient] = 0;              // Gross ingested
-            totals[category][nutrient + "_absorbed"] = 0; // Net absorbed
+            totals[category][nutrient] = 0; // Gross ingested
+            totals[category][nutrient + '_absorbed'] = 0; // Net absorbed
         }
     }
 
@@ -256,15 +261,15 @@ function calculateAggregate(dietList) {
         if (!item || !item.foodKey) return;
 
         const foodDef = FOOD_DATABASE[item.foodKey];
-        const absorptionMap = (foodDef && foodDef.absorption) ? foodDef.absorption : {};
+        const absorptionMap = foodDef && foodDef.absorption ? foodDef.absorption : {};
 
         for (const category of Object.keys(NUTRIENT_UNITS)) {
             for (const nutrient of Object.keys(NUTRIENT_UNITS[category])) {
                 const rawVal = getNutrientValue(item, category, nutrient);
-                const absorptionRate = (absorptionMap[nutrient] !== undefined) ? absorptionMap[nutrient] : 1.0;
+                const absorptionRate = absorptionMap[nutrient] !== undefined ? absorptionMap[nutrient] : 1.0;
 
                 totals[category][nutrient] += rawVal;
-                totals[category][nutrient + "_absorbed"] += (rawVal * absorptionRate);
+                totals[category][nutrient + '_absorbed'] += rawVal * absorptionRate;
             }
         }
     });
@@ -294,6 +299,19 @@ function getActiveContext() {
 function renderDietList() {
     const listEl = document.getElementById('diet-list');
     listEl.innerHTML = '';
+
+    if (state.diet.length === 0) {
+        listEl.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 10px; color: var(--text-muted); text-align: center;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; margin-bottom: 8px;">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <span style="font-size: 12px; font-weight: 500;">No foods logged today</span>
+                <span style="font-size: 11px; opacity: 0.7; margin-top: 2px;">Try: <code>300g chicken</code> or <code>200g potato</code></span>
+            </div>
+        `;
+        return;
+    }
 
     state.diet.forEach((item, index) => {
         const li = document.createElement('li');
@@ -337,7 +355,7 @@ function renderDietList() {
         });
 
         // Removal logic
-        li.querySelector('.remove-btn').addEventListener('click', (e) => {
+        li.querySelector('.remove-btn').addEventListener('click', e => {
             e.stopPropagation(); // Avoid triggering selections on delete
             removeFood(index);
         });
@@ -386,7 +404,7 @@ function toggleAllCategories() {
 // 3. Dynamic Visual Scale & Meter Generator
 function createRdaUlMeter(category, nutrientName, currentValue, rdaTarget, ulTarget, unit) {
     const rda = rdaTarget || 0;
-    const ul = ulTarget || (rda * 1.5);
+    const ul = ulTarget || rda * 1.5;
     const maxScale = ul * 1.35;
 
     const rdaPercent = (rda / maxScale) * 100;
@@ -416,10 +434,9 @@ function createRdaUlMeter(category, nutrientName, currentValue, rdaTarget, ulTar
     `;
 }
 
-
 function createCompareSlotMeter(label, currentValue, rdaTarget, ulTarget, unit, color) {
     const rda = rdaTarget || 0;
-    const ul = ulTarget || (rda * 1.5);
+    const ul = ulTarget || rda * 1.5;
     const maxScale = ul * 1.35;
 
     const rdaPercent = (rda / maxScale) * 100;
@@ -450,10 +467,22 @@ function createCompareSlotMeter(label, currentValue, rdaTarget, ulTarget, unit, 
     `;
 }
 
-function getNutrientAnalysisCompareHTML(category, nutrientName, val1, val2, rdaTarget, ulTarget, unit, col1, col2, label1, label2) {
+function getNutrientAnalysisCompareHTML(
+    category,
+    nutrientName,
+    val1,
+    val2,
+    rdaTarget,
+    ulTarget,
+    unit,
+    col1,
+    col2,
+    label1,
+    label2
+) {
     const details = NUTRIENT_ANALYTICS[nutrientName] || {
         description: `${nutrientName} is an active biochemical compound vital for structural integrity, enzyme regulation, and systemic physiological support.`,
-        sourcesTitleLeft: "Highest Sources",
+        sourcesTitleLeft: 'Highest Sources',
         sourcesLeft: [
             { food: `High ${nutrientName} Food A`, amount: `High` },
             { food: `High ${nutrientName} Food B`, amount: `Moderate` }
@@ -463,8 +492,8 @@ function getNutrientAnalysisCompareHTML(category, nutrientName, val1, val2, rdaT
     const meter1Html = createCompareSlotMeter(label1, val1, rdaTarget, ulTarget, unit, col1);
     const meter2Html = createCompareSlotMeter(label2, val2, rdaTarget, ulTarget, unit, col2);
 
-    const leftTitle = details.sourcesTitleLeft || "Highest Sources";
-    const rightTitle = details.sourcesTitleRight || "";
+    const leftTitle = details.sourcesTitleLeft || 'Highest Sources';
+    const rightTitle = details.sourcesTitleRight || '';
 
     let sourcesHtml = '';
     if (details.sourcesRight) {
@@ -508,7 +537,7 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
     // Ingest data from the registry, fallback seamlessly to mock values if not defined yet
     const details = NUTRIENT_ANALYTICS[nutrientName] || {
         description: `${nutrientName} is an active biochemical compound vital for structural integrity, enzyme regulation, and systemic physiological support [1.1.2, 1.2.2].`,
-        sourcesTitleLeft: "Highest Sources",
+        sourcesTitleLeft: 'Highest Sources',
         sourcesLeft: [
             { food: `High ${nutrientName} Food A`, amount: `High` },
             { food: `High ${nutrientName} Food B`, amount: `Moderate` }
@@ -518,8 +547,8 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
     // Calculate structural scale
     const scaleHtml = createRdaUlMeter(category, nutrientName, currentValue, rdaTarget, ulTarget, unit);
 
-    const leftTitle = details.sourcesTitleLeft || "Highest Sources";
-    const rightTitle = details.sourcesTitleRight || "";
+    const leftTitle = details.sourcesTitleLeft || 'Highest Sources';
+    const rightTitle = details.sourcesTitleRight || '';
 
     // Decide between dual-column and single-column structures dynamically
     let sourcesHtml = '';
@@ -528,21 +557,29 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
             <div class="sources-container">
                 <div class="sources-list">
                     <h5>${leftTitle}</h5>
-                    ${details.sourcesLeft.map(s => `
+                    ${details.sourcesLeft
+                        .map(
+                            s => `
                         <div class="source-item">
                             <span>${s.food}</span>
                             <span>${s.amount}</span>
                         </div>
-                    `).join('')}
+                    `
+                        )
+                        .join('')}
                 </div>
                 <div class="sources-list">
                     <h5>${rightTitle}</h5>
-                    ${details.sourcesRight.map(s => `
+                    ${details.sourcesRight
+                        .map(
+                            s => `
                         <div class="source-item">
                             <span>${s.food}</span>
                             <span>${s.amount}</span>
                         </div>
-                    `).join('')}
+                    `
+                        )
+                        .join('')}
                 </div>
             </div>
         `;
@@ -551,12 +588,16 @@ function getNutrientAnalysisHTML(category, nutrientName, currentValue, rdaTarget
             <div class="sources-container single-column">
                 <div class="sources-list">
                     <h5>${leftTitle}</h5>
-                    ${details.sourcesLeft.map(s => `
+                    ${details.sourcesLeft
+                        .map(
+                            s => `
                         <div class="source-item">
                             <span>${s.food}</span>
                             <span>${s.amount}</span>
                         </div>
-                    `).join('')}
+                    `
+                        )
+                        .join('')}
                 </div>
             </div>
         `;
@@ -605,10 +646,25 @@ function createCategoryCard(category, activeData) {
     }
 
     const headerEl = document.createElement('h3');
+    const CATEGORY_ICONS = {
+        general: '⚡',
+        lipids: '💧',
+        proteins_and_aminos: '🧬',
+        vitamins: '💊',
+        minerals: '⛏️',
+        carbohydrates: '🌾',
+        cellular_bioactives: '🔬',
+        antioxidants: '🛡️',
+        antinutrients: '⚠️',
+        biogenic_amines: '🧪'
+    };
+
+    // In createCategoryCard():
+    const icon = CATEGORY_ICONS[category] || '📊';
     headerEl.innerHTML = `
-        <span>${displayTitle} ${progressLabel}</span>
-        <span class="toggle-icon">▼</span>
-    `;
+    <span>${icon} ${displayTitle} ${progressLabel}</span>
+    <span class="toggle-icon">▼</span>
+`;
     catEl.appendChild(headerEl);
 
     const progressContainer = document.createElement('div');
@@ -637,7 +693,6 @@ function createCategoryCard(category, activeData) {
 
     if (!isCollapsed) {
         for (const [nutrientName, meta] of Object.entries(nutrients)) {
-
             if (meta.isSubheader) {
                 const subheaderRow = document.createElement('div');
                 subheaderRow.className = 'nutrient-row subheader';
@@ -660,8 +715,8 @@ function createCategoryCard(category, activeData) {
             if (activeData && activeData.isCompare) {
                 const rawVal1 = activeData.slot1[category]?.[nutrientName] || 0;
                 const rawVal2 = activeData.slot2[category]?.[nutrientName] || 0;
-                const rawAbsorbed1 = activeData.slot1[category]?.[nutrientName + "_absorbed"] || 0;
-                const rawAbsorbed2 = activeData.slot2[category]?.[nutrientName + "_absorbed"] || 0;
+                const rawAbsorbed1 = activeData.slot1[category]?.[nutrientName + '_absorbed'] || 0;
+                const rawAbsorbed2 = activeData.slot2[category]?.[nutrientName + '_absorbed'] || 0;
 
                 const displayVal1 = rawVal1 % 1 === 0 ? rawVal1 : rawVal1.toFixed(2);
                 const displayVal2 = rawVal2 % 1 === 0 ? rawVal2 : rawVal2.toFixed(2);
@@ -726,8 +781,9 @@ function createCategoryCard(category, activeData) {
                     `;
                 }
             } else {
-                const rawVal = (activeData && activeData[category]) ? (activeData[category][nutrientName] || 0) : 0;
-                const rawAbsorbed = (activeData && activeData[category]) ? (activeData[category][nutrientName + "_absorbed"] || 0) : 0;
+                const rawVal = activeData && activeData[category] ? activeData[category][nutrientName] || 0 : 0;
+                const rawAbsorbed =
+                    activeData && activeData[category] ? activeData[category][nutrientName + '_absorbed'] || 0 : 0;
 
                 const displayVal = rawVal % 1 === 0 ? rawVal : rawVal.toFixed(2);
                 const displayAbs = rawAbsorbed % 1 === 0 ? rawAbsorbed : rawAbsorbed.toFixed(2);
@@ -788,10 +844,10 @@ function createCategoryCard(category, activeData) {
             }
 
             const uniqueKey = `${category}_${nutrientName}`;
-            row.addEventListener('click', (e) => {
+            row.addEventListener('click', e => {
                 if (e.target.closest('.rda-container')) return;
                 e.stopPropagation();
-                state.expandedNutrient = (state.expandedNutrient === uniqueKey) ? null : uniqueKey;
+                state.expandedNutrient = state.expandedNutrient === uniqueKey ? null : uniqueKey;
                 renderNutritionPanel();
             });
 
@@ -801,8 +857,8 @@ function createCategoryCard(category, activeData) {
                 if (activeData && activeData.isCompare) {
                     const rawVal1 = activeData.slot1[category]?.[nutrientName] || 0;
                     const rawVal2 = activeData.slot2[category]?.[nutrientName] || 0;
-                    const rawAbsorbed1 = activeData.slot1[category]?.[nutrientName + "_absorbed"] || 0;
-                    const rawAbsorbed2 = activeData.slot2[category]?.[nutrientName + "_absorbed"] || 0;
+                    const rawAbsorbed1 = activeData.slot1[category]?.[nutrientName + '_absorbed'] || 0;
+                    const rawAbsorbed2 = activeData.slot2[category]?.[nutrientName + '_absorbed'] || 0;
 
                     const col1 = state.compareSlots[0].color;
                     const col2 = state.compareSlots[1].color;
@@ -810,13 +866,33 @@ function createCategoryCard(category, activeData) {
                     const label2 = state.compareSlots[1].parsed ? state.compareSlots[1].parsed.displayName : 'Item B';
 
                     // Passing net absorbed values directly into detailed analysis graphs
-                    const analysisHtml = getNutrientAnalysisCompareHTML(category, nutrientName, rawAbsorbed1, rawAbsorbed2, rdaTarget, ulTarget, unit, col1, col2, label1, label2);
+                    const analysisHtml = getNutrientAnalysisCompareHTML(
+                        category,
+                        nutrientName,
+                        rawAbsorbed1,
+                        rawAbsorbed2,
+                        rdaTarget,
+                        ulTarget,
+                        unit,
+                        col1,
+                        col2,
+                        label1,
+                        label2
+                    );
                     const detailPanel = document.createElement('div');
                     detailPanel.innerHTML = analysisHtml;
                     contentWrapper.appendChild(detailPanel.firstElementChild);
                 } else {
-                    const rawAbsorbed = (activeData && activeData[category]) ? (activeData[category][nutrientName + "_absorbed"] || 0) : 0;
-                    const analysisHtml = getNutrientAnalysisHTML(category, nutrientName, rawAbsorbed, rdaTarget, ulTarget, unit);
+                    const rawAbsorbed =
+                        activeData && activeData[category] ? activeData[category][nutrientName + '_absorbed'] || 0 : 0;
+                    const analysisHtml = getNutrientAnalysisHTML(
+                        category,
+                        nutrientName,
+                        rawAbsorbed,
+                        rdaTarget,
+                        ulTarget,
+                        unit
+                    );
                     const detailPanel = document.createElement('div');
                     detailPanel.innerHTML = analysisHtml;
                     contentWrapper.appendChild(detailPanel.firstElementChild);
@@ -827,7 +903,7 @@ function createCategoryCard(category, activeData) {
 
     catEl.appendChild(contentWrapper);
 
-    catEl.addEventListener('click', (e) => {
+    catEl.addEventListener('click', e => {
         if (e.target.closest('.category-content')) return;
 
         state.collapsedCategories[category] = !isCollapsed;
@@ -839,7 +915,6 @@ function createCategoryCard(category, activeData) {
 
     return catEl;
 }
-
 
 function renderNutritionPanel() {
     const leftColumnEl = document.getElementById('column-left');
@@ -883,14 +958,6 @@ function renderNutritionPanel() {
 // Bind Global DOM Actions
 document.getElementById('toggle-all-btn').addEventListener('click', toggleAllCategories);
 
-// Bind Global DOM Actions
-document.getElementById('toggle-all-btn').addEventListener('click', toggleAllCategories);
-
-// 7. Event Listener Binding & Bootstrapping
-document.getElementById('toggle-all-btn').addEventListener('click', toggleAllCategories);
-
-
-// Mode Switcher Toggles
 // Mode Switcher Toggles
 const tabDietBtn = document.getElementById('tab-diet');
 const tabCompareBtn = document.getElementById('tab-compare');
@@ -960,13 +1027,13 @@ function clearCompareSlot(slotIndex) {
 
 // Bind Slot Actions
 compareAdd1Btn.addEventListener('click', () => setCompareSlot(0, compareInput1.value));
-compareInput1.addEventListener('keydown', (e) => {
+compareInput1.addEventListener('keydown', e => {
     if (e.key === 'Enter') setCompareSlot(0, compareInput1.value);
 });
 clearSlot1Btn.addEventListener('click', () => clearCompareSlot(0));
 
 compareAdd2Btn.addEventListener('click', () => setCompareSlot(1, compareInput2.value));
-compareInput2.addEventListener('keydown', (e) => {
+compareInput2.addEventListener('keydown', e => {
     if (e.key === 'Enter') setCompareSlot(1, compareInput2.value);
 });
 clearSlot2Btn.addEventListener('click', () => clearCompareSlot(1));
@@ -1012,7 +1079,7 @@ function removeFood(index) {
 // Bind Global DOM Listeners
 document.getElementById('add-btn').addEventListener('click', addFood);
 
-document.getElementById('food-input').addEventListener('keydown', (e) => {
+document.getElementById('food-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') {
         addFood();
     }

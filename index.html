@@ -11,7 +11,7 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="NutriTrack" />
+        <meta name="apple-mobile-web-app-title" content="Nutritional App" />
 
         <!-- Strict Content Security Policy (CSP) -->
         <meta
@@ -20,7 +20,7 @@
         />
 
         <!-- Primary SEO Metadata -->
-        <title>NutriTrack — Precision Biochemical Nutrition & Bioavailability Tracker</title>
+        <title>Nutritional App — Precision Biochemical Nutrition & Bioavailability Tracker</title>
         <meta
             name="description"
             content="An advanced, client-side nutrition and bioavailability tracker analyzing micronutrient ratios, fatty acid profiles, and absorption rates."
@@ -30,10 +30,10 @@
         <link rel="canonical" href="https://adamnordling.github.io/nutritional-app/" />
 
         <!-- Open Graph / Universal Social Preview -->
-        <meta property="og:site_name" content="NutriTrack" />
+        <meta property="og:site_name" content="Nutritional App" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://adamnordling.github.io/nutritional-app/" />
-        <meta property="og:title" content="NutriTrack — Precision Biochemical Nutrition Tracker" />
+        <meta property="og:title" content="Nutritional App — Precision Biochemical Nutrition Tracker" />
         <meta
             property="og:description"
             content="Track gross ingestion vs. net biological absorption with advanced RDA/UL calibration and side-by-side food comparison."
@@ -44,7 +44,7 @@
 
         <!-- Twitter / X Card -->
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="NutriTrack — Precision Nutrition Tracker" />
+        <meta name="twitter:title" content="Nutritional App — Precision Nutrition Tracker" />
         <meta
             name="twitter:description"
             content="Track gross ingestion vs. net biological absorption with full biochemical breakdowns."
@@ -55,17 +55,17 @@
         <link rel="manifest" href="./manifest.webmanifest" />
 
         <!-- Preload Critical Rendering Path Assets -->
-        <link rel="preload" href="./style.css" as="style" />
+        <link rel="preload" href="./src/style.css" as="style" />
         <link rel="preload" href="./src/app.js" as="script" crossorigin="anonymous" />
 
         <!-- Stylesheet & Favicon Links (All strictly relative for GitHub Pages) -->
-        <link rel="stylesheet" href="./style.css" />
+        <link rel="stylesheet" href="./src/style.css" />
         <link rel="icon" type="image/svg+xml" href="./src/assets/favicon.svg" />
         <link rel="apple-touch-icon" href="./src/assets/apple-touch-icon.png" />
     </head>
     <body>
         <header class="app-header">
-            <h1>🍏 NutriTrack <span class="badge">Core Prototype</span></h1>
+            <h1>🍏 Nutritional App <span class="badge">Core Prototype</span></h1>
         </header>
 
         <main class="app-container">
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <div class="card diet-card" style="margin-top: 15px;">
+                    <div class="card diet-card" style="margin-top: 15px">
                         <h2>My Diet</h2>
                         <p class="subtitle">Click to lock, hover to preview</p>
                         <div class="resizable-scroll-container diet-list-wrapper">
@@ -101,22 +101,45 @@
                     <!-- Slot A -->
                     <div class="card input-card" id="slot-1-card">
                         <div class="slot-header">
-                            <span class="slot-badge" style="background-color: #0072b2;">Item A</span>
-                            <button class="clear-slot-btn" id="clear-slot-1-btn" title="Clear Slot A" type="button">&times;</button>
+                            <span class="slot-badge" style="background-color: #0072b2">Item A</span>
+                            <button class="clear-slot-btn" id="clear-slot-1-btn" title="Clear Slot A" type="button">
+                                &times;
+                            </button>
                         </div>
-                        <p class="subtitle" style="margin-bottom: 8px;">Type and press Set (e.g., "500g chicken")</p>
+                        <p class="subtitle" style="margin-bottom: 8px">Type and press Set (e.g., "500g chicken")</p>
                         <div class="slot-body">
                             <div class="input-group">
-                                <input type="text" id="compare-input-1" placeholder="e.g., 500g chicken" autocomplete="off" />
+                                <input
+                                    type="text"
+                                    id="compare-input-1"
+                                    placeholder="e.g., 500g chicken"
+                                    autocomplete="off"
+                                />
                                 <button id="compare-add-1-btn" type="button">Set</button>
                             </div>
-                            <div class="color-picker-wrapper" style="margin: 8px 0;">
+                            <div class="color-picker-wrapper" style="margin: 8px 0">
                                 <label>Color:</label>
                                 <div class="color-options" data-slot="1">
-                                    <span class="color-dot active" style="background-color: #0072b2;" data-color="#0072b2"></span>
-                                    <span class="color-dot" style="background-color: #332288;" data-color="#332288"></span>
-                                    <span class="color-dot" style="background-color: #009988;" data-color="#009988"></span>
-                                    <span class="color-dot" style="background-color: #aa3377;" data-color="#aa3377"></span>
+                                    <span
+                                        class="color-dot active"
+                                        style="background-color: #0072b2"
+                                        data-color="#0072b2"
+                                    ></span>
+                                    <span
+                                        class="color-dot"
+                                        style="background-color: #332288"
+                                        data-color="#332288"
+                                    ></span>
+                                    <span
+                                        class="color-dot"
+                                        style="background-color: #009988"
+                                        data-color="#009988"
+                                    ></span>
+                                    <span
+                                        class="color-dot"
+                                        style="background-color: #aa3377"
+                                        data-color="#aa3377"
+                                    ></span>
                                 </div>
                             </div>
                             <div class="slot-status" id="slot-1-status">No food loaded</div>
@@ -124,25 +147,48 @@
                     </div>
 
                     <!-- Slot B -->
-                    <div class="card diet-card" id="slot-2-card" style="margin-top: 15px;">
+                    <div class="card diet-card" id="slot-2-card" style="margin-top: 15px">
                         <div class="slot-header">
-                            <span class="slot-badge" style="background-color: #e69f00;">Item B</span>
-                            <button class="clear-slot-btn" id="clear-slot-2-btn" title="Clear Slot B" type="button">&times;</button>
+                            <span class="slot-badge" style="background-color: #e69f00">Item B</span>
+                            <button class="clear-slot-btn" id="clear-slot-2-btn" title="Clear Slot B" type="button">
+                                &times;
+                            </button>
                         </div>
-                        <p class="subtitle" style="margin-bottom: 8px;">Type and press Set (e.g., "500g potatoes")</p>
+                        <p class="subtitle" style="margin-bottom: 8px">Type and press Set (e.g., "500g potatoes")</p>
                         <div class="slot-body">
                             <div>
                                 <div class="input-group">
-                                    <input type="text" id="compare-input-2" placeholder="e.g., 500g potatoes" autocomplete="off" />
+                                    <input
+                                        type="text"
+                                        id="compare-input-2"
+                                        placeholder="e.g., 500g potatoes"
+                                        autocomplete="off"
+                                    />
                                     <button id="compare-add-2-btn" type="button">Set</button>
                                 </div>
-                                <div class="color-picker-wrapper" style="margin: 8px 0;">
+                                <div class="color-picker-wrapper" style="margin: 8px 0">
                                     <label>Color:</label>
                                     <div class="color-options" data-slot="2">
-                                        <span class="color-dot active" style="background-color: #e69f00;" data-color="#e69f00"></span>
-                                        <span class="color-dot" style="background-color: #ee7733;" data-color="#ee7733"></span>
-                                        <span class="color-dot" style="background-color: #228833;" data-color="#228833"></span>
-                                        <span class="color-dot" style="background-color: #cc3311;" data-color="#cc3311"></span>
+                                        <span
+                                            class="color-dot active"
+                                            style="background-color: #e69f00"
+                                            data-color="#e69f00"
+                                        ></span>
+                                        <span
+                                            class="color-dot"
+                                            style="background-color: #ee7733"
+                                            data-color="#ee7733"
+                                        ></span>
+                                        <span
+                                            class="color-dot"
+                                            style="background-color: #228833"
+                                            data-color="#228833"
+                                        ></span>
+                                        <span
+                                            class="color-dot"
+                                            style="background-color: #cc3311"
+                                            data-color="#cc3311"
+                                        ></span>
                                     </div>
                                 </div>
                             </div>
