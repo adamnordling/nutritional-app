@@ -27,7 +27,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Restricts the main viewport from scrolling */
+    overflow: hidden;
 }
 
 /* ==========================================================================
@@ -83,7 +83,7 @@ body {
 }
 
 .diet-card {
-    flex: 0 1 auto; /* Changed from flex-grow: 1 to wrap tightly to content height */
+    flex: 0 1 auto;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -91,9 +91,9 @@ body {
 }
 
 .diet-list-wrapper {
-    flex: 0 1 auto; /* Changed from flex-grow: 1 */
-    min-height: 50px; /* Reduced from 150px to fit short lists perfectly */
-    max-height: 350px; /* Set max height so it scrolls automatically when items accumulate */
+    flex: 0 1 auto;
+    min-height: 50px;
+    max-height: 350px;
 }
 
 .diet-list {
@@ -104,12 +104,13 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 10px 12px;
     border: 1px solid transparent;
     border-bottom: 1px solid var(--border-color);
     border-radius: 6px;
     cursor: pointer;
     user-select: none;
+    transition: background-color 0.15s ease;
 }
 
 .diet-item:hover {
@@ -125,9 +126,24 @@ body {
     border-color: var(--primary-color);
 }
 
-.diet-item-text {
+.diet-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     flex-grow: 1;
+    min-width: 0;
+}
+
+.diet-food-title {
     font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.diet-unit-breakdown {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: monospace;
 }
 
 .remove-btn {
@@ -140,6 +156,7 @@ body {
     padding: 2px 6px;
     border-radius: 4px;
     margin-left: 12px;
+    flex-shrink: 0;
 }
 
 .remove-btn:hover {
@@ -176,7 +193,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    align-items: start; /* Elements sit at natural heights */
+    align-items: start;
 }
 
 .nutrition-column {
@@ -206,43 +223,6 @@ body {
     font-size: 12px;
     color: var(--text-muted);
     margin-bottom: 10px;
-}
-
-.input-group {
-    display: flex;
-    gap: 8px;
-}
-
-input[type='text'] {
-    flex-grow: 1;
-    height: 40px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 0 12px;
-    font-size: 14px;
-    outline: none;
-    background: #fafafa;
-}
-
-input[type='text']:focus {
-    border-color: var(--primary-color);
-    background: #fff;
-}
-
-button {
-    height: 40px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: var(--primary-hover);
 }
 
 .indicator {
@@ -279,7 +259,7 @@ button:hover {
     transition:
         box-shadow 0.2s,
         border-color 0.2s;
-    cursor: pointer; /* Indicates the non-content area is clickable */
+    cursor: pointer;
 }
 
 .nutrient-category h3 {
@@ -292,12 +272,8 @@ button:hover {
     color: #1a1a1a;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    border-bottom: none !important;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
 }
 
-/* Hover effects for category titles */
 .nutrient-category h3:hover {
     color: var(--primary-hover);
 }
@@ -306,7 +282,6 @@ button:hover {
     color: var(--danger-color);
 }
 
-/* Collapsible Arrow and States */
 .toggle-icon {
     font-size: 10px;
     color: var(--text-muted);
@@ -324,7 +299,7 @@ button:hover {
 .category-content {
     display: block;
     margin-top: 12px;
-    cursor: default; /* Resets default cursor so text rows override cleanly */
+    cursor: default;
 }
 
 .category-content.hidden {
@@ -332,7 +307,7 @@ button:hover {
 }
 
 /* ==========================================================================
-   7. COLLAPSIBLE PROGRESS BAR LINES
+   7. CATEGORY PROGRESS BARS
    ========================================================================== */
 .category-progress-bar {
     width: 100%;
@@ -353,7 +328,6 @@ button:hover {
     box-shadow: 0 0 8px rgba(45, 204, 112, 0.35);
 }
 
-/* Dynamic Limit-color overrides (Red fill) */
 .limit-category .category-progress-fill {
     background-color: var(--danger-color) !important;
 }
@@ -363,11 +337,6 @@ button:hover {
     background: #fffdfd;
 }
 
-.nutrient-category.limit-category .percentage-label {
-    color: var(--danger-color);
-}
-
-/* Custom stacked dual progress tracks for categories in comparison mode */
 .category-progress-bar.compare-category-bar {
     background-color: transparent !important;
     height: auto;
@@ -379,7 +348,7 @@ button:hover {
 }
 
 /* ==========================================================================
-   8. INTERACTIVE TOGGLE CONTROLS (HEADER)
+   8. HEADER TOGGLE CONTROLS
    ========================================================================== */
 .header-controls {
     display: flex;
@@ -399,8 +368,6 @@ button:hover {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: all 0.2s;
-    height: auto;
-    width: auto;
 }
 
 .toggle-all-btn:hover {
@@ -415,32 +382,25 @@ button:hover {
 .nutrient-row {
     padding: 8px 0;
     border-bottom: 1px dashed var(--border-color);
-    margin-right: 0px; /* Aligns perfectly with card boundaries */
 }
 
 .nutrient-row:last-child {
     border-bottom: none;
 }
 
-/* Hover-Highlighted Rows */
 .nutrient-row.clickable-row {
     cursor: pointer;
-    transition:
-        background-color 0.15s ease,
-        padding 0.15s ease;
-    padding: 8px 10px; /* internal hover-ring boundaries padding */
-    margin-left: -10px; /* Offsets margins to align text perfectly with headers */
-    width: calc(100% + 20px); /* Keeps text from shifting during hovers */
+    transition: background-color 0.15s ease;
+    padding: 8px 10px;
+    margin-left: -10px;
+    width: calc(100% + 20px);
     border-radius: 6px;
-    border-bottom: 1px dashed var(--border-color);
 }
 
 .nutrient-row.clickable-row:hover {
-    background-color: #f1f3f5; /* Subtle card highlight */
-    /* background-color: #e2fbe8; /* Standardizes the green hover theme across the app */
+    background-color: #f1f3f5;
 }
 
-/* Tree Indentations */
 .nutrient-row.indent-1.clickable-row {
     padding-left: 15px;
 }
@@ -491,7 +451,6 @@ button:hover {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: none !important;
 }
 
 /* ==========================================================================
@@ -511,12 +470,12 @@ button:hover {
 .rda-container {
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: 100% !important;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
     height: 10px;
-    background-color: transparent !important; /* Track background moves to internal wrapper */
+    background-color: transparent;
     position: relative;
-    overflow: visible;
 }
 
 .rda-bar {
@@ -530,6 +489,18 @@ button:hover {
     background-color: #3498db;
 }
 
+.rda-bar.over-limit {
+    background-color: #f1c40f !important;
+}
+
+.rda-bar.limit-under {
+    background-color: #f5c2c2 !important;
+}
+
+.rda-bar.limit-over {
+    background-color: #c0392b !important;
+}
+
 .percentage-label {
     font-size: 11px;
     font-weight: bold;
@@ -537,30 +508,29 @@ button:hover {
     text-align: right;
     white-space: nowrap;
     flex-shrink: 0;
-    min-width: 35px;
-}
-
-/* Over-the-Limit Warnings (Standard RDA exceeding UL boundaries) */
-.rda-bar.over-limit {
-    background-color: #f1c40f !important; /* Warning Yellow Bar */
+    width: 75px;
 }
 
 .percentage-label.over-limit-text {
-    color: #e67e22 !important; /* Orange text color for easy readability */
+    color: #e67e22 !important;
 }
 
-/* Custom red progress bar states for limit categories (Antinutrients & Biogenic Amines) */
-.rda-bar.limit-under {
-    background-color: #f5c2c2 !important; /* Soft Light Red */
+.rda-bar.unabsorbed {
+    opacity: 0.35 !important;
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.2) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.2) 75%,
+        transparent 75%,
+        transparent
+    ) !important;
+    background-size: 8px 8px !important;
 }
 
-.rda-bar.limit-over {
-    background-color: #c0392b !important; /* Rich Dark Red (exceeding limit) */
-}
-
-/* ==========================================================================
-   11. DOTTED NO-TARGET (N/T) SYSTEM LAYOUT
-   ========================================================================== */
+/* No-Target (N/T) Systems */
 .rda-container.no-target-layout {
     background-color: transparent !important;
     overflow: visible;
@@ -577,13 +547,12 @@ button:hover {
 }
 
 .nt-badge {
-    position: absolute;
-    right: -35px; /* Sits perfectly within the 35px padding gap */
     font-size: 11px;
     font-weight: bold;
     color: #adb5bd;
-    width: 30px;
+    width: 75px;
     text-align: right;
+    flex-shrink: 0;
 }
 
 .no-target-val {
@@ -591,14 +560,14 @@ button:hover {
 }
 
 /* ==========================================================================
-   12. EXPANDED NUTRITION ANALYSIS DRAWER
+   11. EXPANDED NUTRITION ANALYSIS DRAWER
    ========================================================================== */
 .nutrient-details-panel {
     background-color: #ffffff;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 15px;
-    margin: 8px 10px 8px -10px; /* Offsets padding margins cleanly */
+    margin: 8px 10px 8px -10px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
@@ -651,9 +620,7 @@ button:hover {
     color: var(--primary-color);
 }
 
-/* ==========================================================================
-   13. MULTI-COLOR RAD/UL CALIBRATED SCALE
-   ========================================================================== */
+/* Multi-color Meter */
 .detailed-meter-container {
     margin: 15px 0 20px 0;
     position: relative;
@@ -714,7 +681,7 @@ button:hover {
 }
 
 /* ==========================================================================
-   14. MODE SWITCHER TABS & COMPARISON SPECIFIC STYLES
+   12. COMPARISON MODE STYLES
    ========================================================================== */
 .mode-tabs {
     display: flex;
@@ -757,26 +724,12 @@ button:hover {
 .mode-view {
     display: flex;
     flex-direction: column;
-    height: auto; /* Changed from 100% to shrink-wrap internal cards */
+    height: auto;
     max-height: 100%;
 }
 
 .mode-view.hidden {
     display: none !important;
-}
-
-.compare-slots-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.compare-slot {
-    background: #fafafa;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 12px;
 }
 
 .slot-header {
@@ -803,8 +756,6 @@ button:hover {
     font-weight: bold;
     cursor: pointer;
     padding: 0 4px;
-    height: auto;
-    width: auto;
 }
 
 .clear-slot-btn:hover {
@@ -854,7 +805,7 @@ button:hover {
     font-size: 12px;
     color: var(--text-muted);
     padding-top: 10px;
-    margin-top: 12px; /* Adds clean spacing below color pickers */
+    margin-top: 12px;
     border-top: 1px solid var(--border-color);
     font-weight: 500;
 }
@@ -892,24 +843,18 @@ button:hover {
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: transparent !important; /* Track backgrounds move to internal wrappers */
-    padding: 0;
-    overflow: visible;
+    background-color: transparent !important;
     width: 100% !important;
-    gap: 10px;
+    gap: 12px !important;
 }
 
-/* Changed width: 100% to flex-grow: 1 to prevent pushing labels downwards */
-/* Changed width: 100% to flex-grow: 1 to prevent pushing labels downwards */
 .compare-bars-wrapper {
+    width: auto !important;
+    flex-grow: 1 !important;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 2px;
-    flex-grow: 1;
-    height: 100%;
-    padding: 2px 0;
-    box-sizing: border-box;
 }
 
 .rda-bar.compare-bar {
@@ -928,10 +873,7 @@ button:hover {
     text-align: right;
     white-space: nowrap;
     flex-shrink: 0;
-}
-
-.compare-pct {
-    line-height: 1.1;
+    width: 75px;
 }
 
 .compare-meters-wrapper {
@@ -946,95 +888,366 @@ button:hover {
 }
 
 /* ==========================================================================
-   ASBOPRTION
+   13. STEP 1 & STEP 2 FOOD SELECTOR (REWORKED & CONDENSED)
    ========================================================================== */
-
-/* Update comparison containers to handle wider net vs gross labels */
-.rda-container.compare-container {
-    width: calc(100% - 75px) !important;
+.food-input-step {
+    position: relative;
+    width: 100%;
 }
 
-.compare-percentages {
-    right: -75px !important;
-    width: 70px !important;
+.food-input-step.hidden {
+    display: none !important;
 }
 
-/* Accessible, semi-transparent striped style for bio-unabsorbed segments */
-.rda-bar.unabsorbed {
-    opacity: 0.35 !important;
-    background-image: linear-gradient(
-        45deg,
-        rgba(255, 255, 255, 0.2) 25%,
-        transparent 25%,
-        transparent 50%,
-        rgba(255, 255, 255, 0.2) 50%,
-        rgba(255, 255, 255, 0.2) 75%,
-        transparent 75%,
-        transparent
-    ) !important;
-    background-size: 8px 8px !important;
+/* Step 1: Search Bar */
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-/* ==========================================================================
-   FIX: ALIGN PROGRESS BARS AND PERCENTAGE LABELS SIDE-BY-SIDE
-   ========================================================================== */
-
-/* 1. Ensure the standard progress bar row uses normal flex flow (no absolute positioning) */
-.rda-container {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    height: 10px !important;
-    background-color: transparent !important;
-    gap: 12px !important;
+.search-input-wrapper .search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    pointer-events: none;
 }
 
-/* 2. Strip absolute positioning on standard mode labels */
-.percentage-label {
-    position: static !important; /* Force browser to treat it as a flex item */
-    font-size: 11px !important;
-    font-weight: bold !important;
-    color: var(--text-muted) !important;
-    text-align: right !important;
-    white-space: nowrap !important; /* Never wrap */
-    flex-shrink: 0 !important;
-    width: 75px !important; /* Set a standard alignment width */
+#food-search-input {
+    width: 100%;
+    height: 40px;
+    padding-left: 36px;
+    padding-right: 12px;
+    background: #fafafa;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-color);
+    outline: none;
+    transition: all 0.2s ease;
 }
 
-/* 3. Ensure comparison row container uses flex flow (no absolute positioning) */
-.rda-container.compare-container {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    height: 18px !important;
-    width: 100% !important;
-    background-color: transparent !important;
-    gap: 12px !important;
+#food-search-input:focus {
+    background: #ffffff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(45, 204, 112, 0.15);
 }
 
-/* 4. Ensure comparison bar tracks stretch to occupy remaining space */
-.compare-bars-wrapper {
-    width: auto !important; /* Strip the hardcoded 100% */
-    flex-grow: 1 !important; /* Stretch automatically */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    gap: 2px !important;
+.food-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px;
 }
 
-/* 5. Strip absolute positioning on comparison mode labels */
-.compare-percentages {
-    position: static !important; /* Force browser to treat it as a flex item */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    line-height: 1.1 !important;
-    font-size: 10px !important;
-    font-weight: bold !important;
-    text-align: right !important;
-    white-space: nowrap !important; /* Never wrap */
-    flex-shrink: 0 !important;
-    width: 75px !important; /* Align perfectly with standard mode labels */
+.food-dropdown.hidden {
+    display: none;
+}
+
+.food-dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.food-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    opacity: 0.75;
+    transition: all 0.15s ease;
+}
+
+.food-dropdown-item:hover,
+.food-dropdown-item.is-selected {
+    background: #f1f8f3;
+    color: var(--text-color);
+    opacity: 1;
+}
+
+.food-dropdown-item.is-matched {
+    color: var(--text-color);
+    font-weight: 600;
+    opacity: 1;
+}
+
+.food-dropdown-item .item-calories {
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Step 2: Integrated Quantity Bar */
+.quantity-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    position: relative;
+}
+
+.selected-food-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e2fbe8;
+    color: #1b8743;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 10px;
+    height: 38px;
+    border-radius: 6px;
+    border: 1px solid rgba(39, 174, 96, 0.25);
+    cursor: pointer;
+    max-width: 130px;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.selected-food-pill:hover {
+    background: #d4f7de;
+    border-color: #27ae60;
+}
+
+.selected-food-pill span#selected-food-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pill-remove-icon {
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0.6;
+}
+
+.selected-food-pill:hover .pill-remove-icon {
+    opacity: 1;
+}
+
+/* Amount Input + Presets Dropdown */
+.amount-field-container {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+#food-amount-input {
+    width: 100%;
+    height: 38px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0 10px;
+    font-size: 14px;
+    background: #fafafa;
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+#food-amount-input::-webkit-outer-spin-button,
+#food-amount-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#food-amount-input:focus {
+    border-color: var(--primary-color);
+    background: #ffffff;
+}
+
+.amount-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    z-index: 120;
+    max-height: 180px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.amount-dropdown.hidden {
+    display: none;
+}
+
+.amount-dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.amount-preset-item {
+    padding: 7px 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    transition: all 0.12s ease;
+}
+
+.amount-preset-item:hover,
+.amount-preset-item.is-selected {
+    background: #f1f8f3;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Unit Dropdown */
+.unit-dropdown-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.unit-trigger-btn {
+    height: 38px;
+    padding: 0 10px;
+    background: #f1f3f5;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+}
+
+.unit-trigger-btn:hover {
+    background: #e9ecef;
+    border-color: var(--text-muted);
+}
+
+.unit-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 120;
+    min-width: 130px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.unit-menu.hidden {
+    display: none;
+}
+
+.unit-opt {
+    background: none;
+    border: none;
+    padding: 6px 10px;
+    font-size: 12px;
+    text-align: left;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-color);
+    width: 100%;
+}
+
+.unit-opt small {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+.unit-opt:hover {
+    background: #f1f3f5;
+}
+
+.unit-opt.active {
+    background: #e2fbe8;
+    color: #27ae60;
+    font-weight: 700;
+}
+
+.add-submit-btn {
+    height: 38px;
+    padding: 0 14px;
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.add-submit-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* Tutorial Hint Arrow */
+/* Tutorial Hint Badge */
+.tutorial-hint {
+    position: absolute;
+    top: -12px;
+    right: 15px;
+    background: #212529;
+    color: #ffffff;
+    padding: 3px 10px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    pointer-events: none;
+    animation: hint-float 2s infinite ease-in-out;
+}
+
+.hint-arrow {
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 12px;
+}
+
+@keyframes hint-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes bounce-left {
+    0%,
+    100% {
+        transform: translateY(-50%) translateX(0);
+    }
+    50% {
+        transform: translateY(-50%) translateX(-6px);
+    }
 }

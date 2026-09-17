@@ -56,7 +56,7 @@
 
         <!-- Preload Critical Rendering Path Assets -->
         <link rel="preload" href="./src/style.css" as="style" />
-        <link rel="preload" href="./src/app.js" as="script" crossorigin="anonymous" />
+        <link rel="preload" href="src/main.js" as="script" crossorigin="anonymous" />
 
         <!-- Stylesheet & Favicon Links (All strictly relative for GitHub Pages) -->
         <link rel="stylesheet" href="./src/style.css" />
@@ -70,6 +70,7 @@
 
         <main class="app-container">
             <!-- Left Side: Inputs & Active Diet List / Comparison Mode -->
+            <!-- Left Side: Inputs & Active Diet List / Comparison Mode -->
             <section class="left-panel">
                 <div class="mode-tabs">
                     <button id="tab-diet" class="tab-btn active" type="button">📋 My Diet</button>
@@ -78,12 +79,108 @@
 
                 <!-- Diet Mode Workspace -->
                 <div id="diet-mode-views" class="mode-view">
-                    <div class="card input-card">
-                        <h2>Add Food</h2>
-                        <p class="subtitle">Type and press Enter (e.g., "500g chicken")</p>
-                        <div class="input-group">
-                            <input type="text" id="food-input" placeholder="e.g., 500g chicken" autocomplete="off" />
-                            <button id="add-btn" type="button">Add</button>
+                    <div class="card input-card" style="position: relative">
+                        <!-- Tutorial Hint -->
+                        <div id="first-time-hint" class="tutorial-hint" aria-hidden="true">
+                            <span class="hint-arrow">←</span>
+                            <span>Click here to add foods!</span>
+                        </div>
+
+                        <!-- Step 1: Food Search -->
+                        <div id="food-step-search" class="food-input-step">
+                            <div class="search-input-wrapper">
+                                <svg
+                                    class="search-icon"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <input
+                                    type="text"
+                                    id="food-search-input"
+                                    placeholder="Search or select food..."
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                />
+                            </div>
+                            <div id="food-dropdown" class="food-dropdown hidden">
+                                <ul id="food-dropdown-list" class="food-dropdown-list"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Integrated Quantity Step -->
+                        <div id="food-step-quantity" class="food-input-step hidden">
+                            <div class="quantity-input-wrapper">
+                                <button
+                                    type="button"
+                                    class="selected-food-pill"
+                                    id="cancel-food-selection"
+                                    title="Change selected food"
+                                >
+                                    <span id="selected-food-name">Chicken</span>
+                                    <span class="pill-remove-icon">&times;</span>
+                                </button>
+
+                                <div class="amount-field-container">
+                                    <input
+                                        type="number"
+                                        id="food-amount-input"
+                                        placeholder="Qty"
+                                        autocomplete="off"
+                                        step="any"
+                                    />
+                                    <div id="amount-dropdown" class="amount-dropdown hidden">
+                                        <ul id="amount-dropdown-list" class="amount-dropdown-list"></ul>
+                                    </div>
+                                </div>
+
+                                <div class="unit-dropdown-container">
+                                    <button
+                                        type="button"
+                                        id="unit-trigger-btn"
+                                        class="unit-trigger-btn"
+                                        title="Change unit"
+                                    >
+                                        <span id="current-unit-label">g</span>
+                                        <svg
+                                            class="unit-chevron"
+                                            width="10"
+                                            height="10"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2.5"
+                                        >
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </button>
+                                    <div id="unit-menu" class="unit-menu hidden">
+                                        <button type="button" class="unit-opt active" data-unit="g">
+                                            <strong>g</strong> <small>grams</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="kg">
+                                            <strong>kg</strong> <small>kilograms</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="mg">
+                                            <strong>mg</strong> <small>milligrams</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="oz">
+                                            <strong>oz</strong> <small>ounces</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="lbs">
+                                            <strong>lbs</strong> <small>pounds</small>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button type="button" id="confirm-add-food-btn" class="add-submit-btn">Add</button>
+                            </div>
                         </div>
                     </div>
 
@@ -217,6 +314,6 @@
         </main>
 
         <!-- Relative path to JS: Prevents 404 on GitHub Pages subpaths -->
-        <script type="module" src="./src/app.js"></script>
+        <script type="module" src="src/main.js"></script>
     </body>
 </html>
