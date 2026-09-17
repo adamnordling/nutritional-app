@@ -1,125 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimalist Nutrition Tracker</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header class="app-header">
-    <h1>🍏 NutriTrack <span class="badge">Core Prototype</span></h1>
-</header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-<main class="app-container">
-    <!-- Left Side: Inputs & Active Diet List -->
-    <!-- Left Side: Inputs & Active Diet List / Comparison Mode -->
-    <section class="left-panel">
-        <!-- ADD THIS: Mode Switcher Tabs -->
-        <div class="mode-tabs">
-            <button id="tab-diet" class="tab-btn active">📋 My Diet</button>
-            <button id="tab-compare" class="tab-btn">⚖️ Comparison Mode</button>
-        </div>
+        <!-- Theme Color & Mobile Chrome/Safari status bar controls -->
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#131418" media="(prefers-color-scheme: dark)" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="NutriTrack" />
 
-        <!-- ADD THIS WRAPPER around your existing cards -->
-        <div id="diet-mode-views" class="mode-view">
-            <div class="card input-card">
-                <h2>Add Food</h2>
-                <p class="subtitle">Type and press Enter (e.g., "500g chicken")</p>
-                <div class="input-group">
-                    <input type="text" id="food-input" placeholder="e.g., 500g chicken">
-                    <button id="add-btn">Add</button>
+        <!-- Strict Content Security Policy (CSP) -->
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; object-src 'none';"
+        />
+
+        <!-- Primary SEO Metadata -->
+        <title>NutriTrack — Precision Biochemical Nutrition & Bioavailability Tracker</title>
+        <meta
+            name="description"
+            content="An advanced, client-side nutrition and bioavailability tracker analyzing micronutrient ratios, fatty acid profiles, and absorption rates."
+        />
+        <meta name="author" content="Adam Nordling" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://adamnordling.github.io/nutritional-app/" />
+
+        <!-- Open Graph / Universal Social Preview -->
+        <meta property="og:site_name" content="NutriTrack" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://adamnordling.github.io/nutritional-app/" />
+        <meta property="og:title" content="NutriTrack — Precision Biochemical Nutrition Tracker" />
+        <meta
+            property="og:description"
+            content="Track gross ingestion vs. net biological absorption with advanced RDA/UL calibration and side-by-side food comparison."
+        />
+        <meta property="og:image" content="./src/assets/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <!-- Twitter / X Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="NutriTrack — Precision Nutrition Tracker" />
+        <meta
+            name="twitter:description"
+            content="Track gross ingestion vs. net biological absorption with full biochemical breakdowns."
+        />
+        <meta name="twitter:image" content="./src/assets/og-image.png" />
+
+        <!-- Web Application Manifest for PWA installation -->
+        <link rel="manifest" href="./manifest.webmanifest" />
+
+        <!-- Preload Critical Rendering Path Assets -->
+        <link rel="preload" href="./style.css" as="style" />
+        <link rel="preload" href="./src/app.js" as="script" crossorigin="anonymous" />
+
+        <!-- Stylesheet & Favicon Links (All strictly relative for GitHub Pages) -->
+        <link rel="stylesheet" href="./style.css" />
+        <link rel="icon" type="image/svg+xml" href="./src/assets/favicon.svg" />
+        <link rel="apple-touch-icon" href="./src/assets/apple-touch-icon.png" />
+    </head>
+    <body>
+        <header class="app-header">
+            <h1>🍏 NutriTrack <span class="badge">Core Prototype</span></h1>
+        </header>
+
+        <main class="app-container">
+            <!-- Left Side: Inputs & Active Diet List / Comparison Mode -->
+            <section class="left-panel">
+                <div class="mode-tabs">
+                    <button id="tab-diet" class="tab-btn active" type="button">📋 My Diet</button>
+                    <button id="tab-compare" class="tab-btn" type="button">⚖️ Comparison Mode</button>
                 </div>
-            </div>
 
-            <div class="card diet-card" style="margin-top: 15px;">
-                <h2>My Diet</h2>
-                <p class="subtitle">Click to lock, hover to preview</p>
-                <div class="resizable-scroll-container diet-list-wrapper">
-                    <ul id="diet-list" class="diet-list"></ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Comparison Mode Workspace -->
-        <div id="compare-mode-views" class="mode-view hidden">
-
-            <!-- Card 1: Slot A (Using input-card layout style) -->
-            <div class="card input-card" id="slot-1-card">
-                <div class="slot-header">
-                    <span class="slot-badge" style="background-color: #0072b2;">Item A</span>
-                    <button class="clear-slot-btn" id="clear-slot-1-btn" title="Clear Slot A">&times;</button>
-                </div>
-                <p class="subtitle" style="margin-bottom: 8px;">Type and press Set (e.g., "500g chicken")</p>
-                <div class="slot-body">
-                    <div class="input-group">
-                        <input type="text" id="compare-input-1" placeholder="e.g., 500g chicken">
-                        <button id="compare-add-1-btn">Set</button>
-                    </div>
-                    <div class="color-picker-wrapper" style="margin: 8px 0;">
-                        <label>Color:</label>
-                        <div class="color-options" data-slot="1">
-                            <span class="color-dot active" style="background-color: #0072b2;" data-color="#0072b2"></span>
-                            <span class="color-dot" style="background-color: #332288;" data-color="#332288"></span>
-                            <span class="color-dot" style="background-color: #009988;" data-color="#009988"></span>
-                            <span class="color-dot" style="background-color: #aa3377;" data-color="#aa3377"></span>
-                        </div>
-                    </div>
-                    <div class="slot-status" id="slot-1-status">No food loaded</div>
-                </div>
-            </div>
-
-            <!-- Card 2: Slot B (Using diet-card layout style to fill the bottom container) -->
-            <!-- Card 2: Slot B (Using diet-card layout style to fill the bottom container) -->
-            <div class="card diet-card" id="slot-2-card" style="margin-top: 15px;">
-                <div class="slot-header">
-                    <span class="slot-badge" style="background-color: #e69f00;">Item B</span>
-                    <button class="clear-slot-btn" id="clear-slot-2-btn" title="Clear Slot B">&times;</button>
-                </div>
-                <p class="subtitle" style="margin-bottom: 8px;">Type and press Set (e.g., "500g potatoes")</p>
-                <div class="slot-body">
-                    <div>
+                <!-- Diet Mode Workspace -->
+                <div id="diet-mode-views" class="mode-view">
+                    <div class="card input-card">
+                        <h2>Add Food</h2>
+                        <p class="subtitle">Type and press Enter (e.g., "500g chicken")</p>
                         <div class="input-group">
-                            <input type="text" id="compare-input-2" placeholder="e.g., 500g potatoes">
-                            <button id="compare-add-2-btn">Set</button>
-                        </div>
-                        <div class="color-picker-wrapper" style="margin: 8px 0;">
-                            <label>Color:</label>
-                            <div class="color-options" data-slot="2">
-                                <span class="color-dot active" style="background-color: #e69f00;" data-color="#e69f00"></span>
-                                <span class="color-dot" style="background-color: #ee7733;" data-color="#ee7733"></span>
-                                <span class="color-dot" style="background-color: #228833;" data-color="#228833"></span>
-                                <span class="color-dot" style="background-color: #cc3311;" data-color="#cc3311"></span>
-                            </div>
+                            <input type="text" id="food-input" placeholder="e.g., 500g chicken" autocomplete="off" />
+                            <button id="add-btn" type="button">Add</button>
                         </div>
                     </div>
-                    <div class="slot-status" id="slot-2-status">No food loaded</div>
+
+                    <div class="card diet-card" style="margin-top: 15px;">
+                        <h2>My Diet</h2>
+                        <p class="subtitle">Click to lock, hover to preview</p>
+                        <div class="resizable-scroll-container diet-list-wrapper">
+                            <ul id="diet-list" class="diet-list"></ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-        </div>
-    </section>
+                <!-- Comparison Mode Workspace -->
+                <div id="compare-mode-views" class="mode-view hidden">
+                    <!-- Slot A -->
+                    <div class="card input-card" id="slot-1-card">
+                        <div class="slot-header">
+                            <span class="slot-badge" style="background-color: #0072b2;">Item A</span>
+                            <button class="clear-slot-btn" id="clear-slot-1-btn" title="Clear Slot A" type="button">&times;</button>
+                        </div>
+                        <p class="subtitle" style="margin-bottom: 8px;">Type and press Set (e.g., "500g chicken")</p>
+                        <div class="slot-body">
+                            <div class="input-group">
+                                <input type="text" id="compare-input-1" placeholder="e.g., 500g chicken" autocomplete="off" />
+                                <button id="compare-add-1-btn" type="button">Set</button>
+                            </div>
+                            <div class="color-picker-wrapper" style="margin: 8px 0;">
+                                <label>Color:</label>
+                                <div class="color-options" data-slot="1">
+                                    <span class="color-dot active" style="background-color: #0072b2;" data-color="#0072b2"></span>
+                                    <span class="color-dot" style="background-color: #332288;" data-color="#332288"></span>
+                                    <span class="color-dot" style="background-color: #009988;" data-color="#009988"></span>
+                                    <span class="color-dot" style="background-color: #aa3377;" data-color="#aa3377"></span>
+                                </div>
+                            </div>
+                            <div class="slot-status" id="slot-1-status">No food loaded</div>
+                        </div>
+                    </div>
 
-    <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
-    <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
-    <section class="right-panel card">
-        <div class="nutrition-header">
-            <h2>Nutritional Breakdown</h2>
-            <div class="header-controls">
-                <button id="toggle-all-btn" class="toggle-all-btn">Collapse All</button>
-                <span id="nutrition-view-indicator" class="indicator">Showing: Total Diet</span>
-            </div>
-        </div>
-        <!-- Scrollable container -->
-        <div class="resizable-scroll-container nutrition-grid-wrapper">
-            <div id="nutrition-columns" class="nutrition-columns">
-                <div id="column-left" class="nutrition-column"></div>
-                <div id="column-right" class="nutrition-column"></div>
-            </div>
-        </div>
-    </section>
-</main>
+                    <!-- Slot B -->
+                    <div class="card diet-card" id="slot-2-card" style="margin-top: 15px;">
+                        <div class="slot-header">
+                            <span class="slot-badge" style="background-color: #e69f00;">Item B</span>
+                            <button class="clear-slot-btn" id="clear-slot-2-btn" title="Clear Slot B" type="button">&times;</button>
+                        </div>
+                        <p class="subtitle" style="margin-bottom: 8px;">Type and press Set (e.g., "500g potatoes")</p>
+                        <div class="slot-body">
+                            <div>
+                                <div class="input-group">
+                                    <input type="text" id="compare-input-2" placeholder="e.g., 500g potatoes" autocomplete="off" />
+                                    <button id="compare-add-2-btn" type="button">Set</button>
+                                </div>
+                                <div class="color-picker-wrapper" style="margin: 8px 0;">
+                                    <label>Color:</label>
+                                    <div class="color-options" data-slot="2">
+                                        <span class="color-dot active" style="background-color: #e69f00;" data-color="#e69f00"></span>
+                                        <span class="color-dot" style="background-color: #ee7733;" data-color="#ee7733"></span>
+                                        <span class="color-dot" style="background-color: #228833;" data-color="#228833"></span>
+                                        <span class="color-dot" style="background-color: #cc3311;" data-color="#cc3311"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slot-status" id="slot-2-status">No food loaded</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-<script type="module" src="/src/app.js"></script>
-</body>
+            <!-- Right Side: Extensive Nutrition Panel with RDA Progress Bars -->
+            <section class="right-panel card">
+                <div class="nutrition-header">
+                    <h2>Nutritional Breakdown</h2>
+                    <div class="header-controls">
+                        <button id="toggle-all-btn" class="toggle-all-btn" type="button">Collapse All</button>
+                        <span id="nutrition-view-indicator" class="indicator">Showing: Total Diet</span>
+                    </div>
+                </div>
+                <div class="resizable-scroll-container nutrition-grid-wrapper">
+                    <div id="nutrition-columns" class="nutrition-columns">
+                        <div id="column-left" class="nutrition-column"></div>
+                        <div id="column-right" class="nutrition-column"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Relative path to JS: Prevents 404 on GitHub Pages subpaths -->
+        <script type="module" src="./src/app.js"></script>
+    </body>
 </html>
