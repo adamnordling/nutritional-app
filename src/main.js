@@ -5,19 +5,9 @@ import { FOOD_DATABASE } from './foods.js';
    1. APPLICATION STATE & CONFIGURATION
    ========================================================================== */
 
-const state = {
-    diet: [],
-    hoveredIndex: null,
-    selectedIndex: null,
-    allCollapsed: false,
-    collapsedCategories: {},
-    expandedNutrient: null,
-    mode: 'diet',
-    compareSlots: [
-        { id: 'slot1', parsed: null, color: '#0072b2', displayName: 'Item A' },
-        { id: 'slot2', parsed: null, color: '#e69f00', displayName: 'Item B' }
-    ]
-};
+/* ==========================================================================
+   1. APPLICATION STATE & CONFIGURATION
+   ========================================================================== */
 
 const leftColumnLayout = [
     'general',
@@ -39,6 +29,25 @@ const rightColumnLayout = [
     'nucleic_acids_and_purines'
 ];
 
+const state = {
+    diet: [],
+    hoveredIndex: null,
+    selectedIndex: null,
+    allCollapsed: true,
+    collapsedCategories: {},
+    expandedNutrient: null,
+    mode: 'diet',
+    compareSlots: [
+        { id: 'slot1', parsed: null, color: '#0072b2', displayName: 'Item A' },
+        { id: 'slot2', parsed: null, color: '#e69f00', displayName: 'Item B' }
+    ]
+};
+
+// Now safe to initialize because the layout arrays are declared above
+[...leftColumnLayout, ...rightColumnLayout].forEach(cat => {
+    state.collapsedCategories[cat] = true;
+});
+
 const CATEGORY_ICONS = {
     general: '⚡',
     lipids: '💧',
@@ -57,7 +66,7 @@ const CATEGORY_ICONS = {
 };
 
 const UNIT_CONVERSIONS = {
-    g: { toGrams: 1, label: 'g', presets: [50, 100, 150, 200, 250, 300, 400, 500] },
+    g: { toGrams: 1, label: 'g', presets: [50, 100, 150, 200, 250, 500, 750, 1000] },
     kg: { toGrams: 1000, label: 'kg', presets: [0.1, 0.2, 0.25, 0.5, 0.75, 1.0] },
     mg: { toGrams: 0.001, label: 'mg', presets: [250, 500, 1000, 2000] },
     oz: { toGrams: 28.3495231, label: 'oz', presets: [2, 4, 6, 8, 10, 12, 16] },
@@ -686,6 +695,136 @@ function createCategoryCard(category, activeData) {
     return catEl;
 }
 
+let waterGlassesCount = 0; // Each glass = 0.25L (8.45 fl oz)
+
+function renderSummaryDashboard(activeData) {
+    // 1. Gather Macronutrients
+    const consumedCalories = Math.round(activeData?.general?.Calories || 0);
+    const targetCalories = RDA_TARGETS.general.Calories || 2000;
+    const remainingCalories = Math.max(0, targetCalories - consumedCalories);
+
+    const consumedProtein = activeData?.proteins_and_aminos?.['Total Protein'] || 0;
+    const targetProtein = RDA_TARGETS.proteins_and_aminos['Total Protein'] || 56;
+
+    const consumedCarbs = activeData?.carbohydrates?.['Total Carbohydrates'] || 0;
+    const targetCarbs = RDA_TARGETS.carbohydrates['Total Carbohydrates'] || 275;
+
+    const consumedFat = activeData?.lipids?.['Total Fat'] || 0;
+    const targetFat = RDA_TARGETS.lipids['Total Fat'] || 78;
+
+    // 2. Pure Positive Micronutrient Target Score (% of beneficial RDAs met)
+    let totalRdasTargeted = 0;
+    let sumPercentage = 0;
+    const targetCategories = ['vitamins', 'minerals', 'proteins_and_aminos', 'lipids'];
+
+    targetCategories.forEach(cat => {
+        const compounds = NUTRIENT_UNITS[cat] || {};
+        for (const [name, meta] of Object.entries(compounds)) {
+            if (meta.isSubheader || meta.noTarget) continue;
+            const rda = RDA_TARGETS[cat]?.[name] || 0;
+            if (rda > 0) {
+                const consumed = activeData?.[cat]?.[name] || 0;
+                sumPercentage += Math.min(100, (consumed / rda) * 100);
+                totalRdasTargeted++;
+            }
+        }
+    });
+
+    const targetScorePct = totalRdasTargeted > 0 ? Math.round(sumPercentage / totalRdasTargeted) : 0;
+
+    // 3. Update Rings
+    const energyPct = Math.min(100, Math.round((consumedCalories / targetCalories) * 100));
+    const remainingPct = Math.min(100, Math.round((remainingCalories / targetCalories) * 100));
+
+    const ringEnergyFill = document.getElementById('ring-energy-fill');
+    const ringTargetFill = document.getElementById('ring-target-fill');
+    const ringRemainingFill = document.getElementById('ring-remaining-fill');
+
+    if (ringEnergyFill) ringEnergyFill.setAttribute('stroke-dasharray', `${energyPct}, 100`);
+    if (ringTargetFill) ringTargetFill.setAttribute('stroke-dasharray', `${targetScorePct}, 100`);
+    if (ringRemainingFill) ringRemainingFill.setAttribute('stroke-dasharray', `${remainingPct}, 100`);
+
+    const ringEnergyVal = document.getElementById('ring-energy-val');
+    const ringTargetVal = document.getElementById('ring-target-pct');
+    const ringRemainingVal = document.getElementById('ring-remaining-val');
+
+    if (ringEnergyVal) ringEnergyVal.textContent = consumedCalories;
+    if (ringTargetVal) ringTargetVal.textContent = `${targetScorePct}%`;
+    if (ringRemainingVal) ringRemainingVal.textContent = remainingCalories;
+
+    // 4. Update Water (Food water + Manual glasses)
+    const foodWaterGrams = activeData?.general?.Water || 0; // 1g water = 1ml
+    const totalWaterMl = foodWaterGrams + waterGlassesCount * 250;
+    const totalWaterLitres = (totalWaterMl / 1000).toFixed(2);
+    const totalWaterFlOz = (totalWaterMl * 0.033814).toFixed(1);
+    const waterTargetMl = 2500; // 2.5L base RDA
+
+    const waterVolText = document.getElementById('water-vol-text');
+    const waterBar = document.getElementById('water-progress-bar');
+    if (waterVolText) waterVolText.textContent = `${totalWaterLitres} L / ${totalWaterFlOz} fl oz`;
+    if (waterBar) waterBar.style.width = `${Math.min(100, Math.round((totalWaterMl / waterTargetMl) * 100))}%`;
+
+    // 5. Update Macro Bars (Exact tabular spacing - no line wraps!)
+    const updateBar = (name, consumed, target, unit) => {
+        const textEl = document.getElementById(`macro-${name}-text`);
+        const barEl = document.getElementById(`macro-${name}-bar`);
+        const pctEl = document.getElementById(`macro-${name}-pct`);
+        const rawPct = Math.round((consumed / target) * 100);
+
+        if (textEl) textEl.textContent = `${consumed.toFixed(1)} / ${target.toFixed(1)} ${unit}`;
+        if (barEl) barEl.style.width = `${Math.min(100, rawPct)}%`;
+        if (pctEl) pctEl.textContent = `${rawPct}%`;
+    };
+
+    updateBar('energy', consumedCalories, targetCalories, 'kcal');
+    updateBar('protein', consumedProtein, targetProtein, 'g');
+    updateBar('carbs', consumedCarbs, targetCarbs, 'g');
+    updateBar('fat', consumedFat, targetFat, 'g');
+
+    // 6. Glycine-to-Methionine Balancing Ratio
+    const glycine = activeData?.proteins_and_aminos?.['Glycine'] || 0;
+    const methionine = activeData?.proteins_and_aminos?.['Methionine'] || 0;
+    const ratio = methionine > 0 ? (glycine / methionine).toFixed(2) : '0.00';
+    const ratioValEl = document.getElementById('glycine-ratio-val');
+    const glycineBar = document.getElementById('glycine-bar');
+
+    if (ratioValEl) ratioValEl.textContent = `${ratio} : 1.0 (Target ≥ 1.0)`;
+    if (glycineBar) {
+        const fillPct = Math.min(100, Math.round((parseFloat(ratio) / 1.5) * 100));
+        glycineBar.style.width = `${fillPct}%`;
+    }
+}
+
+// Interactive Water Glasses Controller
+document.getElementById('water-plus-btn')?.addEventListener('click', () => {
+    if (waterGlassesCount < 8) {
+        waterGlassesCount++;
+        syncWaterGlassesUI();
+    }
+});
+
+document.getElementById('water-minus-btn')?.addEventListener('click', () => {
+    if (waterGlassesCount > 0) {
+        waterGlassesCount--;
+        syncWaterGlassesUI();
+    }
+});
+
+document.querySelectorAll('.glass-icon').forEach(glass => {
+    glass.addEventListener('click', () => {
+        const idx = parseInt(glass.getAttribute('data-idx'), 10);
+        waterGlassesCount = idx + 1 === waterGlassesCount ? idx : idx + 1;
+        syncWaterGlassesUI();
+    });
+});
+
+function syncWaterGlassesUI() {
+    document.querySelectorAll('.glass-icon').forEach((g, idx) => {
+        g.classList.toggle('active', idx < waterGlassesCount);
+    });
+    renderNutritionPanel();
+}
+
 function renderNutritionPanel() {
     const leftColumnEl = document.getElementById('column-left');
     const rightColumnEl = document.getElementById('column-right');
@@ -711,6 +850,9 @@ function renderNutritionPanel() {
         if (indicatorEl) indicatorEl.textContent = context.label;
         activeData = calculateAggregate(context.items);
     }
+
+    // Render the Top Cronometer-style Dashboard
+    renderSummaryDashboard(activeData);
 
     if (toggleAllBtn) {
         toggleAllBtn.textContent = state.allCollapsed ? 'Expand All' : 'Collapse All';
