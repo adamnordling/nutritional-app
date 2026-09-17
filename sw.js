@@ -1,7 +1,6 @@
 // sw.js - Safe Stale-While-Revalidate Service Worker
 const CACHE_NAME = 'nutritional-app-cache-v1';
 
-
 // Copied from portfolio, changes needed later.
 // List of core assets to cache on install
 const STATIC_ASSETS = [

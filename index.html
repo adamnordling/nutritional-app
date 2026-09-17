@@ -82,8 +82,8 @@
                     <div class="card input-card" style="position: relative">
                         <!-- Tutorial Hint -->
                         <div id="first-time-hint" class="tutorial-hint" aria-hidden="true">
-                            <span class="hint-arrow">←</span>
                             <span>Click here to add foods!</span>
+                            <span class="hint-arrow">→</span>
                         </div>
 
                         <!-- Step 1: Food Search -->
@@ -196,101 +196,224 @@
                 <!-- Comparison Mode Workspace -->
                 <div id="compare-mode-views" class="mode-view hidden">
                     <!-- Slot A -->
-                    <div class="card input-card" id="slot-1-card">
+                    <!-- Slot A -->
+                    <div class="card input-card" id="slot-1-card" style="position: relative">
+                        <!-- Comparison Tutorial Hint -->
+                        <div id="compare-first-time-hint" class="tutorial-hint" aria-hidden="true">
+                            <span>Click here to add foods!</span>
+                            <span class="hint-arrow">→</span>
+                        </div>
+
                         <div class="slot-header">
                             <span class="slot-badge" style="background-color: #0072b2">Item A</span>
                             <button class="clear-slot-btn" id="clear-slot-1-btn" title="Clear Slot A" type="button">
                                 &times;
                             </button>
                         </div>
-                        <p class="subtitle" style="margin-bottom: 8px">Type and press Set (e.g., "500g chicken")</p>
-                        <div class="slot-body">
-                            <div class="input-group">
+                        <div class="color-picker-wrapper" style="margin: 4px 0 10px 0">
+                            <label>Color:</label>
+                            <div class="color-options" data-slot="1">
+                                <span
+                                    class="color-dot active"
+                                    style="background-color: #0072b2"
+                                    data-color="#0072b2"
+                                ></span>
+                                <span class="color-dot" style="background-color: #332288" data-color="#332288"></span>
+                                <span class="color-dot" style="background-color: #009988" data-color="#009988"></span>
+                                <span class="color-dot" style="background-color: #aa3377" data-color="#aa3377"></span>
+                            </div>
+                        </div>
+
+                        <!-- Slot 1 Search Step -->
+                        <div id="slot-1-step-search" class="food-input-step">
+                            <div class="search-input-wrapper">
+                                <svg
+                                    class="search-icon"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
                                 <input
                                     type="text"
-                                    id="compare-input-1"
-                                    placeholder="e.g., 500g chicken"
+                                    id="slot-1-search-input"
+                                    placeholder="Search Item A..."
                                     autocomplete="off"
                                 />
-                                <button id="compare-add-1-btn" type="button">Set</button>
                             </div>
-                            <div class="color-picker-wrapper" style="margin: 8px 0">
-                                <label>Color:</label>
-                                <div class="color-options" data-slot="1">
-                                    <span
-                                        class="color-dot active"
-                                        style="background-color: #0072b2"
-                                        data-color="#0072b2"
-                                    ></span>
-                                    <span
-                                        class="color-dot"
-                                        style="background-color: #332288"
-                                        data-color="#332288"
-                                    ></span>
-                                    <span
-                                        class="color-dot"
-                                        style="background-color: #009988"
-                                        data-color="#009988"
-                                    ></span>
-                                    <span
-                                        class="color-dot"
-                                        style="background-color: #aa3377"
-                                        data-color="#aa3377"
-                                    ></span>
-                                </div>
+                            <div id="slot-1-dropdown" class="food-dropdown hidden">
+                                <ul id="slot-1-dropdown-list" class="food-dropdown-list"></ul>
                             </div>
-                            <div class="slot-status" id="slot-1-status">No food loaded</div>
                         </div>
+
+                        <!-- Slot 1 Qty Step -->
+                        <div id="slot-1-step-quantity" class="food-input-step hidden">
+                            <div class="quantity-input-wrapper">
+                                <button type="button" class="selected-food-pill" id="slot-1-cancel-selection">
+                                    <span id="slot-1-selected-name">Food</span>
+                                    <span class="pill-remove-icon">&times;</span>
+                                </button>
+                                <div class="amount-field-container">
+                                    <input
+                                        type="number"
+                                        id="slot-1-amount-input"
+                                        placeholder="Qty"
+                                        autocomplete="off"
+                                        step="any"
+                                    />
+                                    <div id="slot-1-amount-dropdown" class="amount-dropdown hidden">
+                                        <ul id="slot-1-amount-dropdown-list" class="amount-dropdown-list"></ul>
+                                    </div>
+                                </div>
+                                <div class="unit-dropdown-container">
+                                    <button type="button" id="slot-1-unit-btn" class="unit-trigger-btn">
+                                        <span id="slot-1-unit-label">g</span>
+                                        <svg
+                                            class="unit-chevron"
+                                            width="10"
+                                            height="10"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2.5"
+                                        >
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </button>
+                                    <div id="slot-1-unit-menu" class="unit-menu hidden">
+                                        <button type="button" class="unit-opt active" data-unit="g">
+                                            <strong>g</strong> <small>grams</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="kg">
+                                            <strong>kg</strong> <small>kilograms</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="mg">
+                                            <strong>mg</strong> <small>milligrams</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="oz">
+                                            <strong>oz</strong> <small>ounces</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="lbs">
+                                            <strong>lbs</strong> <small>pounds</small>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" id="slot-1-confirm-btn" class="add-submit-btn">Set</button>
+                            </div>
+                        </div>
+                        <div class="slot-status" id="slot-1-status">No food loaded</div>
                     </div>
 
                     <!-- Slot B -->
-                    <div class="card diet-card" id="slot-2-card" style="margin-top: 15px">
+                    <div class="card diet-card" id="slot-2-card" style="margin-top: 15px; position: relative">
                         <div class="slot-header">
                             <span class="slot-badge" style="background-color: #e69f00">Item B</span>
                             <button class="clear-slot-btn" id="clear-slot-2-btn" title="Clear Slot B" type="button">
                                 &times;
                             </button>
                         </div>
-                        <p class="subtitle" style="margin-bottom: 8px">Type and press Set (e.g., "500g potatoes")</p>
-                        <div class="slot-body">
-                            <div>
-                                <div class="input-group">
+                        <div class="color-picker-wrapper" style="margin: 4px 0 10px 0">
+                            <label>Color:</label>
+                            <div class="color-options" data-slot="2">
+                                <span
+                                    class="color-dot active"
+                                    style="background-color: #e69f00"
+                                    data-color="#e69f00"
+                                ></span>
+                                <span class="color-dot" style="background-color: #ee7733" data-color="#ee7733"></span>
+                                <span class="color-dot" style="background-color: #228833" data-color="#228833"></span>
+                                <span class="color-dot" style="background-color: #cc3311" data-color="#cc3311"></span>
+                            </div>
+                        </div>
+
+                        <!-- Slot 2 Search Step -->
+                        <div id="slot-2-step-search" class="food-input-step">
+                            <div class="search-input-wrapper">
+                                <svg
+                                    class="search-icon"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <input
+                                    type="text"
+                                    id="slot-2-search-input"
+                                    placeholder="Search Item B..."
+                                    autocomplete="off"
+                                />
+                            </div>
+                            <div id="slot-2-dropdown" class="food-dropdown hidden">
+                                <ul id="slot-2-dropdown-list" class="food-dropdown-list"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Slot 2 Qty Step -->
+                        <div id="slot-2-step-quantity" class="food-input-step hidden">
+                            <div class="quantity-input-wrapper">
+                                <button type="button" class="selected-food-pill" id="slot-2-cancel-selection">
+                                    <span id="slot-2-selected-name">Food</span>
+                                    <span class="pill-remove-icon">&times;</span>
+                                </button>
+                                <div class="amount-field-container">
                                     <input
-                                        type="text"
-                                        id="compare-input-2"
-                                        placeholder="e.g., 500g potatoes"
+                                        type="number"
+                                        id="slot-2-amount-input"
+                                        placeholder="Qty"
                                         autocomplete="off"
+                                        step="any"
                                     />
-                                    <button id="compare-add-2-btn" type="button">Set</button>
-                                </div>
-                                <div class="color-picker-wrapper" style="margin: 8px 0">
-                                    <label>Color:</label>
-                                    <div class="color-options" data-slot="2">
-                                        <span
-                                            class="color-dot active"
-                                            style="background-color: #e69f00"
-                                            data-color="#e69f00"
-                                        ></span>
-                                        <span
-                                            class="color-dot"
-                                            style="background-color: #ee7733"
-                                            data-color="#ee7733"
-                                        ></span>
-                                        <span
-                                            class="color-dot"
-                                            style="background-color: #228833"
-                                            data-color="#228833"
-                                        ></span>
-                                        <span
-                                            class="color-dot"
-                                            style="background-color: #cc3311"
-                                            data-color="#cc3311"
-                                        ></span>
+                                    <div id="slot-2-amount-dropdown" class="amount-dropdown hidden">
+                                        <ul id="slot-2-amount-dropdown-list" class="amount-dropdown-list"></ul>
                                     </div>
                                 </div>
+                                <div class="unit-dropdown-container">
+                                    <button type="button" id="slot-2-unit-btn" class="unit-trigger-btn">
+                                        <span id="slot-2-unit-label">g</span>
+                                        <svg
+                                            class="unit-chevron"
+                                            width="10"
+                                            height="10"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2.5"
+                                        >
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </button>
+                                    <div id="slot-2-unit-menu" class="unit-menu hidden">
+                                        <button type="button" class="unit-opt active" data-unit="g">
+                                            <strong>g</strong> <small>grams</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="kg">
+                                            <strong>kg</strong> <small>kilograms</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="mg">
+                                            <strong>mg</strong> <small>milligrams</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="oz">
+                                            <strong>oz</strong> <small>ounces</small>
+                                        </button>
+                                        <button type="button" class="unit-opt" data-unit="lbs">
+                                            <strong>lbs</strong> <small>pounds</small>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" id="slot-2-confirm-btn" class="add-submit-btn">Set</button>
                             </div>
-                            <div class="slot-status" id="slot-2-status">No food loaded</div>
                         </div>
+                        <div class="slot-status" id="slot-2-status">No food loaded</div>
                     </div>
                 </div>
             </section>

@@ -851,6 +851,24 @@ const amountDropdownList = document.getElementById('amount-dropdown-list');
 const cancelFoodBtn = document.getElementById('cancel-food-selection');
 const confirmAddBtn = document.getElementById('confirm-add-food-btn');
 const tutorialHint = document.getElementById('first-time-hint');
+const compareTutorialHint = document.getElementById('compare-first-time-hint');
+let hasInteractedWithCompare = false;
+
+function updateCompareTutorialHint() {
+    if (!compareTutorialHint) return;
+    if (hasInteractedWithCompare || state.compareSlots[0].parsed !== null) {
+        compareTutorialHint.style.display = 'none';
+    } else {
+        compareTutorialHint.style.display = 'flex';
+    }
+}
+
+function dismissCompareTutorial() {
+    hasInteractedWithCompare = true;
+    if (compareTutorialHint) {
+        compareTutorialHint.style.display = 'none';
+    }
+}
 
 const unitTriggerBtn = document.getElementById('unit-trigger-btn');
 const unitMenu = document.getElementById('unit-menu');
@@ -1182,23 +1200,174 @@ searchInput?.addEventListener('keydown', e => {
 });
 
 /* ==========================================================================
-   7. COMPARISON SLOTS CONTROLLER
+   7. COMPARISON SLOTS CONTROLLER (POWERED BY SAME 2-STEP ENGINE)
    ========================================================================== */
 
-const compareInput1 = document.getElementById('compare-input-1');
-const compareAdd1Btn = document.getElementById('compare-add-1-btn');
-const clearSlot1Btn = document.getElementById('clear-slot-1-btn');
+function setupComparisonSlot(slotIndex) {
+    const num = slotIndex + 1;
+    let slotFoodKey = null;
+    let slotUnit = 'g';
+    let highlightedIndex = -1;
+    let highlightedAmount = -1;
 
-const compareInput2 = document.getElementById('compare-input-2');
-const compareAdd2Btn = document.getElementById('compare-add-2-btn');
-const clearSlot2Btn = document.getElementById('clear-slot-2-btn');
+    const searchStep = document.getElementById(`slot-${num}-step-search`);
+    const qtyStep = document.getElementById(`slot-${num}-step-quantity`);
+    const searchInput = document.getElementById(`slot-${num}-search-input`);
+    const dropdown = document.getElementById(`slot-${num}-dropdown`);
+    const dropdownList = document.getElementById(`slot-${num}-dropdown-list`);
+    const selectedName = document.getElementById(`slot-${num}-selected-name`);
+    const amountInput = document.getElementById(`slot-${num}-amount-input`);
+    const amountDropdown = document.getElementById(`slot-${num}-amount-dropdown`);
+    const amountDropdownList = document.getElementById(`slot-${num}-amount-dropdown-list`);
+    const cancelBtn = document.getElementById(`slot-${num}-cancel-selection`);
+    const confirmBtn = document.getElementById(`slot-${num}-confirm-btn`);
+    const unitBtn = document.getElementById(`slot-${num}-unit-btn`);
+    const unitMenu = document.getElementById(`slot-${num}-unit-menu`);
+    const unitLabel = document.getElementById(`slot-${num}-unit-label`);
+    const clearBtn = document.getElementById(`clear-slot-${num}-btn`);
+
+    // Render Food Search
+    function renderSlotFoods(q = '') {
+        if (!dropdownList) return;
+        dropdownList.innerHTML = '';
+        const query = q.trim().toLowerCase();
+        const filtered = getSortedFoods()
+            .filter(
+                f =>
+                    !query ||
+                    f.displayName.toLowerCase().includes(query) ||
+                    f.aliases?.some(a => a.toLowerCase().includes(query))
+            )
+            .slice(0, 10);
+
+        filtered.forEach((food, idx) => {
+            const li = document.createElement('li');
+            li.className = 'food-dropdown-item';
+            if (idx === highlightedIndex) li.classList.add('is-selected');
+            li.innerHTML = `<span>${food.displayName}</span><span class="item-calories">${food.general?.Calories ?? 0} kcal/100g</span>`;
+            li.addEventListener('mousedown', e => {
+                e.preventDefault();
+                slotFoodKey = food.key;
+                if (selectedName) selectedName.textContent = food.displayName;
+                dropdown?.classList.add('hidden');
+                searchStep?.classList.add('hidden');
+                qtyStep?.classList.remove('hidden');
+                amountInput.value = '';
+                amountInput?.focus();
+            });
+            dropdownList.appendChild(li);
+        });
+        const active = dropdownList.querySelector('.is-selected');
+        active?.scrollIntoView({ block: 'nearest' });
+    }
+
+    searchInput?.addEventListener('focus', () => {
+        if (slotIndex === 0) dismissCompareTutorial();
+        dropdown?.classList.remove('hidden');
+        renderSlotFoods(searchInput.value);
+    });
+    searchInput?.addEventListener('input', () => {
+        dropdown?.classList.remove('hidden');
+        renderSlotFoods(searchInput.value);
+    });
+    searchInput?.addEventListener('blur', () => setTimeout(() => dropdown?.classList.add('hidden'), 150));
+
+    // Render Amount Presets
+    function renderPresets() {
+        if (!amountDropdownList) return;
+        amountDropdownList.innerHTML = '';
+        UNIT_CONVERSIONS[slotUnit].presets.forEach((val, idx) => {
+            const li = document.createElement('li');
+            li.className = 'amount-preset-item';
+            if (idx === highlightedAmount) li.classList.add('is-selected');
+            li.innerHTML = `<span>${val} ${slotUnit}</span><small style="opacity: 0.6;">preset</small>`;
+            li.addEventListener('mousedown', e => {
+                e.preventDefault();
+                amountInput.value = val;
+                amountDropdown?.classList.add('hidden');
+                amountInput.focus();
+            });
+            amountDropdownList.appendChild(li);
+        });
+        const active = amountDropdownList.querySelector('.is-selected');
+        active?.scrollIntoView({ block: 'nearest' });
+    }
+
+    amountInput?.addEventListener('focus', () => {
+        amountDropdown?.classList.remove('hidden');
+        renderPresets();
+    });
+    amountInput?.addEventListener('blur', () => setTimeout(() => amountDropdown?.classList.add('hidden'), 150));
+
+    // Unit Picker
+    unitBtn?.addEventListener('click', e => {
+        e.stopPropagation();
+        unitMenu?.classList.toggle('hidden');
+    });
+    unitMenu?.querySelectorAll('.unit-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+            const newUnit = opt.getAttribute('data-unit');
+            const val = parseFloat(amountInput.value);
+            if (!isNaN(val) && val > 0) {
+                const g = val * UNIT_CONVERSIONS[slotUnit].toGrams;
+                amountInput.value = parseFloat((g / UNIT_CONVERSIONS[newUnit].toGrams).toFixed(2));
+            }
+            slotUnit = newUnit;
+            if (unitLabel) unitLabel.textContent = newUnit;
+            unitMenu.querySelectorAll('.unit-opt').forEach(o => o.classList.toggle('active', o === opt));
+            unitMenu.classList.add('hidden');
+            renderPresets();
+        });
+    });
+
+    // Reset to Search
+    function resetSlotSearch() {
+        slotFoodKey = null;
+        qtyStep?.classList.add('hidden');
+        searchStep?.classList.remove('hidden');
+        if (searchInput) searchInput.value = '';
+    }
+    cancelBtn?.addEventListener('click', resetSlotSearch);
+
+    // Commit Slot Selection
+    function commitSlot() {
+        if (!slotFoodKey) return;
+        let amt = parseFloat(amountInput.value);
+        if (!amt || isNaN(amt) || amt <= 0) return;
+        const grams = amt * UNIT_CONVERSIONS[slotUnit].toGrams;
+
+        state.compareSlots[slotIndex].parsed = {
+            amount: Math.round(grams),
+            foodKey: slotFoodKey,
+            displayName: FOOD_DATABASE[slotFoodKey].displayName
+        };
+        updateSlotUI(slotIndex);
+        renderNutritionPanel();
+        resetSlotSearch();
+    }
+    confirmBtn?.addEventListener('click', commitSlot);
+    amountInput?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') commitSlot();
+    });
+
+    // Clear Slot
+    clearBtn?.addEventListener('click', () => {
+        state.compareSlots[slotIndex].parsed = null;
+        updateSlotUI(slotIndex);
+        renderNutritionPanel();
+        resetSlotSearch();
+    });
+}
+
+// Initialize Slot 1 and Slot 2
+setupComparisonSlot(0);
+setupComparisonSlot(1);
 
 function updateSlotUI(slotIndex) {
     const slot = state.compareSlots[slotIndex];
     const cardEl = document.getElementById(`slot-${slotIndex + 1}-card`);
     const statusEl = document.getElementById(`slot-${slotIndex + 1}-status`);
     const badgeEl = cardEl?.querySelector('.slot-badge');
-    const inputEl = document.getElementById(`compare-input-${slotIndex + 1}`);
 
     if (badgeEl) badgeEl.style.backgroundColor = slot.color;
 
@@ -1206,40 +1375,12 @@ function updateSlotUI(slotIndex) {
         if (slot.parsed) {
             statusEl.innerHTML = `Loaded: <strong>${slot.parsed.amount}g</strong> ${slot.parsed.displayName}`;
             statusEl.classList.add('active');
-            if (inputEl) inputEl.value = '';
         } else {
             statusEl.textContent = 'No food loaded';
             statusEl.classList.remove('active');
         }
     }
 }
-
-function setCompareSlot(slotIndex, text) {
-    const parsed = parseComparisonLine(text);
-    if (parsed) {
-        state.compareSlots[slotIndex].parsed = parsed;
-        updateSlotUI(slotIndex);
-        renderNutritionPanel();
-    }
-}
-
-function clearCompareSlot(slotIndex) {
-    state.compareSlots[slotIndex].parsed = null;
-    updateSlotUI(slotIndex);
-    renderNutritionPanel();
-}
-
-compareAdd1Btn?.addEventListener('click', () => setCompareSlot(0, compareInput1?.value || ''));
-compareInput1?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') setCompareSlot(0, compareInput1.value);
-});
-clearSlot1Btn?.addEventListener('click', () => clearCompareSlot(0));
-
-compareAdd2Btn?.addEventListener('click', () => setCompareSlot(1, compareInput2?.value || ''));
-compareInput2?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') setCompareSlot(1, compareInput2.value);
-});
-clearSlot2Btn?.addEventListener('click', () => clearCompareSlot(1));
 
 document.querySelectorAll('.color-options').forEach(optionsContainer => {
     const slotIndex = parseInt(optionsContainer.getAttribute('data-slot'), 10) - 1;
@@ -1280,6 +1421,7 @@ tabCompareBtn?.addEventListener('click', () => {
     dietModeViews?.classList.add('hidden');
     compareModeViews?.classList.remove('hidden');
     renderNutritionPanel();
+    updateCompareTutorialHint();
 });
 
 toggleAllBtn?.addEventListener('click', () => {
@@ -1293,8 +1435,10 @@ toggleAllBtn?.addEventListener('click', () => {
 });
 
 // Run immediate bootstrap
+// Run immediate bootstrap
 renderDietList();
 updateSlotUI(0);
 updateSlotUI(1);
 renderNutritionPanel();
 updateTutorialHint();
+updateCompareTutorialHint();
