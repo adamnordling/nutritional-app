@@ -8,6 +8,7 @@ import { FOOD_DATABASE } from './foods.js';
 /* ==========================================================================
    1. APPLICATION STATE & CONFIGURATION
    ========================================================================== */
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const leftColumnLayout = [
     'general',
@@ -30,9 +31,20 @@ const rightColumnLayout = [
 ];
 
 const state = {
-    diet: [],
-    hoveredIndex: null,
-    selectedIndex: null,
+    currentDay: 'Mon',
+    weekData: {
+        Mon: { unassigned: [], meals: [] },
+        Tue: { unassigned: [], meals: [] },
+        Wed: { unassigned: [], meals: [] },
+        Thu: { unassigned: [], meals: [] },
+        Fri: { unassigned: [], meals: [] },
+        Sat: { unassigned: [], meals: [] },
+        Sun: { unassigned: [], meals: [] }
+    },
+    selectedMealId: null, // Selected meal ID or 'quick_log'
+    selectedFoodId: null, // Selected individual food ID
+    hoveredMealId: null,
+    hoveredFood: null,
     allCollapsed: true,
     collapsedCategories: {},
     expandedNutrient: null,
@@ -43,6 +55,19 @@ const state = {
     ]
 };
 
+// Auto-load saved week on startup so refresh never loses data
+const autoSavedWeek = localStorage.getItem('open_nutrition_active_week');
+if (autoSavedWeek) {
+    try {
+        state.weekData = JSON.parse(autoSavedWeek);
+    } catch (e) {}
+}
+
+function persistActiveWeek() {
+    try {
+        localStorage.setItem('open_nutrition_active_week', JSON.stringify(state.weekData));
+    } catch (e) {}
+}
 // Now safe to initialize because the layout arrays are declared above
 [...leftColumnLayout, ...rightColumnLayout].forEach(cat => {
     state.collapsedCategories[cat] = true;
@@ -248,22 +273,50 @@ function calculateAggregate(dietList) {
     return totals;
 }
 
+function getCurrentDayData() {
+    return state.weekData[state.currentDay] || { unassigned: [], meals: [] };
+}
+
+function getAllCurrentDayItems() {
+    const day = getCurrentDayData();
+    const mealItems = day.meals.flatMap(m => m.items);
+    return [...day.unassigned, ...mealItems];
+}
+
 function getActiveContext() {
-    if (state.selectedIndex !== null && state.diet[state.selectedIndex]) {
-        return {
-            items: [state.diet[state.selectedIndex]],
-            label: `Locked: ${state.diet[state.selectedIndex].displayName}`
-        };
+    const day = getCurrentDayData();
+    const allItems = getAllCurrentDayItems();
+
+    // 1. Single food hovered
+    if (state.hoveredFood) {
+        return { items: [state.hoveredFood], label: `Preview: ${state.hoveredFood.displayName}` };
     }
-    if (state.hoveredIndex !== null && state.diet[state.hoveredIndex]) {
-        return {
-            items: [state.diet[state.hoveredIndex]],
-            label: `Preview: ${state.diet[state.hoveredIndex].displayName}`
-        };
+
+    // 2. Single food locked (inside any meal or quick log)
+    if (state.selectedFoodId) {
+        const item = allItems.find(i => i.id === state.selectedFoodId);
+        if (item) return { items: [item], label: `Locked: ${item.displayName}` };
     }
+
+    // 3. Meal hovered
+    if (state.hoveredMealId) {
+        const meal = day.meals.find(m => m.id === state.hoveredMealId);
+        if (meal) return { items: meal.items, label: `Preview: ${meal.name}` };
+    }
+
+    // 4. Meal or Quick Log locked
+    if (state.selectedMealId) {
+        if (state.selectedMealId === 'quick_log') {
+            return { items: day.unassigned, label: 'Locked: Quick Log' };
+        }
+        const meal = day.meals.find(m => m.id === state.selectedMealId);
+        if (meal) return { items: meal.items, label: `Locked: ${meal.name}` };
+    }
+
+    // 5. Total Day Summary
     return {
-        items: state.diet,
-        label: 'Total Diet Summary'
+        items: allItems,
+        label: `${state.currentDay} Summary (${allItems.length} foods)`
     };
 }
 
@@ -891,45 +944,55 @@ function renderNutritionPanel() {
     });
 }
 
+function updateMealTargetDropdown() {
+    const select = document.getElementById('food-meal-target');
+    if (!select) return;
+    const day = getCurrentDayData();
+    select.innerHTML = '<option value="unassigned">Quick Log</option>';
+    day.meals.forEach(meal => {
+        const opt = document.createElement('option');
+        opt.value = meal.id;
+        opt.textContent = meal.name;
+        select.appendChild(opt);
+    });
+}
+
 function renderDietList() {
+    const mealsContainer = document.getElementById('tracker-meals-container');
     const listEl = document.getElementById('diet-list');
-    if (!listEl) return;
+    const badge = document.getElementById('active-day-badge');
+    const confirmBtn = document.getElementById('confirm-add-food-btn');
+
+    if (badge) badge.textContent = state.currentDay;
+
+    const day = getCurrentDayData();
+
+    if (!mealsContainer || !listEl) return;
+    mealsContainer.innerHTML = '';
     listEl.innerHTML = '';
 
-    if (state.diet.length === 0) {
-        listEl.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 10px; color: var(--text-muted); text-align: center;">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; margin-bottom: 8px;">
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-                <span style="font-size: 12px; font-weight: 500;">No foods logged today</span>
-                <span style="font-size: 11px; opacity: 0.7; margin-top: 2px;">Search chicken or potato above</span>
-            </div>
-        `;
-        return;
-    }
-
-    state.diet.forEach((item, index) => {
+    // Helper to create individual food item with insight-click & preview
+    const createFoodItemElement = (item, onRemove) => {
         const li = document.createElement('li');
-        const classes = ['diet-item'];
-        if (state.selectedIndex === index) classes.push('selected');
-        else if (state.hoveredIndex === index) classes.push('hovered');
-        li.className = classes.join(' ');
-
+        const isSelected = state.selectedFoodId === item.id;
+        li.className = `diet-item ${isSelected ? 'selected' : ''}`;
         li.innerHTML = `
             <div class="diet-item-info">
                 <span class="diet-food-title">${item.displayName}</span>
                 <span class="diet-unit-breakdown">(${formatMultiUnits(item.amount)})</span>
             </div>
-            <button class="remove-btn" type="button" data-index="${index}">&times;</button>
+            <button class="remove-btn" type="button" title="Remove">&times;</button>
         `;
 
-        li.addEventListener('click', () => {
-            if (state.selectedIndex === index) {
-                state.selectedIndex = null;
+        // Click food item -> Show Insight & isolate nutrient analysis
+        li.addEventListener('click', e => {
+            e.stopPropagation(); // Do not trigger parent meal card selection
+            if (state.selectedFoodId === item.id) {
+                state.selectedFoodId = null;
                 hideFoodInsight();
             } else {
-                state.selectedIndex = index;
+                state.selectedFoodId = item.id;
+                state.selectedMealId = null; // Unselect meal so single food is focused
                 showFoodInsight(item.foodKey);
             }
             renderDietList();
@@ -937,28 +1000,118 @@ function renderDietList() {
         });
 
         li.addEventListener('mouseenter', () => {
-            state.hoveredIndex = index;
-            if (state.selectedIndex === null) {
+            if (!state.selectedFoodId) {
+                state.hoveredFood = item;
                 renderNutritionPanel();
-                li.classList.add('hovered');
             }
         });
 
         li.addEventListener('mouseleave', () => {
-            state.hoveredIndex = null;
-            if (state.selectedIndex === null) {
+            if (!state.selectedFoodId) {
+                state.hoveredFood = null;
                 renderNutritionPanel();
-                li.classList.remove('hovered');
             }
         });
 
         li.querySelector('.remove-btn').addEventListener('click', e => {
             e.stopPropagation();
-            removeFood(index);
+            if (state.selectedFoodId === item.id) {
+                state.selectedFoodId = null;
+                hideFoodInsight();
+            }
+            onRemove();
+            persistActiveWeek();
+            renderDietList();
+            renderNutritionPanel();
         });
 
-        listEl.appendChild(li);
+        return li;
+    };
+
+    // 1. Render Meals (Clicking anywhere on card activates it)
+    day.meals.forEach(meal => {
+        const isMealSelected = state.selectedMealId === meal.id;
+        const mealCard = document.createElement('div');
+        mealCard.className = `meal-group-card ${isMealSelected ? 'selected' : ''}`;
+
+        const mealCals = Math.round(
+            meal.items.reduce((acc, item) => acc + getNutrientValue(item, 'general', 'Calories'), 0)
+        );
+
+        mealCard.innerHTML = `
+            <div class="meal-group-header">
+                <span class="meal-header-left">
+                    <span>${meal.name}</span>
+                    <span class="meal-cals-badge">${mealCals} kcal</span>
+                </span>
+                <span class="meal-header-right">
+                    <button type="button" class="meal-delete-btn" title="Delete meal">&times;</button>
+                </span>
+            </div>
+            <ul class="diet-list meal-items-list"></ul>
+        `;
+
+        // Click the whole meal card to select/deselect
+        mealCard.addEventListener('click', e => {
+            if (e.target.closest('.diet-item') || e.target.closest('.meal-delete-btn')) return;
+            state.selectedMealId = state.selectedMealId === meal.id ? null : meal.id;
+            state.selectedFoodId = null;
+            hideFoodInsight();
+            renderDietList();
+            renderNutritionPanel();
+        });
+
+        mealCard.querySelector('.meal-delete-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            day.meals = day.meals.filter(m => m.id !== meal.id);
+            if (state.selectedMealId === meal.id) state.selectedMealId = null;
+            persistActiveWeek();
+            renderDietList();
+            renderNutritionPanel();
+        });
+
+        const mealUl = mealCard.querySelector('.meal-items-list');
+        meal.items.forEach((item, idx) => {
+            mealUl.appendChild(createFoodItemElement(item, () => meal.items.splice(idx, 1)));
+        });
+
+        mealsContainer.appendChild(mealCard);
     });
+
+    // 2. Render Quick Log ONLY if it has items
+    if (day.unassigned.length > 0) {
+        const quickLogCals = Math.round(
+            day.unassigned.reduce((acc, item) => acc + getNutrientValue(item, 'general', 'Calories'), 0)
+        );
+        const isQuickLogSelected = state.selectedMealId === 'quick_log';
+
+        const quickLogCard = document.createElement('div');
+        quickLogCard.className = `quick-log-card ${isQuickLogSelected ? 'selected' : ''}`;
+        quickLogCard.innerHTML = `
+            <div class="quick-log-header">
+                <span class="quick-log-title">⚡ Quick Log</span>
+                <span class="quick-log-cals">${quickLogCals} kcal</span>
+            </div>
+            <ul class="diet-list quick-items-list" style="padding: 4px;"></ul>
+        `;
+
+        // Click whole quick log card to select/deselect
+        quickLogCard.addEventListener('click', e => {
+            if (e.target.closest('.diet-item')) return;
+            state.selectedMealId = state.selectedMealId === 'quick_log' ? null : 'quick_log';
+            state.selectedFoodId = null;
+            hideFoodInsight();
+            renderDietList();
+            renderNutritionPanel();
+        });
+
+        const quickUl = quickLogCard.querySelector('.quick-items-list');
+        day.unassigned.forEach((item, idx) => {
+            quickUl.appendChild(createFoodItemElement(item, () => day.unassigned.splice(idx, 1)));
+        });
+
+        listEl.appendChild(quickLogCard);
+    }
 }
 
 function removeFood(index) {
@@ -1225,14 +1378,24 @@ function commitAddFood() {
     if (!rawAmount || isNaN(rawAmount) || rawAmount <= 0) return;
 
     const grams = rawAmount * UNIT_CONVERSIONS[currentUnit].toGrams;
+    const day = getCurrentDayData();
 
-    state.diet.push({
+    const newItem = {
         id: Date.now() + Math.random(),
         foodKey: selectedFoodKey,
         amount: Math.round(grams),
         displayName: FOOD_DATABASE[selectedFoodKey].displayName
-    });
+    };
 
+    if (state.selectedMealId && state.selectedMealId !== 'quick_log') {
+        const meal = day.meals.find(m => m.id === state.selectedMealId);
+        if (meal) meal.items.push(newItem);
+        else day.unassigned.push(newItem);
+    } else {
+        day.unassigned.push(newItem);
+    }
+
+    persistActiveWeek(); // Auto-save on every add
     renderDietList();
     renderNutritionPanel();
     resetToSearch();
@@ -1681,7 +1844,7 @@ navToggleBtn?.addEventListener('click', e => {
 });
 
 document.addEventListener('click', e => {
-    if (!e.target.closest('.minimal-nav-wrapper')) closeNav();
+    if (!e.target.closest('.corner-nav-wrapper')) closeNav();
 });
 
 document.addEventListener('keydown', e => {
@@ -1715,6 +1878,189 @@ document.getElementById('footer-scroll-top')?.addEventListener('click', e => {
 // Dynamic year in footer
 const footerYear = document.getElementById('footer-year');
 if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+// Day Tabs
+document.querySelectorAll('.day-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.currentDay = btn.getAttribute('data-day');
+        state.selectedMealId = null;
+        state.selectedIndex = null;
+        renderDietList();
+        renderNutritionPanel();
+    });
+});
+
+// Add Meal
+document.getElementById('add-meal-btn')?.addEventListener('click', () => {
+    const day = getCurrentDayData();
+    const mealNum = day.meals.length + 1;
+    day.meals.push({
+        id: `meal_${Date.now()}`,
+        name: `Meal ${mealNum}`,
+        items: []
+    });
+    renderDietList();
+});
+
+// Copy Previous Day
+document.getElementById('copy-prev-day-btn')?.addEventListener('click', () => {
+    const currentIdx = DAYS.indexOf(state.currentDay);
+    if (currentIdx === 0) return alert('No previous day for Monday!');
+    const prevDayName = DAYS[currentIdx - 1];
+    const prevDay = state.weekData[prevDayName];
+
+    if (!prevDay || (prevDay.unassigned.length === 0 && prevDay.meals.length === 0)) {
+        return alert(`No meals found on ${prevDayName} to copy.`);
+    }
+
+    // Deep copy into current day
+    state.weekData[state.currentDay] = JSON.parse(JSON.stringify(prevDay));
+    persistActiveWeek();
+    renderDietList();
+    renderNutritionPanel();
+});
+
+/* ==========================================================================
+   NAMED WEEK PLANS (SAVE, LOAD, CLEAR) & TOASTS
+   ========================================================================== */
+
+function showToast(message) {
+    const toast = document.getElementById('app-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 2500);
+}
+
+const modalBackdrop = document.getElementById('app-modal-backdrop');
+const savePlanModal = document.getElementById('save-plan-modal');
+const loadPlanModal = document.getElementById('load-plan-modal');
+const planNameInput = document.getElementById('plan-name-input');
+
+function closeModal() {
+    modalBackdrop?.classList.add('hidden');
+    savePlanModal?.classList.add('hidden');
+    loadPlanModal?.classList.add('hidden');
+}
+
+document.querySelectorAll('[data-close-modal]').forEach(btn => btn.addEventListener('click', closeModal));
+modalBackdrop?.addEventListener('click', e => {
+    if (e.target === modalBackdrop) closeModal();
+});
+
+// 1. Save Plan
+document.getElementById('save-week-btn')?.addEventListener('click', () => {
+    modalBackdrop.classList.remove('hidden');
+    savePlanModal.classList.remove('hidden');
+    if (planNameInput) {
+        planNameInput.value = `Week Plan (${new Date().toLocaleDateString()})`;
+        planNameInput.focus();
+    }
+});
+
+document.getElementById('confirm-save-plan-btn')?.addEventListener('click', () => {
+    const name = planNameInput.value.trim() || `Plan ${Date.now()}`;
+    const allPlans = JSON.parse(localStorage.getItem('open_nutrition_saved_weeks') || '{}');
+
+    allPlans[name] = {
+        name,
+        date: new Date().toLocaleDateString(),
+        data: JSON.parse(JSON.stringify(state.weekData))
+    };
+
+    localStorage.setItem('open_nutrition_saved_weeks', JSON.stringify(allPlans));
+    closeModal();
+    showToast(`Saved plan "${name}"`);
+});
+
+// 2. Load Plan
+function renderSavedPlansList() {
+    const listEl = document.getElementById('saved-plans-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    const allPlans = JSON.parse(localStorage.getItem('open_nutrition_saved_weeks') || '{}');
+    const names = Object.keys(allPlans);
+
+    if (names.length === 0) {
+        listEl.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px;">No saved week plans yet.</div>`;
+        return;
+    }
+
+    names.forEach(name => {
+        const item = allPlans[name];
+        const row = document.createElement('div');
+        row.className = 'saved-plan-item';
+        row.innerHTML = `
+            <div>
+                <div class="saved-plan-name">${item.name}</div>
+                <div class="saved-plan-date">Saved on ${item.date}</div>
+            </div>
+            <div class="plan-item-actions">
+                <button type="button" class="plan-load-btn">Load</button>
+                <button type="button" class="plan-del-btn" title="Delete plan">&times;</button>
+            </div>
+        `;
+
+        row.querySelector('.plan-load-btn').addEventListener('click', () => {
+            state.weekData = JSON.parse(JSON.stringify(item.data));
+            state.selectedMealId = null;
+            state.selectedIndex = null;
+            renderDietList();
+            renderNutritionPanel();
+            closeModal();
+            showToast(`Loaded "${item.name}"`);
+        });
+
+        row.querySelector('.plan-del-btn').addEventListener('click', () => {
+            delete allPlans[name];
+            localStorage.setItem('open_nutrition_saved_weeks', JSON.stringify(allPlans));
+            renderSavedPlansList();
+            showToast(`Deleted "${name}"`);
+        });
+
+        listEl.appendChild(row);
+    });
+}
+
+document.getElementById('load-week-btn')?.addEventListener('click', () => {
+    modalBackdrop.classList.remove('hidden');
+    loadPlanModal.classList.remove('hidden');
+    renderSavedPlansList();
+});
+
+// 3. Clear Week (Full Reset)
+document.getElementById('clear-week-btn')?.addEventListener('click', () => {
+    DAYS.forEach(day => {
+        state.weekData[day] = { unassigned: [], meals: [] };
+    });
+    state.selectedMealId = null;
+    state.selectedFoodId = null;
+    persistActiveWeek();
+    renderDietList();
+    renderNutritionPanel();
+});
+
+// Click anywhere outside the tracker cards to unselect
+document.addEventListener('click', e => {
+    const isInsideTracker =
+        e.target.closest('.meal-group-card') ||
+        e.target.closest('.quick-log-card') ||
+        e.target.closest('#food-insight-card') ||
+        e.target.closest('.input-card');
+
+    if (!isInsideTracker) {
+        if (state.selectedMealId !== null || state.selectedFoodId !== null) {
+            state.selectedMealId = null;
+            state.selectedFoodId = null;
+            hideFoodInsight();
+            renderDietList();
+            renderNutritionPanel();
+        }
+    }
+});
 
 renderDietList();
 updateSlotUI(0);
