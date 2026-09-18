@@ -66,15 +66,9 @@ Let users split foods into separate meals instead of only tracking daily totals.
 Add an optimize button that finds foods and quantities needed to fill nutrient gaps while avoiding excessive nutrients and unwanted compounds.
 
 
-new favicon
-
 
 some food eat up nutrients, vitamin C protocol carnivore?
 some nutrients are more important than other , like magnesium > coq10 or spermidine, WHY?
 
-<footer>
-    <p>Created by <a href="https://adamnordling.github.io/" rel="author">Adam Nordling</a></p>
-</footer>
 
-save items, for next time u go back into the app
 npm run validate
