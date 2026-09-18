@@ -1660,6 +1660,62 @@ toggleAllBtn?.addEventListener('click', () => {
     renderNutritionPanel();
 });
 
+/* ==========================================================================
+   9. MINIMAL INLINE MENU & FOOTER CONTROLLERS
+   ========================================================================== */
+
+const navToggleBtn = document.getElementById('nav-toggle-btn');
+const navDropdown = document.getElementById('nav-dropdown');
+
+function closeNav() {
+    navToggleBtn?.classList.remove('is-active');
+    navToggleBtn?.setAttribute('aria-expanded', 'false');
+    navDropdown?.classList.add('hidden');
+}
+
+navToggleBtn?.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = navToggleBtn.classList.toggle('is-active');
+    navToggleBtn.setAttribute('aria-expanded', String(isOpen));
+    navDropdown?.classList.toggle('hidden', !isOpen);
+});
+
+document.addEventListener('click', e => {
+    if (!e.target.closest('.minimal-nav-wrapper')) closeNav();
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeNav();
+});
+
+// "Clear Diet" button in menu
+document.getElementById('menu-btn-clear')?.addEventListener('click', () => {
+    if (state.diet.length === 0) return closeNav();
+    state.diet = [];
+    state.selectedIndex = null;
+    state.hoveredIndex = null;
+    hideFoodInsight();
+    renderDietList();
+    renderNutritionPanel();
+    closeNav();
+});
+
+// "Targets & BMI" placeholder in menu
+document.getElementById('menu-btn-profile')?.addEventListener('click', () => {
+    alert('Calorie & DRI Profile customizer coming in next module!');
+    closeNav();
+});
+
+// Footer Back-to-Top
+document.getElementById('footer-scroll-top')?.addEventListener('click', e => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Dynamic year in footer
+const footerYear = document.getElementById('footer-year');
+if (footerYear) footerYear.textContent = new Date().getFullYear();
+
 renderDietList();
 updateSlotUI(0);
 updateSlotUI(1);

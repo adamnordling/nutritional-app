@@ -84,10 +84,40 @@
         <div class="ambient-glow glow-top-left" aria-hidden="true"></div>
         <div class="ambient-glow glow-top-right" aria-hidden="true"></div>
 
+        <!-- +++++ INSERT START: Fixed in the far top-left corner +++++ -->
+        <div class="corner-nav-wrapper">
+            <button
+                id="nav-toggle-btn"
+                class="nav-toggle-btn"
+                type="button"
+                aria-label="Toggle menu"
+                aria-expanded="false"
+            >
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <div id="nav-dropdown" class="minimal-nav-dropdown hidden">
+                <a href="#top" class="min-nav-link" id="menu-link-about">About</a>
+                <button type="button" class="min-nav-link" id="menu-btn-profile">Targets & BMI</button>
+                <button type="button" class="min-nav-link" id="menu-btn-clear">Clear Diet</button>
+                <a
+                    href="https://github.com/adamnordling/open_nutrition"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="min-nav-link"
+                    >Source ↗</a
+                >
+            </div>
+        </div>
+        <!-- +++++ INSERT END +++++ -->
+
         <!-- Hero Intro Section -->
         <section class="hero-section">
             <div class="hero-container">
                 <div class="hero-header-row">
+                    <!-- Ensure only the logo and title are here -->
                     <img
                         src="./src/assets/logo.png"
                         alt="Open Nutrition Logo"
@@ -732,6 +762,40 @@
             </section>
         </main>
 
+        <!-- Minimal Ambient Footer -->
+        <!-- Ultra-Slim Ambient Footer -->
+        <footer class="app-footer">
+            <div class="footer-slim-container">
+                <div class="footer-brand">
+                    <img
+                        src="./src/assets/logo.png"
+                        alt="Logo"
+                        class="footer-logo"
+                        onerror="this.style.display = 'none'"
+                    />
+                    <span class="footer-title">Open <span class="footer-title-green">Nutrition</span></span>
+                    <span class="footer-sep">•</span>
+                    <span class="footer-author"
+                        >by
+                        <a href="https://adamnordling.github.io/" target="_blank" rel="noopener noreferrer"
+                            >Adam Nordling</a
+                        ></span
+                    >
+                </div>
+
+                <div class="footer-center">
+                    <span>© <span id="footer-year">2025</span> Open Nutrition</span>
+                </div>
+
+                <div class="footer-links">
+                    <a href="https://github.com/adamnordling/open_nutrition" target="_blank" rel="noopener noreferrer"
+                        >GitHub</a
+                    >
+                    <a href="https://adamnordling.github.io/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+                    <a href="#top" id="footer-scroll-top">Top ↑</a>
+                </div>
+            </div>
+        </footer>
         <script type="module" src="src/main.js"></script>
     </body>
 </html>
